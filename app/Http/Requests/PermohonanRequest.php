@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Auth;
+use DB;
+
+class PermohonanRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+
+        return Auth::check();
+
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+
+        $request = $this->request->all();
+        $rules = [
+                 'di_305' => 'required',
+                 'di_302' => 'required',
+                 'tanggal_pengukuran' => 'date|required',
+                 'no_surat' => 'required',
+                 'nama_pemohon' => 'required',
+                 'no_berkas' => 'required',
+                 'kecamatan' => [ 'required', function ($attr, $value, $fail) use ($request) {
+                     $kecamatan = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '8')
+                         ->where('nama', $this->request->get('kecamatan'))->first();
+                     if (!$kecamatan) {
+                         $fail($attr . ' tidak valid.');
+                     }
+
+                 }],
+                'desa' => [ 'required', function ($attr, $value, $fail) use ($request) {
+                    $desa = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '13')
+                        ->where('nama', $this->request->get('desa'))->first();
+                    if (!$desa) {
+                        $fail($attr . ' tidak valid.');
+                    }
+                }],
+                 'luas' => 'required|numeric',
+                 'petugas_ukur' => [
+                 'required',
+                 'array',
+                 'min:1',
+                 'exists:users,id' // Validate that each ID in the array exists in the users table
+             ],
+         ];
+
+
+        return $rules;
+
+    }
+}

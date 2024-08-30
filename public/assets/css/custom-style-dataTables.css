@@ -1,0 +1,114 @@
+
+.dataTables_length label {
+    display: inline-block;
+}
+
+.dataTables_length select {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.dataTables_length select {
+    text-transform: none;
+}
+
+.dataTables_length select {
+    word-wrap: normal;
+}
+
+.dataTables_length select:disabled {
+    opacity: 1;
+}
+
+.dataTables_length select {
+    display: block;
+    width: 100%;
+    padding: 0.575rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #293240;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 6px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.dataTables_length select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 0.75rem center/18px 25px;
+}
+
+/*! CSS Used from: http://127.0.0.1:8000/assets/css/plugins/style.css */
+.dataTables_filter input {
+    padding: 6px 12px;
+}
+
+/*! CSS Used from: Embedded */
+*:focus {
+    outline: none;
+}
+
+/*! CSS Used from: http://127.0.0.1:8000/assets/css/style.css */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+input {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.dataTables_filter input {
+    display: block;
+    width: 100%;
+    padding: 0.575rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #293240;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 6px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dataTables_filter input {
+        transition: none;
+    }
+}
+
+.dataTables_filter input:focus {
+    color: #293240;
+    background-color: #ffffff;
+    border-color: #51459d;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(81, 69, 157, 0.25);
+}
+
+.dataTables_filter input::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
+
+.dataTables_filter input:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+}
