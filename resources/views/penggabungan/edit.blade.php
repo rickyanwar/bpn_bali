@@ -121,8 +121,27 @@
     @include('penggabungan.script')
     <script>
         let data = {!! json_encode($data) !!};
-
         let url = `{!! !empty($url) ? $url : '' !!}`;
+
+        $('#no_berkas').val(data?.no_berkas);
+        $('#di_305').val(data?.di_305);
+        $('#di_302').val(data?.di_302);
+        $('#tanggal_pengukuran').val(data?.tanggal_pengukuran);
+        $('#luas').val(data?.luas);
+        $('#no_surat').val(data?.no_surat);
+        $('#nama_pemohon').val(data?.nama_pemohon);
+
+
+        // Transforming the data
+        let selectedPetugasUkur = data?.petugas_ukur?.map(item => {
+            if (item?.user) {
+                return {
+                    id: item.user.id,
+                    text: item.user.name // Rename 'name' to 'text'
+                };
+            }
+            return item;
+        });
 
         $(document).ready(function() {
 
@@ -139,40 +158,7 @@
                 loadKecamatan()
             }
 
-            $('#petugas_ukur').select2({
-                ajax: {
-                    url: "{{ route('user.search') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        console.log('Params:', params); // Debug: Log the search term
-                        return {
-                            term: params.term,
-                            role: 'company'
-                        };
-                    },
-                    processResults: function(response) {
-                        // Map the results from the API response to the format expected by Select2
-                        let results = response.data.data.map(function(user) {
-                            return {
-                                id: user.id,
-                                text: user.name
-                            };
-                        });
 
-                        return {
-                            results: results,
-                            pagination: {
-                                more: response.data.next_page_url !==
-                                    null // Check if there's a next page
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Select a user',
-                allowClear: true
-            });
 
             $(document).on('click', '#btn-submit', function(e) {
 
@@ -243,22 +229,17 @@
 
             })
 
-            console.log('data.petugas_ukur', data.selected_petugas_ukur)
+            if (selectedPetugasUkur.length > 0) {
+                // Set the selected options by their IDs
+                let selectedIds = selectedPetugasUkur.map(item => item.id);
+                $('#petugas_ukur').val(selectedIds).trigger('change');
 
-            var defaultData = [{
-                id: 1,
-                text: 'Item1'
-            }, {
-                id: 2,
-                text: 'Item2'
-            }, {
-                id: 3,
-                text: 'Item3'
-            }];
-
-            $('#petugas_ukur').data().select2.updateSelection(defaultData);
-
-
+                // Optionally, you can preload the text for the selected items (to make them visible in the dropdown)
+                selectedPetugasUkur.forEach(item => {
+                    let option = new Option(item.text, item.id, true, true);
+                    $('#petugas_ukur').append(option).trigger('change');
+                });
+            }
 
 
 

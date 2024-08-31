@@ -136,4 +136,40 @@
 
         });
     }
+
+
+    $('#petugas_ukur').select2({
+        ajax: {
+            url: "{{ route('user.search') }}",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                console.log('Params:', params); // Debug: Log the search term
+                return {
+                    term: params.term,
+                    role: 'company'
+                };
+            },
+            processResults: function(response) {
+                // Map the results from the API response to the format expected by Select2
+                let results = response.data.data.map(function(user) {
+                    return {
+                        id: user.id,
+                        text: user.name
+                    };
+                });
+
+                return {
+                    results: results,
+                    pagination: {
+                        more: response.data.next_page_url !==
+                            null // Check if there's a next page
+                    }
+                };
+            },
+            cache: true
+        },
+        placeholder: 'Select a user',
+        allowClear: true
+    });
 </script>

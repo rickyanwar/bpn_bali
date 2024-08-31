@@ -84,9 +84,35 @@ class PenggabunganController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PermohonanRequest $request, $id)
     {
-        //
+        $request->merge([
+            'updated_by' => auth()->user()->getId(),
+            'diteruskan_ke' => $request->petugas_ukur[0]
+        ]);
+
+
+        $data = Permohonan::find($id);
+        $data->update($request->all());
+        PermohonanPetugasUkur::where('permohonan_id', $id)->delete();
+
+        foreach ($request->petugas_ukur as $dataId) {
+            PermohonanPetugasUkur::create([
+                'permohonan_id' => $data->id,
+                'user_id' => $dataId,
+            ]);
+        }
+
+
+        RiwayatPermohonanDiTeruskan::create([
+                'permohonan_id' => $data->id,
+                'user_id' => $dataId,
+            ]);
+
+
+        Utility::auditTrail('update', $this->modulName, $data->id, $data->no_surat, auth()->user());
+
+        return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
 
     /**
@@ -94,6 +120,21 @@ class PenggabunganController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+
+        $data = KartuKeluarga::find($id);
+        //CHECK IF DATA EXIST AND USER CAN ACCESS DATA
+        // if(!$data || !auth()->user()->can('kartu-keluarga_list_all') && $data->created_by !=  auth()->user()->getId()) {
+        //     return $this->respondNotHaveAccessData();
+        // }
+
+        // if($data->status !== 'permohonan') {
+        //     return $this->respondWithError(ApiCode::NOT_ACCEPTABLE, ApiMessage::CAN_T_DELETE);
+        // }
+
+        $data->delete();
+        //SAVE TO AUDIT TRAIL
+        Helper::auditTrail('delete', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        return $this->respond(null, ApiMessage::SUCCESFULL_DELETE);
+
     }
 }
