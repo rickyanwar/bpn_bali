@@ -37,7 +37,7 @@
                 <a class="dash-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                     role="button" aria-haspopup="false" aria-expanded="false">
                     <span class="theme-avtar">
-                        <img src="{{ !empty(\Auth::user()->avatar) ? $profile . \Auth::user()->avatar : $profile . 'avatar.png' }}"
+                        <img src="{{ asset('assets/images/avatar.png') }}" alt="{{ env('APP_NAME') }}"
                             class="img-fluid rounded-circle">
                     </span>
                     <span class="hide-mob ms-2">{{ __('Hi, ') }}
