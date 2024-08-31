@@ -3109,7 +3109,6 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('1234'),
                 'type' => 'super admin',
                 'lang' => 'en',
-                'avatar' => '',
                 'created_by' => 0,
                 'email_verified_at' => now(),
             ]
@@ -3659,19 +3658,52 @@ class UsersTableSeeder extends Seeder
 
         $company = User::create(
             [
-                'name' => 'company',
-                'email' => 'company@example.com',
+                'name' => 'petugas',
+                'email' => 'petugas1@example.com',
                 'password' => Hash::make('1234'),
                 'type' => 'company',
                 'default_pipeline' => 1,
                 'plan' => 1,
                 'lang' => 'en',
-                'avatar' => '',
                 'created_by' => 1,
                 'email_verified_at' => now(),
             ]
         );
         $company->assignRole($companyRole);
+
+
+        $company2 = User::create(
+            [
+                        'name' => 'petugas2',
+                        'email' => 'petugas2@example.com',
+                        'password' => Hash::make('1234'),
+                        'type' => 'company',
+                        'default_pipeline' => 1,
+                        'plan' => 1,
+                        'lang' => 'en',
+                        'created_by' => 1,
+                        'email_verified_at' => now(),
+                    ]
+        );
+        $company2->assignRole($companyRole);
+
+
+        $company3 = User::create(
+            [
+                        'name' => 'petugas3',
+                        'email' => 'petugas3@example.com',
+                        'password' => Hash::make('1234'),
+                        'type' => 'company',
+                        'default_pipeline' => 1,
+                        'plan' => 1,
+                        'lang' => 'en',
+                        'created_by' => 1,
+                        'email_verified_at' => now(),
+                    ]
+        );
+        $company3->assignRole($companyRole);
+
+
 
         // accountant
         $accountantRole       = Role::create(
@@ -3820,7 +3852,6 @@ class UsersTableSeeder extends Seeder
                 'type' => 'accountant',
                 'default_pipeline' => 1,
                 'lang' => 'en',
-                'avatar' => '',
                 'created_by' => $company->id,
                 'email_verified_at' => now(),
             ]
@@ -3887,7 +3918,6 @@ class UsersTableSeeder extends Seeder
                 'type' => 'client',
                 'default_pipeline' => 1,
                 'lang' => 'en',
-                'avatar' => '',
                 'created_by' => $company->id,
                 'email_verified_at' => now(),
             ]

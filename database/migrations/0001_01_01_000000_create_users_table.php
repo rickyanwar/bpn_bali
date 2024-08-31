@@ -22,7 +22,7 @@ return new class () extends Migration {
                 $table->date('plan_expire_date')->nullable();
                 $table->string('type', 100)->nullable();
                 $table->float('storage_limit')->default('0.00');
-                $table->string('avatar')->default(config('chatify.user_avatar.default'));
+                // $table->string('avatar')->default(config('chatify.user_avatar.default'));
                 $table->string('messenger_color')->default('#2180f3');
                 $table->string('lang', 100)->nullable();
                 $table->integer('default_pipeline')->nullable();

@@ -147,7 +147,7 @@
                 console.log('Params:', params); // Debug: Log the search term
                 return {
                     term: params.term,
-                    role: 'company'
+                    //role: 'company'
                 };
             },
             processResults: function(response) {

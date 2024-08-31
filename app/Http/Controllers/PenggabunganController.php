@@ -12,6 +12,9 @@ use DataTables;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
 use Auth;
+
+use Illuminate\Database\Eloquent\Builder;
+
 use App\ApiMessage;
 use App\ApiCode;
 
@@ -28,6 +31,25 @@ class PenggabunganController extends Controller
             $query = Permohonan::query();
             $query->with('createdby');
             $query->where('jenis_permohonan', 'penggabungan');
+
+
+            // Get the currently authenticated user's ID
+            $currentUserId = Auth::id();
+
+
+
+$query = Permohonan::with('createdby')
+    ->where('jenis_permohonan', 'penggabungan')
+    ->where(function ($q) use ($currentUserId) {
+        $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
+          ->orWhere('created_by', $currentUserId) // Allow creator to see the data
+          ->orWhereHas('petugasUkur', function ($q) use ($currentUserId) {
+              $q->where('user_id', $currentUserId);
+          });
+    });
+
+
+
 
             if (!empty($request->status)) {
                 $query->where('status', '=', (int) $request->status);
