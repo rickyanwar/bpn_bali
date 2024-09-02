@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PenggabunganController;
 use App\Http\Controllers\PemecahanController;
 use App\Http\Controllers\PengukuranController;
+use App\Http\Controllers\PenataanBatasController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -18,6 +19,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
+
+
+    Route::post('penataan_batas/teruskan/{id}', [PenataanBatasController::class, 'teruskan'])->name('penataan_batas.teruskan');
+    Route::get('penataan_batas/print/{id}', [PenataanBatasController::class, 'print'])->name('penataan_batas.print');
+    Route::resource('penataan_batas', PenataanBatasController::class);
+
 
     Route::post('penggabungan/teruskan/{id}', [PenggabunganController::class, 'teruskan'])->name('penggabungan.teruskan');
     Route::get('penggabungan/print/{id}', [PenggabunganController::class, 'print'])->name('penggabungan.print');
@@ -37,11 +44,5 @@ Route::middleware(['auth'])->group(function () {
     Route::any('user-reset-password/{id}', [UserController::class, 'userPassword'])->name('users.reset');
     Route::post('user-reset-password/{id}', [UserController::class, 'userPasswordReset'])->name('user.password.update');
 });
-
-Route::any('user-reset-password/{id}', [UserController::class, 'userPassword'])->name('users.reset');
-
-Route::post('user-reset-password/{id}', [UserController::class, 'userPasswordReset'])->name('user.password.update');
-
-
 
 Auth::routes();

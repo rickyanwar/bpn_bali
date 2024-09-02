@@ -114,6 +114,13 @@
                                 {{ __('Pengukuran') }}</a>
                         </li>
                     @endcan
+                    @can('manage user')
+                        <li
+                            class="dash-item {{ Request::route()->getName() == 'penataan_batas.index' || Request::route()->getName() == 'penataan_batas.create' || Request::route()->getName() == 'penataan_batas.edit' || Request::route()->getName() == 'user.userlog' ? ' active' : '' }}">
+                            <a class="dash-link" href="{{ route('penataan_batas.index') }}">
+                                {{ __('Penataan Batas') }}</a>
+                        </li>
+                    @endcan
                     {{--  @can('manage client')
                     <li
                         class="dash-item {{ Request::route()->getName() == 'clients.index' || Request::segment(1) == 'clients' || Request::route()->getName() == 'clients.edit' ? ' active' : '' }}">
