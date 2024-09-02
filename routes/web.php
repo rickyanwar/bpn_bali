@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PenggabunganController;
 use App\Http\Controllers\PemecahanController;
+use App\Http\Controllers\PengukuranController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -26,6 +27,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('pemecahan/teruskan/{id}', [PemecahanController::class, 'teruskan'])->name('pemecahan.teruskan');
     Route::get('pemecahan/print/{id}', [PemecahanController::class, 'print'])->name('pemecahan.print');
     Route::resource('pemecahan', PemecahanController::class);
+
+    Route::post('pengukuran/teruskan/{id}', [PengukuranController::class, 'teruskan'])->name('pengukuran.teruskan');
+    Route::get('pengukuran/print/{id}', [PengukuranController::class, 'print'])->name('pengukuran.print');
+    Route::resource('pengukuran', PengukuranController::class);
+
 
     // User password reset routes
     Route::any('user-reset-password/{id}', [UserController::class, 'userPassword'])->name('users.reset');
