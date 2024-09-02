@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
 use App\Http\Requests\PermohonanRequest;
+use App\Http\Requests\PermohonanDiteruskanRequest;
 use App\Models\Utility;
 use App\Models\PermohonanPetugasUkur;
 use App\Models\RiwayatPermohonanDiTeruskan;
@@ -12,9 +13,7 @@ use DataTables;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
 use Auth;
-
 use Illuminate\Database\Eloquent\Builder;
-
 use App\ApiMessage;
 use App\ApiCode;
 
@@ -26,7 +25,7 @@ class PenggabunganController extends Controller
      */
     public function index(Request $request)
     {
-        if(\Auth::user()->can('manage invoice')) {
+        if (\Auth::user()->can('manage invoice')) {
 
             $query = Permohonan::query();
             $query->with('createdby');
@@ -38,15 +37,15 @@ class PenggabunganController extends Controller
 
 
 
-$query = Permohonan::with('createdby')
-    ->where('jenis_permohonan', 'penggabungan')
-    ->where(function ($q) use ($currentUserId) {
-        $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
-          ->orWhere('created_by', $currentUserId) // Allow creator to see the data
-          ->orWhereHas('petugasUkur', function ($q) use ($currentUserId) {
-              $q->where('user_id', $currentUserId);
-          });
-    });
+            $query = Permohonan::with('createdby')
+                ->where('jenis_permohonan', 'penggabungan')
+                ->where(function ($q) use ($currentUserId) {
+                    $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
+                      ->orWhere('created_by', $currentUserId) // Allow creator to see the data
+                      ->orWhereHas('petugasUkur', function ($q) use ($currentUserId) {
+                          $q->where('user_id', $currentUserId);
+                      });
+                });
 
 
 
@@ -70,7 +69,7 @@ $query = Permohonan::with('createdby')
                     // Show Invoice
                     if (Gate::check('show invoice')) {
                         $actions .= '<div class="action-btn bg-info ms-2">
-                                        <a href="' . route('users.show', [Crypt::encrypt($data->id)]) . '"
+                                        <a href="' . route('penggabungan.show', [Crypt::encrypt($data->id)]) . '"
                                             class="mx-3 btn btn-sm align-items-center"
                                             data-bs-toggle="tooltip" title="' . __('Show') . '"
                                             data-original-title="' . __('Detail') . '">
@@ -94,7 +93,7 @@ $query = Permohonan::with('createdby')
                     // Delete Invoice
                     if (Auth::user()->can('delete invoice')) {
                         $actions .= '<div class="action-btn bg-danger ms-2">
-                                        <form method="POST" action="' . route('users.destroy', $data->id) . '" id="delete-form-' . $data->id . '">
+                                        <form method="POST" action="' . route('penggabungan.destroy', $data->id) . '" id="delete-form-' . $data->id . '">
                                             ' . csrf_field() . '
                                             ' . method_field('DELETE') . '
                                             <a href="#"
@@ -170,11 +169,20 @@ $query = Permohonan::with('createdby')
     public function show(string $id)
     {
 
-        $data = Permohonan::with('petugasUkur.user', 'createdby', 'kecamatan', 'desa')->find($id);
-        return $this->respond($data);
-
+        $Id = \Crypt::decrypt($id);
+        $data = Permohonan::with('petugasUkur.user', 'createdby', 'kecamatan', 'desa')->find($Id);
+        $urlTeruskan = route('penggabungan.teruskan', $Id);
+        return view('penggabungan.show', compact('data', 'urlTeruskan'));
     }
 
+
+    public function print(string $id)
+    {
+
+        $Id = \Crypt::decrypt($id);
+        $data = Permohonan::with('petugasUkur.user', 'createdby', 'kecamatan', 'desa')->find($Id);
+        return view('penggabungan.print', compact('data'));
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -213,7 +221,7 @@ $query = Permohonan::with('createdby')
 
         RiwayatPermohonanDiTeruskan::create([
                 'permohonan_id' => $data->id,
-                'user_id' => $dataId,
+                'user_id' =>  $request->petugas_ukur[0]
             ]);
 
 
@@ -244,4 +252,25 @@ $query = Permohonan::with('createdby')
         return $this->respond(null, ApiMessage::SUCCESFULL_DELETE);
 
     }
+
+
+    public function teruskan(PermohonanDiteruskanRequest $request, $id)
+    {
+
+        $data = Permohonan::find($id);
+        $data->diteruskan_ke = $request->user;
+        $data->update();
+
+
+        RiwayatPermohonanDiTeruskan::create([
+            'permohonan_id' => $data->id,
+            'user_id' => $request->user,
+            'diteruskan_ke' => $request->options_select,
+        ]);
+
+
+        Utility::auditTrail('diteruskan', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+    }
+
 }

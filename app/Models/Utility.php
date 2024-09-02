@@ -17,6 +17,13 @@ use App\Models\AuditTrail;
 
 class Utility extends Model
 {
+    public static function formatRelativeTime($datetime)
+    {
+        Carbon::setLocale('id');
+        $carbonDate = Carbon::parse($datetime);
+        return $carbonDate->diffForHumans(null, true) . ' Lalu';
+    }
+
     public static function generateCode($model, $field, $prefix, $length = 5)
     {
 
@@ -94,10 +101,10 @@ class Utility extends Model
     {
         $data = DB::table('settings');
 
-        if(\Auth::check()) {
+        if (\Auth::check()) {
             // $data = $data->where('created_by', '=', \Auth::user()->creatorId())->get();
             $data = $data->where('created_by', '=', \Auth::user()->id)->get();
-            if(count($data) == 0) {
+            if (count($data) == 0) {
                 $data = DB::table('settings')->where('created_by', '=', 1)->get();
             }
         } else {
@@ -266,7 +273,7 @@ class Utility extends Model
 
         ];
 
-        foreach($data as $row) {
+        foreach ($data as $row) {
             $settings[$row->name] = $row->value;
         }
 
@@ -432,7 +439,7 @@ class Utility extends Model
 
         ];
 
-        foreach($data as $row) {
+        foreach ($data as $row) {
             $settings[$row->name] = $row->value;
         }
 
@@ -469,9 +476,9 @@ class Utility extends Model
     {
         $languages = Utility::langList();
 
-        if(\Schema::hasTable('languages')) {
+        if (\Schema::hasTable('languages')) {
             $settings = Utility::langSetting();
-            if(!empty($settings['disable_lang'])) {
+            if (!empty($settings['disable_lang'])) {
                 $disabledlang = explode(',', $settings['disable_lang']);
                 $languages = Language::whereNotIn('code', $disabledlang)->pluck('full_name', 'code');
             } else {
@@ -488,7 +495,7 @@ class Utility extends Model
 
         $setting = Utility::settings();
 
-        if(!isset($setting[$key]) || empty($setting[$key])) {
+        if (!isset($setting[$key]) || empty($setting[$key])) {
             $setting[$key] = '';
         }
 
@@ -499,13 +506,13 @@ class Utility extends Model
     {
         $envFile = app()->environmentFilePath();
         $str     = file_get_contents($envFile);
-        if(count($values) > 0) {
-            foreach($values as $envKey => $envValue) {
+        if (count($values) > 0) {
+            foreach ($values as $envKey => $envValue) {
                 $keyPosition       = strpos($str, "{$envKey}=");
                 $endOfLinePosition = strpos($str, "\n", $keyPosition);
                 $oldLine           = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
                 // If key does not exist, add it
-                if(!$keyPosition || !$endOfLinePosition || !$oldLine) {
+                if (!$keyPosition || !$endOfLinePosition || !$oldLine) {
                     $str .= "{$envKey}='{$envValue}'\n";
                 } else {
                     $str = str_replace($oldLine, "{$envKey}='{$envValue}'", $str);
@@ -514,7 +521,7 @@ class Utility extends Model
         }
         $str = substr($str, 0, -1);
         $str .= "\n";
-        if(!file_put_contents($envFile, $str)) {
+        if (!file_put_contents($envFile, $str)) {
             return false;
         }
 
@@ -684,7 +691,7 @@ class Utility extends Model
 
         $taxArr = explode(',', $taxes);
         $taxes  = [];
-        foreach($taxArr as $tax) {
+        foreach ($taxArr as $tax) {
             $taxes[] = Tax::find($tax);
         }
 
@@ -706,7 +713,7 @@ class Utility extends Model
 
         $taxArr  = explode(',', $taxes);
         $taxRate = 0;
-        foreach($taxArr as $tax) {
+        foreach ($taxArr as $tax) {
             $tax     = Tax::find($tax);
             $taxRate += !empty($tax->rate) ? $tax->rate : 0;
         }
@@ -717,19 +724,19 @@ class Utility extends Model
     //start for customer & vendor balance
     public static function userBalance($users, $id, $amount, $type)
     {
-        if($users == 'customer') {
+        if ($users == 'customer') {
             $user = Customer::find($id);
         } else {
             $user = Vender::find($id);
         }
 
-        if(!empty($user)) {
-            if($type == 'credit') {
+        if (!empty($user)) {
+            if ($type == 'credit') {
                 $oldBalance    = $user->balance;
                 $userBalance = $oldBalance + $amount;
                 $user->balance = $userBalance;
                 $user->save();
-            } elseif($type == 'debit') {
+            } elseif ($type == 'debit') {
                 $oldBalance    = $user->balance;
                 $userBalance = $oldBalance - $amount;
                 $user->balance = $userBalance;
@@ -740,19 +747,19 @@ class Utility extends Model
 
     public static function updateUserBalance($users, $id, $amount, $type)
     {
-        if($users == 'customer') {
+        if ($users == 'customer') {
             $user = Customer::find($id);
         } else {
             $user = Vender::find($id);
         }
 
-        if(!empty($user)) {
-            if($type == 'credit') {
+        if (!empty($user)) {
+            if ($type == 'credit') {
                 $oldBalance    = $user->balance;
                 $userBalance = $oldBalance - $amount;
                 $user->balance = $userBalance;
                 $user->save();
-            } elseif($type == 'debit') {
+            } elseif ($type == 'debit') {
                 $oldBalance    = $user->balance;
                 $userBalance = $oldBalance + $amount;
                 $user->balance = $userBalance;
@@ -766,12 +773,12 @@ class Utility extends Model
     public static function bankAccountBalance($id, $amount, $type)
     {
         $bankAccount = BankAccount::find($id);
-        if($bankAccount) {
-            if($type == 'credit') {
+        if ($bankAccount) {
+            if ($type == 'credit') {
                 $oldBalance                   = $bankAccount->opening_balance;
                 $bankAccount->opening_balance = $oldBalance + $amount;
                 $bankAccount->save();
-            } elseif($type == 'debit') {
+            } elseif ($type == 'debit') {
                 $oldBalance                   = $bankAccount->opening_balance;
                 $bankAccount->opening_balance = $oldBalance - $amount;
                 $bankAccount->save();
@@ -785,7 +792,7 @@ class Utility extends Model
     {
         $hex = str_replace("#", "", $hex);
 
-        if(strlen($hex) == 3) {
+        if (strlen($hex) == 3) {
             $r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
             $g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
             $b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
@@ -818,8 +825,8 @@ class Utility extends Model
             $B / 255,
         ];
 
-        for($i = 0; $i < count($C); ++$i) {
-            if($C[$i] <= 0.03928) {
+        for ($i = 0; $i < count($C); ++$i) {
+            if ($C[$i] <= 0.03928) {
                 $C[$i] = $C[$i] / 12.92;
             } else {
                 $C[$i] = pow(($C[$i] + 0.055) / 1.055, 2.4);
@@ -828,7 +835,7 @@ class Utility extends Model
 
         $L = 0.2126 * $C[0] + 0.7152 * $C[1] + 0.0722 * $C[2];
 
-        if($L > 0.179) {
+        if ($L > 0.179) {
             $color = 'black';
         } else {
             $color = 'white';
@@ -839,17 +846,17 @@ class Utility extends Model
 
     public static function delete_directory($dir)
     {
-        if(!file_exists($dir)) {
+        if (!file_exists($dir)) {
             return true;
         }
-        if(!is_dir($dir)) {
+        if (!is_dir($dir)) {
             return unlink($dir);
         }
-        foreach(scandir($dir) as $item) {
-            if($item == '.' || $item == '..') {
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') {
                 continue;
             }
-            if(!self::delete_directory($dir . DIRECTORY_SEPARATOR . $item)) {
+            if (!self::delete_directory($dir . DIRECTORY_SEPARATOR . $item)) {
                 return false;
             }
         }
@@ -902,7 +909,7 @@ class Utility extends Model
     public static function chartOfAccountTypeData($company_id)
     {
         $chartOfAccountTypes = self::$chartOfAccountType;
-        foreach($chartOfAccountTypes as $k => $type) {
+        foreach ($chartOfAccountTypes as $k => $type) {
 
             $accountType = ChartOfAccountType::create(
                 [
@@ -913,7 +920,7 @@ class Utility extends Model
 
             $chartOfAccountSubTypes = self::$chartOfAccountSubType;
 
-            foreach($chartOfAccountSubTypes[$k] as $subType) {
+            foreach ($chartOfAccountSubTypes[$k] as $subType) {
                 ChartOfAccountSubType::create(
                     [
                         'name' => $subType,
@@ -2281,7 +2288,7 @@ class Utility extends Model
     {
         $chartOfAccounts = self::$chartOfAccount1;
 
-        foreach($chartOfAccounts as $account) {
+        foreach ($chartOfAccounts as $account) {
 
             $type = ChartOfAccountType::where('created_by', $user)->where('name', $account['type'])->first();
             $sub_type = ChartOfAccountSubType::where('type', $type->id)->where('name', $account['sub_type'])->first();
@@ -2303,7 +2310,7 @@ class Utility extends Model
     public static function chartOfAccountData($user)
     {
         $chartOfAccounts = self::$chartOfAccount;
-        foreach($chartOfAccounts as $account) {
+        foreach ($chartOfAccounts as $account) {
             ChartOfAccount::create(
                 [
                     'code' => $account['code'],
@@ -2595,7 +2602,7 @@ class Utility extends Model
         ];
 
 
-        foreach($obj as $key => $val) {
+        foreach ($obj as $key => $val) {
             $arrValue[$key] = $val;
         }
 
@@ -2631,7 +2638,7 @@ class Utility extends Model
             'Revised',
             'Declined',
         ];
-        foreach($stages as $stage) {
+        foreach ($stages as $stage) {
             LeadStage::create(
                 [
                     'name' => $stage,
@@ -2658,7 +2665,7 @@ class Utility extends Model
             'Review',
             'Done',
         ];
-        foreach($projectStages as $key => $stage) {
+        foreach ($projectStages as $key => $stage) {
             TaskStage::create(
                 [
                     'name' => $stage,
@@ -2693,7 +2700,7 @@ class Utility extends Model
                 'color' => 'success',
             ],
         ];
-        foreach($stages as $stage) {
+        foreach ($stages as $stage) {
             Label::create(
                 [
                     'name' => $stage['name'],
@@ -2710,7 +2717,7 @@ class Utility extends Model
             'In Progress',
             'Verified',
         ];
-        foreach($bugStatus as $status) {
+        foreach ($bugStatus as $status) {
             BugStatus::create(
                 [
                     'title' => $status,
@@ -2729,7 +2736,7 @@ class Utility extends Model
             'Phone',
             'LinkedIn',
         ];
-        foreach($stages as $stage) {
+        foreach ($stages as $stage) {
             Source::create(
                 [
                     'name' => $stage,
@@ -2743,7 +2750,7 @@ class Utility extends Model
     {
         $latest = Employee::where('created_by', $user_id)->latest()->first();
 
-        if(!$latest) {
+        if (!$latest) {
             return 1;
         }
 
@@ -2789,7 +2796,7 @@ class Utility extends Model
             'Hired',
             'Rejected',
         ];
-        foreach($stages as $stage) {
+        foreach ($stages as $stage) {
 
             JobStage::create(
                 [
@@ -2804,7 +2811,7 @@ class Utility extends Model
     {
         $err = '';
 
-        foreach($errors->all() as $msg) {
+        foreach ($errors->all() as $msg) {
             $err .= $msg . '<br>';
         }
 
@@ -2814,7 +2821,7 @@ class Utility extends Model
     // get date formated
     public static function getDateFormated($date)
     {
-        if(!empty($date) && $date != '0000-00-00') {
+        if (!empty($date) && $date != '0000-00-00') {
             return date("d M Y", strtotime($date));
         } else {
             return '';
@@ -2827,15 +2834,15 @@ class Utility extends Model
 
         $color = '';
 
-        if($percentage <= 20) {
+        if ($percentage <= 20) {
             $color = 'danger';
-        } elseif($percentage > 20 && $percentage <= 40) {
+        } elseif ($percentage > 20 && $percentage <= 40) {
             $color = 'warning';
-        } elseif($percentage > 40 && $percentage <= 60) {
+        } elseif ($percentage > 40 && $percentage <= 60) {
             $color = 'info';
-        } elseif($percentage > 60 && $percentage <= 80) {
+        } elseif ($percentage > 60 && $percentage <= 80) {
             $color = 'secondary';
-        } elseif($percentage >= 80) {
+        } elseif ($percentage >= 80) {
             $color = 'primary';
         }
 
@@ -2846,7 +2853,7 @@ class Utility extends Model
     public static function getPercentage($val1 = 0, $val2 = 0)
     {
         $percentage = 0;
-        if($val1 > 0 && $val2 > 0) {
+        if ($val1 > 0 && $val2 > 0) {
             $percentage = intval(($val1 / $val2) * 100);
         }
 
@@ -2857,7 +2864,7 @@ class Utility extends Model
     public static function getCrmPercentage($val1 = 0, $val2 = 0)
     {
         $percentage = 0;
-        if($val1 > 0 && $val2 > 0) {
+        if ($val1 > 0 && $val2 > 0) {
             $percentage = ($val1 / $val2) * 100;
             $percentage = number_format($percentage, \Utility::getValByName('decimal_number'));
         }
@@ -2869,7 +2876,7 @@ class Utility extends Model
     {
         $totaltime = self::calculateTimesheetHours($times);
         $timeArray = explode(':', $totaltime);
-        if($timeArray[1] <= '30') {
+        if ($timeArray[1] <= '30') {
             $totaltime = $timeArray[0];
         }
         $totaltime = $totaltime != '00' ? $totaltime : '0';
@@ -2880,7 +2887,7 @@ class Utility extends Model
     public static function calculateTimesheetHours($times)
     {
         $minutes = 0;
-        foreach($times as $time) {
+        foreach ($times as $time) {
             list($hour, $minute) = explode(':', $time);
             $minutes += $hour * 60;
             $minutes += $minute;
@@ -2897,7 +2904,7 @@ class Utility extends Model
         $arrDuration   = [];
         $previous_week = strtotime("-1 week +1 day");
 
-        for($i = 0; $i < 7; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             $arrDuration[date('Y-m-d', $previous_week)] = date('D', $previous_week);
             $previous_week                              = strtotime(date('Y-m-d', $previous_week) . " +1 day");
         }
@@ -2909,8 +2916,8 @@ class Utility extends Model
     public static function checkFileExistsnDelete(array $files)
     {
         $status = false;
-        foreach($files as $key => $file) {
-            if(Storage::exists($file)) {
+        foreach ($files as $key => $file) {
+            if (Storage::exists($file)) {
                 $status = Storage::delete($file);
             }
         }
@@ -2922,7 +2929,7 @@ class Utility extends Model
     public static function projectCurrencyFormat($project_id, $amount, $decimal = false)
     {
         $project = Project::find($project_id);
-        if(empty($project)) {
+        if (empty($project)) {
             $settings = Utility::settings();
 
             return (($settings['site_currency_symbol_position'] == "pre") ? $settings['site_currency_symbol'] : '') . number_format($amount, Utility::getValByName('decimal_number')) . (($settings['site_currency_symbol_position'] == "post") ? $settings['site_currency_symbol'] : '');
@@ -2935,14 +2942,14 @@ class Utility extends Model
     public static function getFirstSeventhWeekDay($week = null)
     {
         $first_day = $seventh_day = null;
-        if(isset($week)) {
+        if (isset($week)) {
             $first_day   = Carbon::now()->addWeeks($week)->startOfWeek();
             $seventh_day = Carbon::now()->addWeeks($week)->endOfWeek();
         }
         $dateCollection['first_day']   = $first_day;
         $dateCollection['seventh_day'] = $seventh_day;
         $period                        = CarbonPeriod::create($first_day, $seventh_day);
-        foreach($period as $key => $dateobj) {
+        foreach ($period as $key => $dateobj) {
             $dateCollection['datePeriod'][$key] = $dateobj;
         }
 
@@ -3182,7 +3189,7 @@ class Utility extends Model
     public static function companyData($company_id, $string)
     {
         $setting = DB::table('settings')->where('created_by', $company_id)->where('name', $string)->first();
-        if(!empty($setting)) {
+        if (!empty($setting)) {
             return $setting->value;
         } else {
             return '';
@@ -3241,10 +3248,10 @@ class Utility extends Model
             'delete webhook',
 
         ];
-        foreach($arrPermissions as $ap) {
+        foreach ($arrPermissions as $ap) {
             // check if permission is not created then create it.
             $permission = Permission::where('name', 'LIKE', $ap)->first();
-            if(empty($permission)) {
+            if (empty($permission)) {
                 Permission::create(['name' => $ap]);
             }
         }
@@ -3296,9 +3303,9 @@ class Utility extends Model
             'edit webhook',
             'delete webhook',
         ];
-        foreach($companyNewPermission as $op) {
+        foreach ($companyNewPermission as $op) {
             // check if permission is not assign to owner then assign.
-            if(!in_array($op, $companyPermissions)) {
+            if (!in_array($op, $companyPermissions)) {
                 $permission = Permission::findByName($op);
                 $companyRole->givePermissionTo($permission);
             }
@@ -3315,7 +3322,7 @@ class Utility extends Model
         $data     = \DB::table('admin_payment_settings');
 
         $settings = [];
-        if(\Auth::check()) {
+        if (\Auth::check()) {
 
             $user_id = 1;
             $data    = $data->where('created_by', '=', $user_id);
@@ -3324,7 +3331,7 @@ class Utility extends Model
         }
         $data = $data->get();
         //        dd($data);
-        foreach($data as $row) {
+        foreach ($data as $row) {
             $settings[$row->name] = $row->value;
         }
 
@@ -3339,7 +3346,7 @@ class Utility extends Model
         $data     = $data->where('created_by', '=', $user_id);
         $data     = $data->get();
 
-        foreach($data as $row) {
+        foreach ($data as $row) {
             $settings[$row->name] = $row->value;
         }
 
@@ -3353,13 +3360,13 @@ class Utility extends Model
 
         $data     = \DB::table('company_payment_settings');
         $settings = [];
-        if(\Auth::check()) {
+        if (\Auth::check()) {
             $user_id = \Auth::user()->creatorId();
             $data    = $data->where('created_by', '=', $user_id);
 
         }
         $data = $data->get();
-        foreach($data as $row) {
+        foreach ($data as $row) {
             $settings[$row->name] = $row->value;
         }
 
@@ -3400,7 +3407,7 @@ class Utility extends Model
     {
         $totalMigration = 0;
         $messengerPath  = glob(base_path() . '/vendor/munafio/chatify/database/migrations' . DIRECTORY_SEPARATOR . '*.php');
-        if(!empty($messengerPath)) {
+        if (!empty($messengerPath)) {
             $messengerMigration = str_replace('.php', '', $messengerPath);
             $totalMigration     = count($messengerMigration);
         }
@@ -3412,7 +3419,7 @@ class Utility extends Model
     public static function getselectedThemeColor()
     {
         $color = env('THEME_COLOR');
-        if($color == "" || $color == null) {
+        if ($color == "" || $color == null) {
             $color = 'blue';
         }
 
@@ -3489,7 +3496,7 @@ class Utility extends Model
         if (\Auth::check()) {
 
             $data = $data->where('created_by', '=', \Auth::user()->id)->get();
-            if(count($data) == 0) {
+            if (count($data) == 0) {
                 $data = DB::table('settings')->where('created_by', '=', 1)->get();
             }
 
@@ -3504,7 +3511,7 @@ class Utility extends Model
             "cust_theme_bg" => "on",
             "color" => ''
         ];
-        foreach($data as $row) {
+        foreach ($data as $row) {
             $settings[$row->name] = $row->value;
         }
         return $settings;
@@ -3524,7 +3531,7 @@ class Utility extends Model
         //     $setting = DB::table('settings')->where('created_by', $user->id)->pluck('value', 'name')->toArray();
         // }
 
-        if(!isset($setting['color'])) {
+        if (!isset($setting['color'])) {
             $setting = Utility::settings();
         }
 
@@ -3546,10 +3553,10 @@ class Utility extends Model
     {
         $is_dark_mode = self::getValByName('cust_darklayout');
         $setting = DB::table('settings')->where('created_by', Auth::user()->id)->pluck('value', 'name')->toArray();
-        if(!empty($setting['cust_darklayout'])) {
+        if (!empty($setting['cust_darklayout'])) {
             $is_dark_mode = $setting['cust_darklayout'];
             // dd($is_dark_mode);
-            if($is_dark_mode == 'on') {
+            if ($is_dark_mode == 'on') {
                 return 'logo-light.png';
             } else {
                 return 'logo-dark.png';
@@ -3565,16 +3572,16 @@ class Utility extends Model
     {
         $setting = Utility::colorset();
 
-        if(\Auth::user() && \Auth::user()->type != 'super admin') {
+        if (\Auth::user() && \Auth::user()->type != 'super admin') {
 
-            if(Utility::getValByName('cust_darklayout') == 'on') {
+            if (Utility::getValByName('cust_darklayout') == 'on') {
 
                 return Utility::getValByName('company_logo_light');
             } else {
                 return Utility::getValByName('company_logo_dark');
             }
         } else {
-            if(Utility::getValByName('cust_darklayout') == 'on') {
+            if (Utility::getValByName('cust_darklayout') == 'on') {
 
                 return Utility::getValByName('light_logo');
             } else {
@@ -3619,7 +3626,7 @@ class Utility extends Model
 
         $product     = WarehouseProduct::where('product_id', $product_id)->where('warehouse_id', $warehouse_id)->first();
 
-        if($product) {
+        if ($product) {
             $pro_quantity = $product->quantity;
             $product_quantity = $pro_quantity + $quantity;
         } else {
@@ -3638,11 +3645,11 @@ class Utility extends Model
     public static function starting_number($id, $type)
     {
 
-        if($type == 'invoice') {
+        if ($type == 'invoice') {
             $data = DB::table('settings')->where('created_by', \Auth::user()->creatorId())->where('name', 'invoice_starting_number')->update(array('value' => $id));
-        } elseif($type == 'proposal') {
+        } elseif ($type == 'proposal') {
             $data = DB::table('settings')->where('created_by', \Auth::user()->creatorId())->where('name', 'proposal_starting_number')->update(array('value' => $id));
-        } elseif($type == 'bill') {
+        } elseif ($type == 'bill') {
             $data = DB::table('settings')->where('created_by', \Auth::user()->creatorId())->where('name', 'bill_starting_number')->update(array('value' => $id));
         }
 
@@ -3657,9 +3664,9 @@ class Utility extends Model
             $settings = Utility::getStorageSetting();
             //                dd($settings);
 
-            if(!empty($settings['storage_setting'])) {
+            if (!empty($settings['storage_setting'])) {
 
-                if($settings['storage_setting'] == 'wasabi') {
+                if ($settings['storage_setting'] == 'wasabi') {
 
                     config(
                         [
@@ -3674,7 +3681,7 @@ class Utility extends Model
                     $max_size = !empty($settings['wasabi_max_upload_size']) ? $settings['wasabi_max_upload_size'] : '2048';
                     $mimes =  !empty($settings['wasabi_storage_validation']) ? $settings['wasabi_storage_validation'] : '';
 
-                } elseif($settings['storage_setting'] == 's3') {
+                } elseif ($settings['storage_setting'] == 's3') {
                     config(
                         [
                             'filesystems.disks.s3.key' => $settings['s3_key'],
@@ -3698,7 +3705,7 @@ class Utility extends Model
 
                 $file = $request->$key_name;
 
-                if(count($custom_validation) > 0) {
+                if (count($custom_validation) > 0) {
 
                     $validation = $custom_validation;
                 } else {
@@ -3714,7 +3721,7 @@ class Utility extends Model
                     $key_name => $validation
                 ]);
 
-                if($validator->fails()) {
+                if ($validator->fails()) {
 
                     $res = [
                         'flag' => 0,
@@ -3726,11 +3733,11 @@ class Utility extends Model
 
                     $name = $name;
 
-                    if($settings['storage_setting'] == 'local') {
+                    if ($settings['storage_setting'] == 'local') {
                         //                    dd(\Storage::disk(),$path);
                         $request->$key_name->move(storage_path($path), $name);
                         $path = $path.$name;
-                    } elseif($settings['storage_setting'] == 'wasabi') {
+                    } elseif ($settings['storage_setting'] == 'wasabi') {
 
                         $path = \Storage::disk('wasabi')->putFileAs(
                             $path,
@@ -3740,7 +3747,7 @@ class Utility extends Model
 
                         // $path = $path.$name;
 
-                    } elseif($settings['storage_setting'] == 's3') {
+                    } elseif ($settings['storage_setting'] == 's3') {
 
                         $path = \Storage::disk('s3')->putFileAs(
                             $path,
@@ -3769,7 +3776,7 @@ class Utility extends Model
                 return $res;
             }
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
 
             $res = [
                 'flag' => 0,
@@ -3788,9 +3795,9 @@ class Utility extends Model
             $settings = Utility::getStorageSetting();
 
 
-            if(!empty($settings['storage_setting'])) {
+            if (!empty($settings['storage_setting'])) {
 
-                if($settings['storage_setting'] == 'wasabi') {
+                if ($settings['storage_setting'] == 'wasabi') {
 
                     config(
                         [
@@ -3805,7 +3812,7 @@ class Utility extends Model
                     $max_size = !empty($settings['wasabi_max_upload_size']) ? $settings['wasabi_max_upload_size'] : '2048';
                     $mimes =  !empty($settings['wasabi_storage_validation']) ? $settings['wasabi_storage_validation'] : '';
 
-                } elseif($settings['storage_setting'] == 's3') {
+                } elseif ($settings['storage_setting'] == 's3') {
                     config(
                         [
                             'filesystems.disks.s3.key' => $settings['s3_key'],
@@ -3829,7 +3836,7 @@ class Utility extends Model
                 $file = $request->$key_name;
 
 
-                if(count($custom_validation) > 0) {
+                if (count($custom_validation) > 0) {
                     $validation = $custom_validation;
                 } else {
 
@@ -3843,7 +3850,7 @@ class Utility extends Model
                     $name => $validation
                 ]);
 
-                if($validator->fails()) {
+                if ($validator->fails()) {
                     $res = [
                         'flag' => 0,
                         'msg' => $validator->messages()->first(),
@@ -3853,7 +3860,7 @@ class Utility extends Model
 
                     $name = $name;
 
-                    if($settings['storage_setting'] == 'local') {
+                    if ($settings['storage_setting'] == 'local') {
 
 
 
@@ -3865,7 +3872,7 @@ class Utility extends Model
 
 
                         $path = $name;
-                    } elseif($settings['storage_setting'] == 'wasabi') {
+                    } elseif ($settings['storage_setting'] == 'wasabi') {
 
                         $path = \Storage::disk('wasabi')->putFileAs(
                             $path,
@@ -3875,7 +3882,7 @@ class Utility extends Model
 
                         // $path = $path.$name;
 
-                    } elseif($settings['storage_setting'] == 's3') {
+                    } elseif ($settings['storage_setting'] == 's3') {
 
                         $path = \Storage::disk('s3')->putFileAs(
                             $path,
@@ -3902,7 +3909,7 @@ class Utility extends Model
                 return $res;
             }
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $res = [
                 'flag' => 0,
                 'msg' => $e->getMessage(),
@@ -3916,7 +3923,7 @@ class Utility extends Model
         $settings = Utility::getStorageSetting();
 
         try {
-            if($settings['storage_setting'] == 'wasabi') {
+            if ($settings['storage_setting'] == 'wasabi') {
                 config(
                     [
                         'filesystems.disks.wasabi.key' => $settings['wasabi_key'],
@@ -3926,7 +3933,7 @@ class Utility extends Model
                         'filesystems.disks.wasabi.endpoint' => 'https://s3.'.$settings['wasabi_region'].'.wasabisys.com'
                     ]
                 );
-            } elseif($settings['storage_setting'] == 's3') {
+            } elseif ($settings['storage_setting'] == 's3') {
                 config(
                     [
                         'filesystems.disks.s3.key' => $settings['s3_key'],
@@ -3971,7 +3978,7 @@ class Utility extends Model
             "wasabi_storage_validation" => "",
 
         ];
-        foreach($data as $row) {
+        foreach ($data as $row) {
             $settings[$row->name] = $row->value;
         }
         return $settings;
@@ -3998,7 +4005,7 @@ class Utility extends Model
     //start Google Calendar
     public static function colorCodeData($type)
     {
-        if($type == 'event') {
+        if ($type == 'event') {
             return 1;
         } elseif ($type == 'zoom_meeting') {
             return 2;
@@ -4080,10 +4087,10 @@ class Utility extends Model
 
         $type = self::colorCodeData($type);
         $arrayJson = [];
-        foreach($data as $val) {
+        foreach ($data as $val) {
             $end_date = date_create($val->endDateTime);
             date_add($end_date, date_interval_create_from_date_string("1 days"));
-            if($val->colorId == "$type") {
+            if ($val->colorId == "$type") {
 
                 $arrayJson[] = [
                     "id" => $val->id,
@@ -4114,13 +4121,13 @@ class Utility extends Model
 
     public static function webhookSetting($module, $user_id = null)
     {
-        if(!empty($user_id)) {
+        if (!empty($user_id)) {
             $user = User::find($user_id);
         } else {
             $user = \Auth::user();
         }
         $webhook = WebhookSetting::where('module', $module)->where('created_by', '=', $user->id)->first();
-        if(!empty($webhook)) {
+        if (!empty($webhook)) {
             $url = $webhook->url;
             $method = $webhook->method;
             $reference_url  = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -4135,7 +4142,7 @@ class Utility extends Model
 
     public static function WebhookCall($url = null, $parameter = null, $method = 'POST')
     {
-        if(!empty($url) && !empty($parameter)) {
+        if (!empty($url) && !empty($parameter)) {
             try {
 
                 $curlHandle = curl_init($url);
@@ -4144,7 +4151,7 @@ class Utility extends Model
                 curl_setopt($curlHandle, CURLOPT_CUSTOMREQUEST, strtoupper($method));
                 $curlResponse = curl_exec($curlHandle);
                 curl_close($curlHandle);
-                if(empty($curlResponse)) {
+                if (empty($curlResponse)) {
                     return true;
                 } else {
                     return false;
@@ -4187,10 +4194,10 @@ class Utility extends Model
     {
         $mobile_regex = '/(?:phone|windows\s+phone|ipod|blackberry|(?:android|bb\d+|meego|silk|googlebot) .+? mobile|palm|windows\s+ce|opera mini|avantgo|mobilesafari|docomo)/i';
         $tablet_regex = '/(?:ipad|playbook|(?:android|bb\d+|meego|silk)(?! .+? mobile))/i';
-        if(preg_match_all($mobile_regex, $user_agent)) {
+        if (preg_match_all($mobile_regex, $user_agent)) {
             return 'mobile';
         } else {
-            if(preg_match_all($tablet_regex, $user_agent)) {
+            if (preg_match_all($tablet_regex, $user_agent)) {
                 return 'tablet';
             } else {
                 return 'desktop';
@@ -4209,7 +4216,7 @@ class Utility extends Model
         $user   = User::find($company_id);
         $plan   = Plan::find($user->plan);
         $total_storage = $user->storage_limit + $image_size;
-        if($plan->storage_limit <= $total_storage && $plan->storage_limit != -1) {
+        if ($plan->storage_limit <= $total_storage && $plan->storage_limit != -1) {
 
             $error = __('Plan storage limit is over so please upgrade the plan.');
             return $error;
@@ -4227,7 +4234,7 @@ class Utility extends Model
 
         $files =  \File::glob(storage_path($file_path));
         $fileSize = 0;
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $fileSize += \File::size($file);
         }
 
@@ -4239,8 +4246,8 @@ class Utility extends Model
         $user->save();
 
         $status = false;
-        foreach($files as $key => $file) {
-            if(\File::exists($file)) {
+        foreach ($files as $key => $file) {
+            if (\File::exists($file)) {
                 $status = \File::delete($file);
             }
         }
@@ -4303,9 +4310,9 @@ class Utility extends Model
     {
         $languages = Utility::langList();
 
-        foreach($languages as $key => $lang) {
+        foreach ($languages as $key => $lang) {
             $languageExist = Language::where('code', $key)->first();
-            if(empty($languageExist)) {
+            if (empty($languageExist)) {
                 $language = new Language();
                 $language->code = $key;
                 $language->full_name = $lang;
@@ -4342,7 +4349,7 @@ class Utility extends Model
     public static function getAccountBalance($account_id, $start_date = null, $end_date = null)
     {
 
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $start = $start_date;
             $end   = $end_date;
         } else {
@@ -4352,7 +4359,7 @@ class Utility extends Model
 
         $invoice_product = ProductService::where('sale_chartaccount_id', $account_id)->get()->pluck('id');
         $invoiceData = InvoiceProduct::select(DB::raw('sum(price * quantity) as amount'));
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $invoiceData->where('created_at', '>=', $start);
             $invoiceData->where('created_at', '<=', $end);
         }
@@ -4363,7 +4370,7 @@ class Utility extends Model
         //        dd($getAccount);
 
         $invoicePaymentAmount = InvoicePayment::whereIn('account_id', $getAccount);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $invoicePaymentAmount->where('date', '>=', $start);
             $invoicePaymentAmount->where('date', '<=', $end);
         }
@@ -4371,7 +4378,7 @@ class Utility extends Model
 
 
         $revenueAmount = Revenue::whereIn('account_id', $getAccount);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $revenueAmount->where('date', '>=', $start);
             $revenueAmount->where('date', '<=', $end);
         }
@@ -4380,7 +4387,7 @@ class Utility extends Model
 
         $bill_product = ProductService::where('expense_chartaccount_id', $account_id)->get()->pluck('id');
         $billData = BillProduct::select(DB::raw('sum(price * quantity) as amount'));
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $billData->where('created_at', '>=', $start);
             $billData->where('created_at', '<=', $end);
         }
@@ -4389,7 +4396,7 @@ class Utility extends Model
 
 
         $billAmount = BillAccount::where('chart_account_id', $account_id);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $billAmount->where('created_at', '>=', $start);
             $billAmount->where('created_at', '<=', $end);
         }
@@ -4398,7 +4405,7 @@ class Utility extends Model
 
 
         $billPaymentAmount = BillPayment::whereIn('account_id', $getAccount);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $billPaymentAmount->where('date', '>=', $start);
             $billPaymentAmount->where('date', '<=', $end);
         }
@@ -4406,7 +4413,7 @@ class Utility extends Model
 
 
         $paymentAmount = Payment::whereIn('account_id', $getAccount);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $paymentAmount->where('date', '>=', $start);
             $paymentAmount->where('date', '<=', $end);
         }
@@ -4421,7 +4428,7 @@ class Utility extends Model
 
     public static function getAccountData($account_id, $start_date = null, $end_date = null)
     {
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $start = $start_date;
             $end   = $end_date;
         } else {
@@ -4432,7 +4439,7 @@ class Utility extends Model
         //For Invoice Product Create
         $invoice_product = ProductService::where('sale_chartaccount_id', $account_id)->get()->pluck('id');
         $invoice = InvoiceProduct::whereIn('product_id', $invoice_product);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $invoice->where('created_at', '>=', $start);
             $invoice->where('created_at', '<=', $end);
         }
@@ -4443,7 +4450,7 @@ class Utility extends Model
 
         //For Invoice Payment
         $invoicePayment = InvoicePayment::whereIn('account_id', $getAccount);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $invoicePayment->where('date', '>=', $start);
             $invoicePayment->where('date', '<=', $end);
         }
@@ -4451,7 +4458,7 @@ class Utility extends Model
 
         //For Revenue
         $revenue = Revenue::whereIn('account_id', $getAccount);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $revenue->where('date', '>=', $start);
             $revenue->where('date', '<=', $end);
         }
@@ -4461,14 +4468,14 @@ class Utility extends Model
 
         $bill_product = ProductService::where('expense_chartaccount_id', $account_id)->get()->pluck('id');
         $bill = BillProduct::whereIn('product_id', $bill_product);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $bill->where('created_at', '>=', $start);
             $bill->where('created_at', '<=', $end);
         }
         $bill = $bill->get();
 
         $billData = BillAccount::where('chart_account_id', $account_id);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $billData->where('created_at', '>=', $start);
             $billData->where('created_at', '<=', $end);
         }
@@ -4476,7 +4483,7 @@ class Utility extends Model
 
 
         $billPayment = BillPayment::whereIn('account_id', $getAccount);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $billPayment->where('date', '>=', $start);
             $billPayment->where('date', '<=', $end);
         }
@@ -4484,7 +4491,7 @@ class Utility extends Model
 
 
         $payment = Payment::whereIn('account_id', $getAccount);
-        if(!empty($start_date) && !empty($end_date)) {
+        if (!empty($start_date) && !empty($end_date)) {
             $payment->where('date', '>=', $start);
             $payment->where('date', '<=', $end);
         }

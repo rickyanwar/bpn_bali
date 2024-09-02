@@ -3155,10 +3155,19 @@ class UsersTableSeeder extends Seeder
 
         $companyRole = Role::create(
             [
-                'name' => 'company',
+                'name' => 'Petugas Ukur',
                 'created_by' => 0,
             ]
         );
+
+
+        $companyRole = Role::create(
+            [
+                        'name' => 'Admin Pengukuran',
+                        'created_by' => 0,
+                    ]
+        );
+
 
         $companyPermissions = [
             ['name' => 'show pos dashboard'],

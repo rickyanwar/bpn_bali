@@ -25,6 +25,7 @@ return new class () extends Migration {
             $table->string('jenis_permohonan');
             $table->integer('created_by');
             $table->integer('diteruskan_ke')->nullable();
+            $table->string('diteruskan_ke_role')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
         });
