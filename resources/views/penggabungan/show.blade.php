@@ -153,8 +153,8 @@
                     <div class="card-footer d-flex justify-content-end">
                         <a href="{{ route('penggabungan.print', [Crypt::encrypt($data->id)]) }}" class="btn btn-info "
                             style="margin-left: 5px">Print</a>
-                        <button type="button" style="margin-left: 5px" class="btn btn-danger "
-                            id="btn-reject">Tolak</button>
+                        <button type="button" style="margin-left: 5px" class="btn btn-danger " id="btn-reject"
+                            data-url="{{ $urlTolak }}" style>Tolak</button>
                         <button type="button" style="margin-left: 5px" class="btn btn-primary "
                             id="btn-submit">Teruskan</button>
 

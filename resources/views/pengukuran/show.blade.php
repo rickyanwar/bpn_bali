@@ -153,8 +153,8 @@
                     <div class="card-footer d-flex justify-content-end">
                         <a href="{{ route('pengukuran.print', [Crypt::encrypt($data->id)]) }}" class="btn btn-info "
                             style="margin-left: 5px">Print</a>
-                        <button type="button" style="margin-left: 5px" class="btn btn-danger "
-                            id="btn-reject">Tolak</button>
+                        <button type="button" id="btn-reject" data-url="{{ $urlTolak }}" style="margin-left: 5px"
+                            class="btn btn-danger ">Tolak</button>
                         <button type="button" style="margin-left: 5px" class="btn btn-primary "
                             id="btn-submit">Teruskan</button>
 
@@ -335,6 +335,53 @@
                         })
                     }
                 })
+
+            })
+
+            $(document).on('click', '#btn-reject', function(e) {
+                let url = $(this).data('url');
+                console.log('url', url);
+                const wrapper = document.createElement('div');
+                let swalContent = `
+                <div class="form-group">
+                    <textarea id="alasan_penolakan" class="form-control"></textarea>
+                <div>`;
+
+                wrapper.innerHTML = swalContent;
+
+
+                swal({
+                    title: 'Alasan Penolakan',
+                    content: wrapper,
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel',
+                    focusConfirm: false,
+
+                }).then(function(result) {
+
+
+                    let formData = new FormData();
+                    formData.append('alasan_penolakan', $('#alasan_penolakan').val());
+
+                    if (result) {
+                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(
+                            function(res) {
+
+                                swal({
+                                    icon: 'success',
+                                    title: res.message,
+                                    showConfirmButton: false,
+                                }).then(function() {
+                                    window.location.reload
+                                });
+
+                                show_toastr('error', xhr.responseJSON?.message);
+
+                            })
+                    }
+
+                });
 
             })
 

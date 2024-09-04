@@ -21,7 +21,8 @@ class Permohonan extends Model
         'desa',
         'luas',
         'jenis_permohonan',
-        'diteruskan_ke'
+        'diteruskan_ke',
+        'alasan_penolakan'
     ];
 
     protected $casts = [

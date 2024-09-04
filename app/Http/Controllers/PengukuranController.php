@@ -7,6 +7,7 @@ use App\Models\Permohonan;
 use App\Http\Requests\PermohonanRequest;
 use App\Http\Requests\PermohonanDiteruskanRequest;
 use App\Models\Utility;
+use App\Models\User;
 use App\Models\PermohonanPetugasUkur;
 use App\Models\RiwayatPermohonanDiTeruskan;
 use DataTables;
@@ -172,7 +173,8 @@ class PengukuranController extends Controller
         $Id = \Crypt::decrypt($id);
         $data = Permohonan::with('petugasUkur.user', 'createdby', 'kecamatan', 'desa')->find($Id);
         $urlTeruskan = route('pengukuran.teruskan', $Id);
-        return view('pengukuran.show', compact('data', 'urlTeruskan'));
+        $urlTolak = route('pengukuran.tolak', $Id);
+        return view('pengukuran.show', compact('data', 'urlTeruskan', 'urlTolak'));
     }
 
 
@@ -273,4 +275,48 @@ class PengukuranController extends Controller
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
 
+
+    public function tolak(Request $request, $id)
+    {
+
+        // Retrieve all records related to the given permohonan_id, ordered by created_at in descending order
+        $records = RiwayatPermohonanDiTeruskan::where('permohonan_id', $id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        if ($records->count() > 1) {
+            // If there are multiple records, use the second latest
+            $secondLatest = $records->skip(1)->first();
+        } else {
+            // If there is only one record, use the latest (or only) one
+            $secondLatest = $records->first();
+        }
+
+
+        $data = Permohonan::find($id);
+        $data->diteruskan_ke = $secondLatest->user_id;
+        $data->status = 'ditolak';
+        $data->alasan_penolakan = $request->alasan_penolakan;
+        $data->update();
+
+
+
+        // Get the user
+        $user = User::find($secondLatest->user_id);
+        // Get the user's roles
+        $roleNames = $user->getRoleNames();
+        // the first role name or concatenated names:
+        $roleName = $roleNames->implode(', ');
+
+        RiwayatPermohonanDiTeruskan::create([
+            'permohonan_id' => $data->id,
+            'user_id' => $secondLatest->user_id,
+            'diteruskan_ke' => $roleName,
+            'alasan_penolakan' => !empty($request->alasan_penolakan) ? $request->alasan_penolakan : null
+        ]);
+
+
+        Utility::auditTrail('tolak', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+    }
 }
