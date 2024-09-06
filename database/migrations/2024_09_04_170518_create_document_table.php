@@ -1,28 +1,55 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace Database\Seeders;
 
-return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('documents', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_dokumen');
-            $table->boolean('is_active')->default(1);
-            $table->timestamps();
-        });
-    }
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use App\Models\Documents;
 
+class DokumenSeeder extends Seeder
+{
     /**
-     * Reverse the migrations.
+     * Run the database seeds.
      */
-    public function down(): void
+    public function run(): void
     {
-        Schema::dropIfExists('documents');
+
+        Documents::create(
+            [
+            'nama_dokumen' => 'Surat Pemberitahuan Pengukuran Bidang Tanah',
+            ],
+        );
+
+        Documents::create(
+            [
+                    'nama_dokumen' => 'Surat Tugas Pengukuran',
+                    ],
+        );
+
+
+        Documents::create(
+            [
+                    'nama_dokumen' => 'Lampiran Surat Tugas Pengukuran',
+                    ],
+        );
+
+        Documents::create(
+            [
+                    'nama_dokumen' => 'Surat Perintah Kerja',
+                    ],
+        );
+
+        Documents::create(
+            [
+                    'nama_dokumen' => 'Dokumen Register Pengukuran',
+                    ],
+        );
+
+        Documents::create(
+            [
+                    'nama_dokumen' => 'Register Setor Berkas',
+                    ],
+        );
+
     }
-};
+}

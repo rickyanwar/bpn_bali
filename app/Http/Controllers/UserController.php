@@ -30,12 +30,12 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        if(\Auth::user()->can('manage invoice')) {
+        if (\Auth::user()->can('manage invoice')) {
 
             $query = User::query();
 
 
-            if(!empty($request->customer)) {
+            if (!empty($request->customer)) {
                 $query->where('customer_id', '=', $request->customer);
             }
 
@@ -128,7 +128,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
 
-        if(\Auth::user()->can('create user')) {
+        if (\Auth::user()->can('create user')) {
             $default_language = DB::table('settings')->select('value')->where('name', 'default_language')->first();
 
 
@@ -138,25 +138,28 @@ class UserController extends Controller
                                    'name' => 'required|max:120',
                                    'email' => 'required|email|unique:users',
                                    'password' => 'required|min:6',
+                                    'role' => 'required|exists:roles,id',
                                ]
             );
-            if($validator->fails()) {
+            if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
                 return redirect()->back()->with('error', $messages->first());
             }
+
+            $role_r = Role::findById($request->role);
             $user               = new User();
             $user['name']       = $request->name;
             $user['email']      = $request->email;
             $psw                = $request->password;
             $user['password']   = Hash::make($request->password);
-            $user['type']       = 'company';
+            $user['type']       = $role_r->name;
             $user['lang']       = !empty($default_language) ? $default_language->value : 'en';
             $user['created_by'] = \Auth::user()->id;
             $user['email_verified_at'] = date('Y-m-d H:i:s');
 
             $user->save();
-            $role_r = Role::findByName('company');
+            $role_r = Role::findById($request->role);
             $user->assignRole($role_r);
 
             // GenerateOfferLetter::defaultOfferLetterRegister($user->id);
@@ -182,7 +185,7 @@ class UserController extends Controller
     {
         $user  = \Auth::user();
         $roles = Role::where('created_by', '=', $user->creatorId())->where('name', '!=', 'client')->get()->pluck('name', 'id');
-        if(\Auth::user()->can('edit user')) {
+        if (\Auth::user()->can('edit user')) {
             $user              = User::findOrFail($id);
             $user->customField = CustomField::getData($user, 'user');
             $customFields      = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'user')->get();
@@ -198,8 +201,8 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
 
-        if(\Auth::user()->can('edit user')) {
-            if(\Auth::user()->type == 'super admin') {
+        if (\Auth::user()->can('edit user')) {
+            if (\Auth::user()->type == 'super admin') {
                 $user = User::findOrFail($id);
                 $validator = \Validator::make(
                     $request->all(),
@@ -208,7 +211,7 @@ class UserController extends Controller
                                        'email' => 'required|email|unique:users,email,' . $id,
                                    ]
                 );
-                if($validator->fails()) {
+                if ($validator->fails()) {
                     $messages = $validator->getMessageBag();
                     return redirect()->back()->with('error', $messages->first());
                 }
@@ -263,22 +266,22 @@ class UserController extends Controller
     public function destroy($id)
     {
 
-        if(\Auth::user()->can('delete user')) {
+        if (\Auth::user()->can('delete user')) {
             $user = User::find($id);
-            if($user) {
-                if(\Auth::user()->type == 'super admin') {
-                    if($user->delete_status == 0) {
+            if ($user) {
+                if (\Auth::user()->type == 'super admin') {
+                    if ($user->delete_status == 0) {
                         $user->delete_status = 1;
                     } else {
                         $user->delete_status = 0;
                     }
                     $user->save();
                 }
-                if(\Auth::user()->type == 'company') {
+                if (\Auth::user()->type == 'company') {
                     $employee = Employee::where(['user_id' => $user->id])->delete();
-                    if($employee) {
+                    if ($employee) {
                         $delete_user = User::where(['id' => $user->id])->delete();
-                        if($delete_user) {
+                        if ($delete_user) {
                             return redirect()->route('users.index')->with('success', __('User successfully deleted .'));
                         } else {
                             return redirect()->back()->with('error', __('Something is wrong.'));
@@ -317,14 +320,14 @@ class UserController extends Controller
                         'email' => 'required|email|unique:users,email,' . $userDetail['id'],
                     ]
         );
-        if($request->hasFile('profile')) {
+        if ($request->hasFile('profile')) {
             $filenameWithExt = $request->file('profile')->getClientOriginalName();
             $filename        = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension       = $request->file('profile')->getClientOriginalExtension();
             $fileNameToStore = $filename . '_' . time() . '.' . $extension;
 
             $settings = Utility::getStorageSetting();
-            if($settings['storage_setting'] == 'local') {
+            if ($settings['storage_setting'] == 'local') {
                 $dir        = 'uploads/avatar/';
             } else {
                 $dir        = 'uploads/avatar';
@@ -332,14 +335,14 @@ class UserController extends Controller
 
             $image_path = $dir . $userDetail['avatar'];
 
-            if(File::exists($image_path)) {
+            if (File::exists($image_path)) {
                 File::delete($image_path);
             }
 
 
             $url = '';
             $path = Utility::upload_file($request, 'profile', $fileNameToStore, $dir, []);
-            if($path['flag'] == 1) {
+            if ($path['flag'] == 1) {
                 $url = $path['url'];
             } else {
                 return redirect()->route('profile', \Auth::user()->id)->with('error', __($path['msg']));
@@ -361,7 +364,7 @@ class UserController extends Controller
 
         }
 
-        if(!empty($request->profile)) {
+        if (!empty($request->profile)) {
             $user['avatar'] = $fileNameToStore;
         }
         $user['name']  = $request['name'];
@@ -378,7 +381,7 @@ class UserController extends Controller
     public function updatePassword(Request $request)
     {
 
-        if(Auth::Check()) {
+        if (Auth::Check()) {
             $request->validate(
                 [
                     'old_password' => 'required',
@@ -389,7 +392,7 @@ class UserController extends Controller
             $objUser          = Auth::user();
             $request_data     = $request->All();
             $current_password = $objUser->password;
-            if(Hash::check($request_data['old_password'], $current_password)) {
+            if (Hash::check($request_data['old_password'], $current_password)) {
                 $user_id            = Auth::User()->id;
                 $obj_user           = User::find($user_id);
                 $obj_user->password = Hash::make($request_data['password']);
@@ -435,7 +438,7 @@ class UserController extends Controller
     public function todo_update($todo_id)
     {
         $user_todo = UserToDo::find($todo_id);
-        if($user_todo->is_complete == 0) {
+        if ($user_todo->is_complete == 0) {
             $user_todo->is_complete = 1;
         } else {
             $user_todo->is_complete = 0;
@@ -456,7 +459,7 @@ class UserController extends Controller
     public function changeMode()
     {
         $usr = \Auth::user();
-        if($usr->mode == 'light') {
+        if ($usr->mode == 'light') {
             $usr->mode      = 'dark';
             $usr->dark_mode = 1;
         } else {
@@ -480,7 +483,7 @@ class UserController extends Controller
         $user       = User::find($user_id);
         $assignPlan = $user->assignPlan($plan_id);
         $plan       = Plan::find($plan_id);
-        if($assignPlan['is_success'] == true && !empty($plan)) {
+        if ($assignPlan['is_success'] == true && !empty($plan)) {
             $orderID = strtoupper(str_replace('.', '', uniqid('', true)));
             Order::create(
                 [
@@ -525,7 +528,7 @@ class UserController extends Controller
                            ]
         );
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             $messages = $validator->getMessageBag();
 
             return redirect()->back()->with('error', $messages->first());
@@ -557,7 +560,7 @@ class UserController extends Controller
             ->select(DB::raw('login_details.*, users.id as user_id , users.name as user_name , users.email as user_email ,users.type as user_type'))
             ->where(['login_details.created_by' => \Auth::user()->id]);
 
-        if(!empty($request->month)) {
+        if (!empty($request->month)) {
             $query->whereMonth('date', date('m', strtotime($request->month)));
             $query->whereYear('date', date('Y', strtotime($request->month)));
         } else {
@@ -565,7 +568,7 @@ class UserController extends Controller
             $query->whereYear('date', date('Y'));
         }
 
-        if(!empty($request->users)) {
+        if (!empty($request->users)) {
             $query->where('user_id', '=', $request->users);
         }
         $userdetails = $query->get();

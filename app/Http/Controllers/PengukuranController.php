@@ -18,6 +18,7 @@ use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\ApiMessage;
 use App\ApiCode;
+use Spatie\Permission\Models\Role;
 
 class PengukuranController extends Controller
 {
@@ -176,7 +177,8 @@ class PengukuranController extends Controller
         $urlTeruskan = route('pengukuran.teruskan', $Id);
         $urlTolak = route('pengukuran.tolak', $Id);
         $dokument = Documents::get();
-        return view('pengukuran.show', compact('data', 'urlTeruskan', 'urlTolak', 'dokument'));
+        $roles = Role::get();
+        return view('pengukuran.show', compact('data', 'urlTeruskan', 'urlTolak', 'dokument', 'roles'));
     }
 
 
@@ -270,6 +272,7 @@ class PengukuranController extends Controller
             'permohonan_id' => $data->id,
             'user_id' => $request->user,
             'diteruskan_ke' => $request->options_select,
+            'status' => 'peroses'
         ]);
 
 

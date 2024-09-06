@@ -22,32 +22,32 @@
                     container.empty(); // Clear the existing list
 
                     roles.forEach(role => {
-                        // Create a section for each role
-                        container.append(`<h2>${role.name}</h2><ul id="role-${role.id}"></ul>`);
-
-                        // Add users within the role
-                        role.users.forEach(user => {
-                            console.log('user', user);
-                            $(`#role-${role.id}`).append(
-
-                                `<div class="col-md-2 ">
-                        <div class="card " style="  border-radius: 20px;border: none;box-shadow: 0 4px 24px 0 rgb(0 0 0 / 10%);">
-                            <div class="card-body ">
-                                <div class="row mx-auto text-center mx-3">
-                                    <div class="col-12">
-                                        <div class="numbers">
-
-                                            <h4 class="title-onqueues mb-2">${user.total_pekerjaan}</h4>
-                                            <h4 class="title-onqueues mb-2">${user.name}</h4>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`
+                        if (role.users.length > 0) { // Check if the role has any users
+                            // Create a section for each role
+                            container.append(
+                                `<h2>${role.name}</h2><div id="role-${role.id}" class="row"></div>`
                             );
-                        });
+
+                            // Add users within the role
+                            role.users.forEach(user => {
+                                $(`#role-${role.id}`).append(
+                                    `<div class="col-md-3">
+                                        <div class="card" style="border-radius: 20px; border: none; box-shadow: 0 4px 24px 0 rgb(0 0 0 / 10%);">
+                                            <div class="card-body">
+                                                <div class="row mx-auto text-center mx-3">
+                                                    <div class="col-12">
+                                                        <div class="numbers">
+                                                            <h4 class="title-onqueues mb-2">${user.total_pekerjaan}</h4>
+                                                            <h4 class="title-onqueues mb-2">${user.name}</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`
+                                );
+                            });
+                        }
                     });
                 },
                 error: function() {
@@ -57,7 +57,7 @@
         }
 
         // Fetch pending jobs by role every 2 seconds
-        //  setInterval(fetchPendingJobsByRole, 2000);
+        // setInterval(fetchPendingJobsByRole, 2000);
 
         // Initial fetch
         fetchPendingJobsByRole();

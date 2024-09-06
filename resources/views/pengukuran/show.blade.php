@@ -114,10 +114,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-
-
                             </div>
-
                             <div class="col-10 my-2" id="dokument_terlampir">
                                 <h6>Dokumen Terlampir</h6>
                                 @foreach ($dokument as $item)
@@ -131,40 +128,34 @@
                                 @endforeach
                             </div>
 
-                            <div class="col-5 mt-2">
+                            <div class="col-10 mt-2">
                                 <div class="form-group">
                                     <h6>Di Teruskan Ke</h6>
-                                    <select class="form-control" id="diteruskan_ke" name="diteruskan_ke">
-                                        <option value="">Pilih Tujuan</option>
-                                        <option value="Petugas Cetak Surat Tugas">Petugas Cetak Surat Tugas</option>
-                                        <option value="Petugas Ukur">Petugas Ukur</option>
-                                        <option value="Admin Pengukuran">Admin Pengukuran</option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="Petugas Gambar">Petugas Gambar</option>
-                                        <option value="Koordinator Wilayah">Koordinator Wilayah</option>
-                                        <option value="Kepala Seksi">Kepala Seksi</option>
+                                    <select class="form-control" id="diteruskan_ke_role" name="diteruskan_ke_role">
+                                        <option value="">Pilih Opsi</option>
+                                        @foreach ($roles as $item)
+                                            <option value="{{ $item->name }}">{{ $item->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="col-5 mt-2">
-                                <div class="form-group">
-                                    <h6>Options</h6>
-                                    <select class="form-control" id="options_select" name="options_select">
-                                        <option value="">Pilih Opsi</option>
-                                    </select>
-                                </div>
-                            </div>
+
 
                             <div class="col-10 mt-2" id="user-selection">
                                 <div class="form-group">
                                     <h6>Pilih Pengguna</h6>
                                     <select class="form-control" id="user" name="user">
-
                                     </select>
                                 </div>
                             </div>
 
+                            @if ($data->status == 'ditolak')
+                                <div class="col-10 mt-2" id="user-selection">
+                                    <h6 class="text-danger">Alasan Penolakan/ Revisi</h6>
+                                    <p>{{ $data->alasan_penolakan }}</p>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -175,7 +166,8 @@
                             class="btn btn-danger ">Tolak</button>
                         <button type="button" style="margin-left: 5px" class="btn btn-primary "
                             id="btn-submit">Teruskan</button>
-
+                        <button type="button" style="margin-left: 5px" class="btn btn-primary "
+                            id="btn-selesai">Selesai</button>
                     </div>
                 </div>
             </div>
@@ -197,64 +189,7 @@
                 }
             });
             // Optional: Log the selected value to the console
-            console.log('Selected Value:', selectedValue);
-            const optionsMap = {
-                "Petugas Cetak Surat Tugas": [
-                    "Surat Tugas Petugas Ukur",
-                    "Surat Tugas Pembantu Ukur",
-                    "Surat Perintah Kerja"
-                ],
-                "Petugas Ukur": [
-                    "Admin Pengukuran"
-                ],
-                "Admin Pengukuran": [
-                    "Koordinator Pengukuran"
-                ],
-                "Admin": [
-                    "Petugas Gambar",
-                    "Koordinator Wilayah",
-                    "Kasi SP"
-                ],
-                "Petugas Gambar": [
-                    "Koordinator Wilayah",
-                    "Petugas Ukur",
-                    "Admin Pengukuran"
-                ],
-                "Koordinator Wilayah": [
-                    "Petugas Gambar",
-                    "Petugas Ukur",
-                    "Koordinator Pengukuran",
-                    "Admin 1",
-                    "Admin 2",
-                    "Admin 3"
-                ],
-                "Kepala Seksi": [
-                    "Koordinator Wilayah",
-                    "Koordinator Pengukuran",
-                    "Admin"
-                ]
-            };
-
-            $('#diteruskan_ke').on('change', function() {
-                const selectedRole = $(this).val();
-                const options = optionsMap[selectedRole] || [];
-
-                // Clear the previous options
-                $('#options_select').empty();
-
-                // Add the default option
-                $('#options_select').append('<option value="">Pilih Opsi</option>');
-
-                // Populate the options based on the selected role
-                options.forEach(function(option) {
-                    $('#options_select').append(`<option value="${option}">${option}</option>`);
-                });
-
-                // Trigger change on options_select to update user-selection
-                $('#options_select').trigger('change');
-            });
-
-            $('#options_select').on('change', function() {
+            $('#diteruskan_ke_role').on('change', function() {
                 const selectedOption = $(this).val();
 
                 if (selectedOption) {
