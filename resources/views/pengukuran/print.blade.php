@@ -4,448 +4,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+    <title>Surat Tugas Pengukuran</title>
     <style>
-        .header-thumb {
-            float: left
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f4eb;
         }
 
-        .pl-15 {
-            padding-left: 15px
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
         }
 
-        .header-thumb img {
-            display: block
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-left: 30px;
+            margin-right: 30px;
+            text-align: center;
+            color: #000000;
         }
 
-        .header-content {
-            margin-left: 210px
+        .header img {
+            max-width: 100px;
+            /* Adjust the size as needed */
+            margin-right: 20px;
         }
 
-        .section-title {
-            font-weight: 800;
-            font-size: 12px;
-            margin-bottom: 3px
-        }
-
-        .mx-3 {
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-
-        /*! CSS Used from: Embedded */
-        .div-border {
-            border: 1px solid #ccc !important;
-            margin-bottom: 8px;
-            padding: 10px;
-        }
-
-        .container-checkbox {
-            display: block;
-            position: relative;
-            padding-left: 32px;
-            margin-bottom: 0px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        .container-checkbox input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
-        }
-
-        .container-checkbox label {
-            font-size: 0.75rem;
-        }
-
-        .checkmark {
-            border: 1px;
-            position: absolute;
-            border-style: groove;
-            border-color: rgb(122, 120, 119);
-            border-width: 0.75px;
-            padding: 1px;
-            top: 0;
-            left: 0;
-            height: 19px;
-            width: 28px;
-            background-color: #eee;
-        }
-
-        .container-checkbox:hover input~.checkmark {
-            background-color: #ccc;
-        }
-
-        .container-checkbox input:checked~.checkmark {
-            background-color: #ccc;
-        }
-
-        .checkmark:after {
-            content: "";
-            position: absolute;
-            display: none;
-        }
-
-        .container-checkbox input:checked~.checkmark:after {
-            display: block;
-        }
-
-        .container-checkbox .checkmark:after {
-            left: 8px;
-            top: 1px;
-            width: 6px;
-            height: 11px;
-            border: solid black;
-            border-width: 0 3px 3px 0;
-            -webkit-transform: rotate(45deg);
-            -ms-transform: rotate(45deg);
-            transform: rotate(45deg);
-        }
-
-        /*! CSS Used from: http://127.0.0.1:8001/css/akura.css */
-        .div-border {
-            border: 3px solid rgb(0, 0, 0) !important;
-            margin-bottom: 8px;
-        }
-
-        hr {
-            border: 0.70 px solid rgb(219, 213, 213) !important;
-        }
-
-        /*! CSS Used from: http://127.0.0.1:8001/css/bootstrap.min.css */
-        *,
-        ::after,
-        ::before {
-            box-sizing: border-box;
-        }
-
-        hr {
-            box-sizing: content-box;
-            height: 0;
-            overflow: visible;
-        }
-
-        h1 {
-            margin-top: 0;
-            margin-bottom: .5rem;
-        }
-
-        p {
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-
-        img {
-            vertical-align: middle;
-            border-style: none;
+        .header p {
+            margin: -10px;
         }
 
         table {
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: inherit;
-        }
-
-        label {
-            display: inline-block;
-            margin-bottom: .5rem;
-        }
-
-        input {
-            margin: 0;
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-        }
-
-        input {
-            overflow: visible;
-        }
-
-        input[type=checkbox] {
-            box-sizing: border-box;
-            padding: 0;
-        }
-
-        fieldset {
-            min-width: 0;
-            padding: 0;
-            margin: 0;
-            border: 0;
-        }
-
-        h1 {
-            margin-bottom: .5rem;
-            font-family: inherit;
-            font-weight: 500;
-            line-height: 1.2;
-            color: inherit;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-        }
-
-        hr {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            border: 0;
-            border-top: 1px solid rgba(0, 0, 0, .1);
-        }
-
-        .img-fluid {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .container-fluid {
             width: 100%;
-            padding-right: 15px;
-            padding-left: 15px;
-            margin-right: auto;
-            margin-left: auto;
+            border-collapse: collapse;
+            /* margin-bottom: 1.5cm; */
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        .signature {
+            margin-top: 2cm;
+            margin-right: 30%;
+            text-align: right;
+        }
+
+
+        .content {
+            margin-left: 15%;
+            margin-right: 7%;
+
         }
 
         .row {
-            display: -ms-flexbox;
             display: flex;
-            -ms-flex-wrap: wrap;
             flex-wrap: wrap;
             margin-right: -15px;
             margin-left: -15px;
+            padding-left: 15%;
+            padding-right: 5%;
         }
 
-        .col-1,
-        .col-12,
-        .col-2,
-        .col-3,
-        .col-4,
-        .col-5,
-        .col-6,
-        .col-8,
-        .col-9 {
-            position: relative;
-            width: 100%;
-            min-height: 1px;
+        .col {
+            flex-basis: 0;
+            flex-grow: 1;
+            max-width: 100%;
             padding-right: 15px;
             padding-left: 15px;
         }
 
+        /* Column sizes (like Bootstrap's col-1 to col-12 system) */
         .col-1 {
-            -ms-flex: 0 0 8.333333%;
-            flex: 0 0 8.333333%;
-            max-width: 8.333333%;
+            flex: 0 0 8.33%;
+            max-width: 8.33%;
         }
 
         .col-2 {
-            -ms-flex: 0 0 16.666667%;
-            flex: 0 0 16.666667%;
-            max-width: 16.666667%;
+            flex: 0 0 16.66%;
+            max-width: 16.66%;
         }
 
         .col-3 {
-            -ms-flex: 0 0 25%;
             flex: 0 0 25%;
             max-width: 25%;
         }
 
         .col-4 {
-            -ms-flex: 0 0 33.333333%;
-            flex: 0 0 33.333333%;
-            max-width: 33.333333%;
+            flex: 0 0 33.33%;
+            max-width: 33.33%;
         }
 
         .col-5 {
-            -ms-flex: 0 0 41.666667%;
-            flex: 0 0 41.666667%;
-            max-width: 41.666667%;
+            flex: 0 0 41.66%;
+            max-width: 41.66%;
         }
 
         .col-6 {
-            -ms-flex: 0 0 50%;
             flex: 0 0 50%;
             max-width: 50%;
         }
 
+        .col-7 {
+            flex: 0 0 58.33%;
+            max-width: 58.33%;
+        }
+
         .col-8 {
-            -ms-flex: 0 0 66.666667%;
-            flex: 0 0 66.666667%;
-            max-width: 66.666667%;
+            flex: 0 0 66.66%;
+            max-width: 66.66%;
         }
 
         .col-9 {
-            -ms-flex: 0 0 75%;
             flex: 0 0 75%;
             max-width: 75%;
         }
 
+        .col-10 {
+            flex: 0 0 83.33%;
+            max-width: 83.33%;
+        }
+
+        .col-11 {
+            flex: 0 0 91.66%;
+            max-width: 91.66%;
+        }
+
         .col-12 {
-            -ms-flex: 0 0 100%;
             flex: 0 0 100%;
             max-width: 100%;
         }
 
-        .d-flex {
-            display: -ms-flexbox !important;
-            display: flex !important;
+        /* Example styling for visualization */
+        .box {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 15px;
         }
 
-        .flex-row {
-            -ms-flex-direction: row !important;
-            flex-direction: row !important;
+        .text-center {
+            text-align: center;
         }
 
-        .justify-content-center {
-            -ms-flex-pack: center !important;
-            justify-content: center !important;
-        }
-
-        .my-0 {
-            margin-top: 0 !important;
-        }
-
-        .mx-0 {
-            margin-right: 0 !important;
-        }
-
-        .mb-0,
-        .my-0 {
-            margin-bottom: 0 !important;
-        }
-
-        .mx-0 {
-            margin-left: 0 !important;
-        }
-
-        .mt-1 {
-            margin-top: .25rem !important;
-        }
-
-        .my-2 {
-            margin-top: .5rem !important;
-        }
-
-        .my-2 {
-            margin-bottom: .5rem !important;
-        }
-
-        .mb-4 {
-            margin-bottom: 1.5rem !important;
-        }
-
-        .pl-1 {
-            padding-left: .25rem !important;
-        }
-
-        .px-2 {
-            padding-right: .5rem !important;
-        }
-
-        .pl-2,
-        .px-2 {
-            padding-left: .5rem !important;
-        }
-
-        .px-3 {
-            padding-right: 1rem !important;
-        }
-
-        .px-3 {
-            padding-left: 1rem !important;
-        }
-
-        .p-5 {
-            padding: 3rem !important;
-        }
-
-        @media print {
-
-            *,
-            ::after,
-            ::before {
-                text-shadow: none !important;
-                box-shadow: none !important;
-            }
-
-            thead {
-                display: table-header-group;
-            }
-
-            img,
-            tr {
-                page-break-inside: avoid;
-            }
-
-            p {
-                orphans: 3;
-                widows: 3;
-            }
-        }
-
-        /*! CSS Used from: Embedded */
-        .cert-mark {
-            border: 1px solid rgb(255, 23, 15);
-        }
-
-        @media all {
-            .page-break {
-                display: block;
-                page-break-before: always;
-            }
-        }
-
-        @media print {
-            .page-break {
-                display: block;
-                page-break-before: always;
-            }
+        .mt-5 {
+            margin-top: 6rem !important;
         }
     </style>
 </head>
 
 <body>
-
-    <style>
-        .header-thumb {
-            float: left
-        }
-
-        .pl-15 {
-            padding-left: 15px
-        }
-
-        .header-thumb img {
-            display: block
-        }
-    </style>
-    <div class="row  justify-content-center mb-2">
-        <div class="col-8 text-center">
-            <div class="card-block px-2">
-                <div class="header-thumb">
-                    <img src="{{ asset('images/logo.png') }}" class="img-fluid mr-3" width="64" height="64"
-                        alt="">
-                </div>
-                <h6 class="mb-0 header-title font-bold">KEMENETRIAN AGRARIA DAN TATA RUANG / BADAN
-                    PERTANAHAN NASIONAL</h6>
-                <h6 class="mb-0 header-title">CONTRACT ORDER REVIEW CHECKLIST</h6>
+    <div class="container">
+        <div class="header">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo">
+            <!-- Replace with the actual logo path -->
+            <div>
+                <h2>KEMENTRIAN AGRARIA DAN TATA RUANG/ BADAN PERTANAHAN NASIONAL<br>
+                    KANTOR PERTANAHAN KABUPATEN TABANAN</h2>
+                <p>JALAN PULAU SERIBU NO. 16 TABANAN Telp. 0361-811573</p>
             </div>
-            <hr>
+        </div>
+
+        <h3 style="text-align: center;">SURAT TUGAS PENGUKURAN</h3>
+        <p style="text-align: center;">Nomor : 1235/St-22.02/VII/2024</p>
+
+        <div class="content">
+            <p>Dengan ini Kepala Kantor menugaskan kepada:</p>
+
+            <p>1. a. Petugas Ukur</p>
+            <table border="1">
+                <tr>
+                    <th>No.</th>
+                    <th>Nama / NIP</th>
+                    <th>Pangkat / Golongan</th>
+                    <th>Jabatan</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>NYOMAN CANDRA WIRA WIDANA</td>
+                    <td>Asisten Surveyor Kadastral</td>
+                    <td>Asisten Surveyor Kadastral</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Ketut Indiana</td>
+                    <td>Pengatur Tingkat I-II/d</td>
+                    <td>Asisten Penata Kadastral Terampil</td>
+                </tr>
+            </table>
+            <div class="row">
+                <div class="col-6">
+
+                </div>
+            </div>
+            <p>b. Dengan tugas ini untuk melaksanakan Pemecahan Bidang <br> Lokasi dan Volume Kegiatan:</p>
+            <ol type="a">
+                <li>Kelurahan : BENGKEL SARI</li>
+                <li>Kecamatan : SELEMADEG BARAT</li>
+                <li>Volume : 4025 m2</li>
+            </ol>
+
+            <p>2. Waktu:</p>
+            <ol type="a">
+                <li>Mulai Tanggal: 03 Juli 2024</li>
+                <li>Sampai Tanggal: 03 Juli 2024</li>
+            </ol>
+
+            <p>3. Biaya dibebankan pada:</p>
+            <ol type="a">
+                <li>DI 305: 20239/2024</li>
+                <li>DI 302: 1304/2024</li>
+            </ol>
+
+            <p>4. Hasil Pelaksanaan Tugas supaya dilaporkan.</p>
+
+            <p>Demikian Surat Tugas ini dibuat untuk dilaksanakan dengan penuh tanggung jawab dan dipergunakan
+                sebagaimana
+                mestinya.</p>
+        </div>
+
+
+        <div class="signature">
+            <p>Dikeluarkan di: TABANAN</p>
+            <p>Pada Tanggal: 2 Juli 2024</p>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <p>Bahwa benar Petugas Ukur telah datang ke lokasi <br> Pada Tanggal 3 Juli 2024</p>
+            </div>
+            <div class="col-6">
+                <p class="text-center">Atas kepala kantor pertahanan <br> Kantor Pertanahan Kabupaten Tabanan <br>
+                    Kepala Seksi Survei dan Pemetaan</p>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-6">
+                <p>Mengetahui <br> Nama Pemohon : NI WAYAN SURIANI</p>
+            </div>
+            <div class="col-6">
+                <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 182736263738272839</p>
+            </div>
         </div>
     </div>
-
 </body>
 
 </html>
