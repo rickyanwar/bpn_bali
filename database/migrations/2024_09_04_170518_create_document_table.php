@@ -1,55 +1,28 @@
 <?php
 
-namespace Database\Seeders;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\Documents;
-
-class DokumenSeeder extends Seeder
-{
+return new class () extends Migration {
     /**
-     * Run the database seeds.
+     * Run the migrations.
      */
-    public function run(): void
+    public function up(): void
     {
-
-        Documents::create(
-            [
-            'nama_dokumen' => 'Surat Pemberitahuan Pengukuran Bidang Tanah',
-            ],
-        );
-
-        Documents::create(
-            [
-                    'nama_dokumen' => 'Surat Tugas Pengukuran',
-                    ],
-        );
-
-
-        Documents::create(
-            [
-                    'nama_dokumen' => 'Lampiran Surat Tugas Pengukuran',
-                    ],
-        );
-
-        Documents::create(
-            [
-                    'nama_dokumen' => 'Surat Perintah Kerja',
-                    ],
-        );
-
-        Documents::create(
-            [
-                    'nama_dokumen' => 'Dokumen Register Pengukuran',
-                    ],
-        );
-
-        Documents::create(
-            [
-                    'nama_dokumen' => 'Register Setor Berkas',
-                    ],
-        );
-
+        Schema::create('documents', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_dokumen');
+            $table->boolean('is_active')->default(1);
+            $table->timestamps();
+        });
     }
-}
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('documents');
+    }
+};

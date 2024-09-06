@@ -48,7 +48,7 @@ class Permohonan extends Model
         //while creating/inserting item into db
         static::creating(function ($item) {
             $item->no_surat = Utility::generateCode($item, 'no_surat', null, 10);
-            $item->status = "Draft";
+            $item->status = "draft";
             $item->created_by = auth()->user()->id;
         });
     }
@@ -64,5 +64,11 @@ class Permohonan extends Model
     public function desa()
     {
         return $this->hasOne(\App\Models\WilayahIndonesia::class, 'nama', 'desa');
+    }
+
+
+    public function riwayat()
+    {
+        return $this->hasMany(RiwayatPermohonanDiTeruskan::class, 'permohonan_id');
     }
 }

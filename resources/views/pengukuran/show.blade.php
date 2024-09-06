@@ -127,18 +127,51 @@
                                     </div>
                                 @endforeach
                             </div>
+                            @if (Auth::user()->id !== $data->diteruskan_ke)
+                                <div class="col-10 my-5">
+                                    <h6>Riwayat Penerusan Dokument</h6>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Di Teruskan Ke</th>
+                                                <th>Dokumen Terlampir</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
 
-                            <div class="col-10 mt-2">
-                                <div class="form-group">
-                                    <h6>Di Teruskan Ke</h6>
-                                    <select class="form-control" id="diteruskan_ke_role" name="diteruskan_ke_role">
-                                        <option value="">Pilih Opsi</option>
-                                        @foreach ($roles as $item)
-                                            <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
+                                            @foreach ($data->riwayat as $index => $riwayat)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>
+                                                        {{ $riwayat->user->name }}
+                                                    </td>
+                                                    @if (!empty($riwayat->dokumen_terlampir))
+                                                        <ul>
+                                                            @foreach ($riwayat->dokumen_terlampir as $item)
+                                                                <li>{{ $item }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
+                            @endif
+                            @if (Auth::user()->id == $data->diteruskan_ke || ($data->status = 'draft'))
+                                <div class="col-10 mt-2">
+                                    <div class="form-group">
+                                        <h6>Di Teruskan Ke</h6>
+                                        <select class="form-control" id="diteruskan_ke_role" name="diteruskan_ke_role">
+                                            <option value="">Pilih Opsi</option>
+                                            @foreach ($roles as $item)
+                                                <option value="{{ $item->name }}">{{ $item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            @endif
 
 
 
@@ -159,15 +192,24 @@
                         </div>
                     </div>
 
+
                     <div class="card-footer d-flex justify-content-end">
                         <a href="{{ route('pengukuran.print', [Crypt::encrypt($data->id)]) }}" class="btn btn-info "
                             style="margin-left: 5px">Print</a>
-                        <button type="button" id="btn-reject" data-url="{{ $urlTolak }}" style="margin-left: 5px"
-                            class="btn btn-danger ">Tolak</button>
-                        <button type="button" style="margin-left: 5px" class="btn btn-primary "
-                            id="btn-submit">Teruskan</button>
-                        <button type="button" style="margin-left: 5px" class="btn btn-primary "
-                            id="btn-selesai">Selesai</button>
+
+
+                        @if ($data->status !== 'draft' && $data->status !== 'selesai')
+                            <button type="button" id="btn-reject" data-url="{{ $urlTolak }}" style="margin-left: 5px"
+                                class="btn btn-danger">Tolak</button>
+                        @endif
+
+                        @if (Auth::user()->id == $data->diteruskan_ke || empty($data->diteruskan_ke))
+                            <button type="button" style="margin-left: 5px" class="btn btn-primary"
+                                id="btn-submit">Teruskan</button>
+                            <button type="button" style="margin-left: 5px" class="btn btn-primary"
+                                id="btn-selesai">Selesai</button>
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -178,8 +220,11 @@
     @include('pengukuran.script')
     <script>
         let data = {!! json_encode($data) !!};
+        var selectedDocuments = data?.dokumen_terlampir ?? [];
+        console.log('selectedDocuments', selectedDocuments)
+
         $(document).ready(function() {
-            var selectedDocuments = data?.dokumen_terlampir ?? [];
+
             // Iterate over each checkbox
             $('#dokument_terlampir .form-check-input').each(function() {
                 var checkbox = $(this);
@@ -188,10 +233,11 @@
                     checkbox.prop('disabled', true); // Disable the checkbox
                 }
             });
+
             // Optional: Log the selected value to the console
             $('#diteruskan_ke_role').on('change', function() {
                 const selectedOption = $(this).val();
-
+                console.log('selectedOption', selectedOption);
                 if (selectedOption) {
                     // Show the user-selection section
                     $('#user-selection').show();
@@ -203,10 +249,9 @@
                             dataType: 'json',
                             delay: 250,
                             data: function(params) {
-                                console.log('Params:', params); // Debug: Log the search term
                                 return {
                                     term: params.term,
-                                    role: selectedOption // Pass the selected option as role
+                                    role: selectedOption
                                 };
                             },
                             processResults: function(response) {
@@ -228,7 +273,7 @@
                             },
                             cache: true
                         },
-                        placeholder: 'Pilih Pengguna',
+                        placeholder: 'Pilih Petugas',
                         allowClear: true
                     });
                 } else {
@@ -240,17 +285,15 @@
             // Initially hide the user-selection section
             $('#user-selection').hide();
 
-
             $(document).on('click', '#btn-submit', function(e) {
                 e.preventDefault();
                 $('.text-danger').remove();
                 $(".form-group").removeClass('has-error has-feedback');
+
                 var url = "{{ $urlTeruskan }}";
                 var form = $('#form-data')[0];
                 var formData = new FormData(form);
                 var findForm = $("#form-data");
-
-
 
                 swal({
                     title: "Anda Yakin?",
@@ -264,7 +307,7 @@
                 }).then(function(isConfirm) {
                     if (isConfirm) {
                         let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
-                            console.log('res')
+                            console.log('res', res);
                             swal({
                                 icon: 'success',
                                 title: res.message,
@@ -273,82 +316,70 @@
                                 window.location.replace(
                                     "{{ route('pengukuran.index') }}");
                             });
-
-                            show_toastr('error', xhr.responseJSON?.message);
-
-                        })
-                        ajaxPost.fail(function(e) {
-                            console.log('e', e);
+                        }).fail(function(xhr) {
+                            console.log('xhr', xhr);
                             swal({
                                 icon: 'warning',
-                                title: e.responseJSON.message,
+                                title: xhr.responseJSON?.message,
                                 showConfirmButton: false,
                             });
-                            if (parseInt(e.status) == 422) {
-                                $.each(e.responseJSON.errors, function(elem, messages) {
+                            if (xhr.status === 422) {
+                                $.each(xhr.responseJSON.errors, function(elem, messages) {
                                     findForm.find('#' + elem).after(
                                         '<p class="text-danger text-sm">' +
                                         messages.join('') + '</p>');
-                                    //ADD HAS FEEDBACK CLASS
-                                    findForm.find('#' + elem).closest(
-                                        '.form-group').addClass(
-                                        "has-error has-feedback");
-
+                                    findForm.find('#' + elem).closest('.form-group')
+                                        .addClass("has-error has-feedback");
                                 });
                             }
-                        })
+                        });
                     }
-                })
-
-            })
+                });
+            });
 
             $(document).on('click', '#btn-reject', function(e) {
                 let url = $(this).data('url');
                 console.log('url', url);
                 const wrapper = document.createElement('div');
                 let swalContent = `
-                <div class="form-group">
-                    <textarea id="alasan_penolakan" class="form-control"></textarea>
-                <div>`;
+            <div class="form-group">
+                <textarea id="alasan_penolakan" class="form-control"></textarea>
+            </div>`;
 
                 wrapper.innerHTML = swalContent;
-
 
                 swal({
                     title: 'Alasan Penolakan',
                     content: wrapper,
-                    showCancelButton: true,
-                    confirmButtonText: 'Submit',
-                    cancelButtonText: 'Cancel',
+                    buttons: {
+                        cancel: 'Cancel',
+                        confirm: 'Submit'
+                    },
                     focusConfirm: false,
-
                 }).then(function(result) {
-
-
-                    let formData = new FormData();
-                    formData.append('alasan_penolakan', $('#alasan_penolakan').val());
-
                     if (result) {
-                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(
-                            function(res) {
+                        let formData = new FormData();
+                        formData.append('alasan_penolakan', $('#alasan_penolakan').val());
 
-                                swal({
-                                    icon: 'success',
-                                    title: res.message,
-                                    showConfirmButton: false,
-                                }).then(function() {
-                                    window.location.reload
-                                });
-
-                                show_toastr('error', xhr.responseJSON?.message);
-
-                            })
+                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
+                            swal({
+                                icon: 'success',
+                                title: res.message,
+                                showConfirmButton: false,
+                            }).then(function() {
+                                window.location.reload();
+                            });
+                        }).fail(function(xhr) {
+                            console.log('xhr', xhr);
+                            swal({
+                                icon: 'warning',
+                                title: xhr.responseJSON?.message,
+                                showConfirmButton: false,
+                            });
+                        });
                     }
-
                 });
-
-            })
-
+            });
         });
     </script>
 @endpush

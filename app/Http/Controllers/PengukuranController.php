@@ -61,11 +61,25 @@ class PengukuranController extends Controller
                 return DataTables::of($query)
 
 
-                ->addColumn('status_badge', function ($data) {
-                    $status = $data->is_active > 0 ? 'bg-danger' : 'bg-success';
-                    return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
-                        . __($data->status) . '</span>';
-                })
+               ->addColumn('status_badge', function ($data) {
+                   $status = '';
+                   switch ($data->status) {
+                       case 'draft':
+                           $status = 'bg-danger';
+                           break;
+                       case 'proses':
+                           $status = 'bg-warning';
+                           break;
+                       case 'selesai':
+                           $status = 'bg-success';
+                           break;
+                       default:
+                           $status = 'bg-secondary'; // Default class if none of the above statuses match
+                           break;
+                   }
+                   return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                       . __($data->status) . '</span>';
+               })
                 ->addColumn('actions', function ($data) {
                     $actions = '';
 
@@ -82,7 +96,7 @@ class PengukuranController extends Controller
                     }
 
                     // Edit Invoice
-                    if (Gate::check('edit invoice')) {
+                    if (Gate::check('edit invoice') && $data->status == 'draft') {
                         $actions .= '<div class="action-btn bg-primary ms-2">
                                         <a href="' . route('pengukuran.edit', [Crypt::encrypt($data->id)]) . '"
                                             class="mx-3 btn btn-sm align-items-center"
@@ -94,7 +108,7 @@ class PengukuranController extends Controller
                     }
 
                     // Delete Invoice
-                    if (Auth::user()->can('delete invoice')) {
+                    if (Auth::user()->can('delete invoice') && $data->status == 'draft') {
                         $actions .= '<div class="action-btn bg-danger ms-2">
                                         <form method="POST" action="' . route('pengukuran.destroy', $data->id) . '" id="delete-form-' . $data->id . '">
                                             ' . csrf_field() . '
@@ -143,7 +157,6 @@ class PengukuranController extends Controller
     {
 
         $request->merge(['jenis_permohonan' => 'pengukuran',
-            'diteruskan_ke' => $request->petugas_ukur[0]
         ]);
 
         $data = Permohonan::create($request->all());
@@ -155,10 +168,10 @@ class PengukuranController extends Controller
             ]);
         }
 
-        RiwayatPermohonanDiTeruskan::create([
-            'permohonan_id' => $data->id,
-            'user_id' => $dataId,
-        ]);
+        // RiwayatPermohonanDiTeruskan::create([
+        //     'permohonan_id' => $data->id,
+        //     'user_id' => $dataId,
+        // ]);
 
 
         //Utility::auditTrail('create', $this->modulName, $data->id, $data->no_surat, auth()->user());
@@ -209,7 +222,7 @@ class PengukuranController extends Controller
     {
         $request->merge([
             'updated_by' => auth()->user()->getId(),
-            'diteruskan_ke' => $request->petugas_ukur[0]
+            // 'diteruskan_ke' => $request->petugas_ukur[0]
         ]);
 
 
@@ -266,12 +279,14 @@ class PengukuranController extends Controller
         $data = Permohonan::find($id);
         $data->diteruskan_ke = $request->user;
         $data->dokumen_terlampir = json_encode($request->dokumen_terlampir);
+        $data->status = 'proses';
         $data->update();
 
         RiwayatPermohonanDiTeruskan::create([
             'permohonan_id' => $data->id,
             'user_id' => $request->user,
-            'diteruskan_ke' => $request->options_select,
+            'diteruskan_ke' => $request->diteruskan_ke_role,
+            'dokumen_terlampir' => json_encode($request->dokumen_terlampir),
             'status' => 'peroses'
         ]);
 
