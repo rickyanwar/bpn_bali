@@ -30,6 +30,7 @@ class PermohonanDiteruskanRequest extends FormRequest
         $rules = [
                  'diteruskan_ke' => 'required',
                  'options_select' => 'required',
+                 'dokumen_terlampir' => 'required',
                  'user' => 'required|exists:users,id'
          ];
 

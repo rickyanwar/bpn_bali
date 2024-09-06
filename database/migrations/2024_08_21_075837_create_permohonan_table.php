@@ -27,6 +27,7 @@ return new class () extends Migration {
             $table->integer('diteruskan_ke')->nullable();
             $table->string('diteruskan_ke_role')->nullable();
             $table->text('note')->nullable();
+            $table->text('dokumen_terlampir')->nullable();
             $table->text('alasan_penolakan')->nullable();
             $table->timestamps();
         });

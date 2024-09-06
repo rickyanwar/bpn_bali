@@ -22,12 +22,14 @@ class Permohonan extends Model
         'luas',
         'jenis_permohonan',
         'diteruskan_ke',
-        'alasan_penolakan'
+        'alasan_penolakan',
+        'dokumen_terlampir',
     ];
 
     protected $casts = [
         'created_at' => 'date:d-m-Y h:i A',
         'updated_at' => 'date:d-m-Y h:i A',
+        'dokumen_terlampir' => 'json'
     ];
 
     public function createdby()

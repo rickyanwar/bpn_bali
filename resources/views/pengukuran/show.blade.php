@@ -98,21 +98,39 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{ $data->petugas_ukur }}
+
                                         @foreach ($data->petugasUkur as $index => $petugas)
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>
-                                                {{ $petugas->user->name }}
-                                            </td>
-                                            <td>
-                                                @foreach ($petugas->user->roles as $role)
-                                                    {{ $role->name }}
-                                                @endforeach
-                                            </td>
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>
+                                                    {{ $petugas->user->name }}
+                                                </td>
+                                                <td>
+                                                    @foreach ($petugas->user->roles as $role)
+                                                        {{ $role->name }}
+                                                    @endforeach
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
+
+
                             </div>
+
+                            <div class="col-10 my-2" id="dokument_terlampir">
+                                <h6>Dokumen Terlampir</h6>
+                                @foreach ($dokument as $item)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="dokumen_terlampir[]"
+                                            value="{{ $item->nama_dokumen }}">
+                                        <label class="form-check-label">
+                                            {{ $item->nama_dokumen }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+
                             <div class="col-5 mt-2">
                                 <div class="form-group">
                                     <h6>Di Teruskan Ke</h6>
@@ -167,8 +185,19 @@
 @push('script-page')
     @include('pengukuran.script')
     <script>
+        let data = {!! json_encode($data) !!};
         $(document).ready(function() {
-
+            var selectedDocuments = data?.dokumen_terlampir ?? [];
+            // Iterate over each checkbox
+            $('#dokument_terlampir .form-check-input').each(function() {
+                var checkbox = $(this);
+                if (selectedDocuments.includes(checkbox.val())) {
+                    checkbox.prop('checked', true); // Check the checkbox
+                    checkbox.prop('disabled', true); // Disable the checkbox
+                }
+            });
+            // Optional: Log the selected value to the console
+            console.log('Selected Value:', selectedValue);
             const optionsMap = {
                 "Petugas Cetak Surat Tugas": [
                     "Surat Tugas Petugas Ukur",

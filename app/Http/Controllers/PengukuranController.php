@@ -8,6 +8,7 @@ use App\Http\Requests\PermohonanRequest;
 use App\Http\Requests\PermohonanDiteruskanRequest;
 use App\Models\Utility;
 use App\Models\User;
+use App\Models\Documents;
 use App\Models\PermohonanPetugasUkur;
 use App\Models\RiwayatPermohonanDiTeruskan;
 use DataTables;
@@ -174,7 +175,8 @@ class PengukuranController extends Controller
         $data = Permohonan::with('petugasUkur.user', 'createdby', 'kecamatan', 'desa')->find($Id);
         $urlTeruskan = route('pengukuran.teruskan', $Id);
         $urlTolak = route('pengukuran.tolak', $Id);
-        return view('pengukuran.show', compact('data', 'urlTeruskan', 'urlTolak'));
+        $dokument = Documents::get();
+        return view('pengukuran.show', compact('data', 'urlTeruskan', 'urlTolak', 'dokument'));
     }
 
 
@@ -261,8 +263,8 @@ class PengukuranController extends Controller
 
         $data = Permohonan::find($id);
         $data->diteruskan_ke = $request->user;
+        $data->dokumen_terlampir = json_encode($request->dokumen_terlampir);
         $data->update();
-
 
         RiwayatPermohonanDiTeruskan::create([
             'permohonan_id' => $data->id,
@@ -292,14 +294,12 @@ class PengukuranController extends Controller
             $secondLatest = $records->first();
         }
 
-
         $data = Permohonan::find($id);
         $data->diteruskan_ke = $secondLatest->user_id;
         $data->status = 'ditolak';
         $data->alasan_penolakan = $request->alasan_penolakan;
+        $data->dokumen_terlampir = $secondLatest->dokumen_terlampir;
         $data->update();
-
-
 
         // Get the user
         $user = User::find($secondLatest->user_id);
