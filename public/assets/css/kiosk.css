@@ -1,0 +1,728 @@
+.title-onqueues{
+    font-family: 'Exo', sans-serif;
+    margin: 0;
+    color: #575962;
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 0.8;
+}
+.title-onqueues-name{
+    margin-top: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #4caa25;
+    margin-bottom: 0px;
+    word-break: normal;
+}
+.card-poli-name{
+    margin-top: 8px;
+    font-weight: bold;
+    font-size: 24px;
+    color: #4caa25;
+    margin-bottom: 0px;
+    word-break: normal;
+}
+.card-stats:hover {
+    background-color: #118015 !important;
+}
+
+.button:hover {
+    background-color: #005bea !important;
+}
+
+.span4 {
+    width: 80px;
+    float: left;
+    margin: 0 8px 10px 8px;
+}
+
+
+.phone {
+    margin-top: 15px;
+    background: #fff;
+}
+
+.tel {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border: 1px solid #9e9e9e;
+    border-radius: 0px;
+}
+
+.num-pad {
+    padding-left: 15px;
+}
+
+
+.num {
+    border: 1px solid #9e9e9e;
+    -webkit-border-radius: 999px;
+    border-radius: 999px;
+    -moz-border-radius: 999px;
+    height: 80px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+}
+
+.num:hover {
+    background-color: #9e9e9e;
+    color: #fff;
+    transition-property: background-color .2s linear 0s;
+    -moz-transition: background-color .2s linear 0s;
+    -webkit-transition: background-color .2s linear 0s;
+    -o-transition: background-color .2s linear 0s;
+}
+
+.txt {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 25px;
+    font-family: 'Exo', sans-serif;
+    line-height: 30px;
+    color: #333;
+}
+
+.my-rounded {
+    border-radius: 2.1rem !important;
+}
+
+.small {
+    font-size: 15px;
+}
+
+.btn {
+    font-weight: bold;
+    -webkit-transition: .1s ease-in background-color;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: 1px;
+}
+
+.btn:hover {
+    transition-property: background-color .2s linear 0s;
+    -moz-transition: background-color .2s linear 0s;
+    -webkit-transition: background-color .2s linear 0s;
+    -o-transition: background-color .2s linear 0s;
+}
+
+.spanicons {
+    width: 72px;
+    float: left;
+    text-align: center;
+    margin-top: 40px;
+    color: #9e9e9e;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.spanicons:hover {
+    color: #3498db;
+    transition-property: color .2s linear 0s;
+    -moz-transition: color .2s linear 0s;
+    -webkit-transition: color .2s linear 0s;
+    -o-transition: color .2s linear 0s;
+}
+
+.active {
+    color: #3498db;
+}
+
+
+
+.slider-btn-left {
+    transform: translate3d(0, 0, 0);
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-color: #31ce36 !important;
+    color: #31ce36 !important;
+    line-height: 60px;
+    text-align: center;
+    top: 50%;
+
+    /* left: -40px; */
+    border-radius: 50%;
+    -webkit-transition-duration: 500ms;
+    transition-duration: 500ms;
+}
+
+.slider-btn-right {
+
+    width: 80px;
+    height: 80px;
+    background-color: #31ce36 !important;
+    color: #31ce36 !important;
+    line-height: 60px;
+    text-align: center;
+    top: 50%;
+    border-radius: 50%;
+    -webkit-transition-duration: 500ms;
+    transition-duration: 500ms;
+}
+
+/* Daftar Klinik */
+
+.num-que {
+    font-size: 4.725rem;
+    font-weight: 800 !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.shadow {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+
+.float {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    bottom: 40px;
+    right: 40px;
+    font-size: 30px;
+    background-color: #31ce36 !important;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+}
+
+
+.float-left {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    bottom: 40px;
+    font-size: 30px;
+    background-color: #31ce36 !important;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+}
+
+
+.float2 {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    bottom: 40px;
+
+    right: 40px;
+    font-size: 30px;
+    background-color: #31ce36 !important;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+}
+
+.float:hover {
+    background-color: #118015 !important;
+}
+
+.bg-primary-success {
+    background: #5dcf38 !important;
+    background: -webkit-linear-gradient(legacy-direction(-45deg), #06418E, #1572E8) !important;
+    background: linear-gradient(-45deg, #2d8211, #5dcf38) !important;
+}
+
+.my-float {
+    margin-top: 22px;
+}
+
+#send {
+    font-size: 50px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 20px;
+    font-family: 'Exo', sans-serif;
+    line-height: 30px;
+    box-shadow: 2px 5px 9px #201e1e70;
+}
+
+#send:hover {
+    background-color: #118015 !important;
+}
+
+
+
+.pd-line::before {
+    position: absolute;
+    height: calc(100%);
+    width: 3px;
+    background: #8795a2;
+    content: '';
+    right: 0;
+}
+
+
+.display-title {
+    font-family: 'Exo', sans-serif;
+    margin: 0;
+    color: #575962;
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 0.8;
+
+}
+
+
+.card-title2 {
+    margin: 0;
+    color: #575962;
+    font-size: 20px;
+    font-weight: 900 !important;
+    line-height: 2.0;
+}
+
+
+
+.card .poli:hover {
+    background-color: #5dcf38 !important;
+    border-radius: 2.1rem !important;
+}
+
+.poli:hover .card-title2 {
+    color: hsl(225, 100%, 99%);
+
+}
+
+.poli:hover .badge-success {
+    background-color: #4c924e;
+}
+
+.poli:hover .text-muted {
+    color: #f5f5f5 !important;
+}
+
+
+.bg-light2 {
+    background-color: #e2e4e6 !important;
+}
+
+.icon-big2 {
+    width: 100%;
+    height: 100%;
+    font-size: 10.2em;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.card-title2 {
+    font-family: 'Exo', sans-serif;
+    margin: 0;
+    color: #ffffff;
+    font-size: 47px;
+    /* font-weight: 400; */
+    line-height: 1.6;
+}
+
+/* preloder css */
+#preloader {
+    background-color: rgba(111, 107, 101, 0.45);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#loader {
+    display: block;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #3d8d23;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+#loader:before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #5dcf38;
+    -webkit-animation: spin 3s linear infinite;
+    animation: spin 3s linear infinite;
+}
+
+#loader:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #7ff558;
+    -webkit-animation: spin 1.5s linear infinite;
+    animation: spin 1.5s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.badge2 {
+    font-family: 'Exo', sans-serif;
+    border-radius: 7px;
+    margin-left: auto;
+    line-height: 1;
+    padding: 6px 10px;
+    vertical-align: middle;
+    font-weight: 500;
+    font-size: 30px;
+    border: 1px solid #ddd;
+}
+
+.my-bg {
+    background-image: url(../slider/background.jpg);
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    color: #fff;
+}
+
+
+/* (1366x768) WXGA Display */
+@media screen and (max-width: 1366px),
+screen and (max-height: 768px) {
+    .float2 {
+        top: 65%;
+    }
+
+    .txt {
+        font-size: 60px;
+        font-weight: 500;
+        text-align: center;
+        margin-top: 41px;
+        font-family: 'Exo', sans-serif;
+        line-height: 30px;
+        color: #333;
+    }
+
+    .span4 {
+        width: 100px;
+        float: left;
+        margin: 0 8px 17px 18px;
+    }
+
+    .num {
+        border: 2px solid #9e9e9e;
+        -webkit-border-radius: 999px;
+        border-radius: 999px;
+        -moz-border-radius: 999px;
+        height: 100px;
+        background-color: #fff;
+        color: #333;
+        cursor: pointer;
+        box-shadow: 2px 5px 9px #201e1e70;
+    }
+
+    #poli .col-md-6 .card-title2 {
+        margin: 0;
+        color: #575962;
+        font-size: 32px;
+        font-weight: 900 !important;
+        line-height: 2.0;
+    }
+
+    #poli .col-md-6 .badge {
+        border-radius: 7px;
+        margin-left: auto;
+        line-height: 1;
+        padding: 6px 10px;
+        vertical-align: middle;
+        font-weight: 1000;
+        font-size: 20px;
+        border: 1px solid #ddd;
+
+    }
+
+    #poli small {
+        font-size: 25px;
+    }
+}
+
+/* (1280x1024) SXGA Display */
+@media screen and (max-width: 1280px) {
+    .float2 {
+        top: 79%;
+    }
+
+    .txt {
+        font-size: 60px;
+        font-weight: 400;
+        text-align: center;
+        margin-top: 41px;
+        font-family: 'Exo', sans-serif;
+        line-height: 30px;
+        color: #333;
+    }
+
+    .span4 {
+        width: 105px;
+        float: left;
+        margin: 0 24px 7px 0px;
+    }
+
+    .num {
+        border: 2px solid #9e9e9e;
+        -webkit-border-radius: 999px;
+        border-radius: 999px;
+        -moz-border-radius: 999px;
+        height: 105px;
+        background-color: #fff;
+        color: #333;
+        cursor: pointer;
+    }
+
+    #poli .col-md-6 .card-title2 {
+        margin: 0;
+        color: #575962;
+        font-size: 40px;
+        font-weight: 900 !important;
+        line-height: 2.0;
+    }
+
+    #poli .col-md-6 .badge {
+        border-radius: 7px;
+        margin-left: auto;
+        line-height: 1;
+        padding: 6px 10px;
+        vertical-align: middle;
+        font-weight: 1000;
+        font-size: 24px;
+        border: 1px solid #ddd;
+
+    }
+
+    #poli small {
+        font-size: 25px;
+    }
+}
+.badge-poli{
+    background-color: #29302a !important;
+}
+.float-red{
+    background-color: #e30000 !important;
+}
+/* (1920x1080) Full HD Display */
+@media screen and (min-width: 1920px) {
+    .float2 {
+        top: 80%;
+    }
+
+    .txt {
+        font-size: 68px;
+        font-weight: 400;
+        text-align: center;
+        margin-top: 53px;
+        font-family: 'Exo', sans-serif;
+        line-height: 30px;
+        color: #333;
+    }
+
+    .span4 {
+        width: 149px;
+        float: left;
+        margin: 0 65px 12px 9px;
+    }
+
+    .num {
+        border: 4px solid #9e9e9e;
+        -webkit-border-radius: 999px;
+        border-radius: 999px;
+        -moz-border-radius: 999px;
+        height: 142px;
+        background-color: #fff;
+        color: #333;
+        cursor: pointer;
+    }
+
+    #poli .col-md-6 .card-title2 {
+        margin: 0;
+        color: #575962;
+        font-size: 45px;
+        font-weight: 900 !important;
+        line-height: 2.0;
+    }
+
+    #poli .col-md-6 .badge {
+        border-radius: 7px;
+        margin-left: auto;
+        line-height: 1;
+        padding: 6px 10px;
+        vertical-align: middle;
+        font-weight: 1000;
+        font-size: 25px;
+        border: 1px solid #ddd;
+
+    }
+
+    #poli small {
+        font-size: 25px;
+    }
+}
+
+
+/*  Start Display Antrian*/
+
+.blink_me {
+    animation: blinker 3s linear infinite;
+}
+
+@keyframes blinker {
+    80% {
+        opacity: 0;
+    }
+}
+
+.antrian-no {
+    color: rgb(120 111 111);
+    font-family: 'Exo', sans-serif;
+    font-size: 20px;
+
+}
+.antrian-no-2 {
+    color: rgb(120 111 111);
+    font-family: 'Exo', sans-serif;
+    font-size: 14px;
+
+}
+
+.no-antrian {
+    font-family: 'Exo', sans-serif;
+    font-size: 80px;
+    color: #19431b;
+    font-weight: bold;
+    line-height: 1.5;
+}
+.no-antrian-2 {
+    font-family: 'Exo', sans-serif;
+    font-size: 71px;
+    color: #343a40;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+.nama-dilayani {
+    font-family: 'Exo', sans-serif;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nama-loket {
+    font-size: 22px;
+    color: rgb(120 111 111);
+    line-height: 1.5;
+    font-family: 'Exo', sans-serif;
+}
+.nama-loket-2 {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 18px;
+    color: rgb(120 111 111);
+    line-height: 1.5;
+    font-family: 'Exo', sans-serif;
+}
+.dont-overflow{
+
+    overflow-x: auto; /* Use horizontal scroller if needed */
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+    white-space : normal;
+}
+
+.display-padding {
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-top: 15px;
+}
+
+.red-color-kiosk{
+    color: red;
+}
+
+/*  End Display Antrian*/
+@media print {
+    body {
+        background: #e0e0e0;
+        font-family: monospace;
+    }
+
+    body.print-area {
+        width: 50mm;
+        text-align: center;
+    }
+
+    body.print-area {
+        padding: 2mm;
+    }
+
+    .txt-left {
+        text-align: left;
+    }
+
+    .txt-center {
+        text-align: center;
+    }
+
+    .txt-right {
+        text-align: right;
+    }
+
+}

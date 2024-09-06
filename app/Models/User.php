@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Permohonan;
 
 class User extends Authenticatable
 {
@@ -42,6 +43,8 @@ class User extends Authenticatable
         'Active',
         'Deactivate'
     ];
+
+    protected $appends = ['total_pekerjaan'];
     /**
      * Get the attributes that should be cast.
      *
@@ -58,5 +61,17 @@ class User extends Authenticatable
     public function getId()
     {
         return $this->id;
+    }
+    public function permohonansAssigned()
+    {
+        return $this->hasMany(Permohonan::class, 'diteruskan_ke');
+    }
+
+    /**
+     * Get the count of pending jobs for the user (where status != 'selesai')
+     */
+    public function getTotalPekerjaanAttribute()
+    {
+        return $this->permohonansAssigned()->where('status', '!=', 'selesai')->count();
     }
 }

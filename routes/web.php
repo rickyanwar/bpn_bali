@@ -7,10 +7,16 @@ use App\Http\Controllers\PenggabunganController;
 use App\Http\Controllers\PemecahanController;
 use App\Http\Controllers\PengukuranController;
 use App\Http\Controllers\PenataanBatasController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return redirect('/login');
 });
+
+
+
+Route::get('display/', [DashboardController::class, 'display'])->name('dashboard.display');
+Route::get('display/get-list', [DashboardController::class, 'getListdisplay'])->name('dashboard.get.list');
 
 
 // Group routes that need authentication
