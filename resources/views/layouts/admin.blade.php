@@ -6,7 +6,7 @@
     $setting = \App\Models\Utility::colorset();
     $company_logo = \App\Models\Utility::GetLogo();
     $mode_setting = \App\Models\Utility::mode_layout();
-    $color = !empty($setting['color']) ? $setting['color'] : 'theme-3';
+    $color = !empty($setting['color']) ? $setting['color'] : 'theme-4';
     $SITE_RTL = Utility::getValByName('SITE_RTL');
     $lang = \App::getLocale('lang');
     if ($lang == 'ar' || $lang == 'he') {
@@ -81,27 +81,16 @@
     <link rel="stylesheet" href="{{ asset('assets/css/custom-style-dataTables.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    <!--bootstrap switch-->
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/bootstrap-switch-button.min.css') }}">
 
     <!-- vendor css -->
-    @if ($SITE_RTL == 'on')
-        <link rel="stylesheet" href="{{ asset('assets/css/style-rtl.css') }}">
-    @endif
-
-    @if ($setting['cust_darklayout'] == 'on')
-        <link rel="stylesheet" href="{{ asset('assets/css/style-dark.css') }}" id="main-style">
-    @else
-        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style">
-    @endif
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style">
 
 
     <link rel="stylesheet" href="{{ asset('assets/css/customizer.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
-    @if ($setting['cust_darklayout'] == 'on')
-        <link rel="stylesheet" href="{{ asset('css/custom-dark.css') }}">
-    @endif
+
 
     @stack('css-page')
 </head>

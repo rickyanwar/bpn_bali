@@ -54,15 +54,13 @@
                         <i class="ti ti-user text-dark"></i><span>{{ __('Profile') }}</span>
                     </a>
 
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();"
-                        class="dropdown-item">
-                        <i class="ti ti-power text-dark"></i><span>{{ __('Logout') }}</span>
-                    </a>
 
-                    <form id="frm-logout" action="" method="POST" class="d-none">
+                    <form action="{{ route('logout') }}" method="POST">
                         {{ csrf_field() }}
+                        <button href="#" class="dropdown-item">
+                            <i class="ti ti-power text-dark"></i><span>{{ __('Logout') }}</span>
+                        </button>
                     </form>
-
                 </div>
             </li>
 

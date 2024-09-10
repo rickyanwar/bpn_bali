@@ -9,7 +9,7 @@
     $company_favicon = Utility::getValByName('company_favicon');
     $setting = \App\Models\Utility::colorset();
     $mode_setting = \App\Models\Utility::mode_layout();
-    $color = !empty($setting['color']) ? $setting['color'] : 'theme-3';
+    $color = !empty($setting['color']) ? $setting['color'] : 'theme-1';
     $company_logo = \App\Models\Utility::GetLogo();
     $SITE_RTL = isset($setting['SITE_RTL']) ? $setting['SITE_RTL'] : 'off';
     $lang = \App::getLocale('lang');
@@ -63,41 +63,11 @@
 
 </head>
 
-<body>
+<body class="theme-4">
     <div class="auth-wrapper auth-v3">
         <div class="bg-auth-side bg-primary"></div>
         <div class="auth-content">
-            <nav class="navbar navbar-expand-md navbar-light default">
-                <div class="container-fluid pe-2">
-                    <a class="navbar-brand" href="#">
-                        {{--                    <img src="{{ asset('assets/images/logo-dark.png') }}" alt="logo"/> --}}
-                        {{--  @if ($mode_setting['cust_darklayout'] && $mode_setting['cust_darklayout'] == 'on')
-                            <img src="{{ $logo . '/' . (isset($company_logos) && !empty($company_logos) ? $company_logos : 'logo-dark.png') }}"
-                                alt="{{ config('app.name', 'ERPGo-SaaS') }}" class="logo">
-                        @else
-                            <img src="{{ $logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png') }}"
-                                alt="{{ config('app.name', 'ERPGo-SaaS') }}" class="logo">
-                        @endif  --}}
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarTogglerDemo01" style="flex-grow: 0;">
-                        <ul class="navbar-nav align-items-center ms-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                {{--  @include('landingpage::layouts.buttons')  --}}
-                            </li>
 
-                        </ul>
-
-                        <ul class="navbar-nav align-items-center ms-auto mb-2 mb-lg-0">
-                            @yield('auth-topbar')
-                        </ul>
-                    </div>
-                </div>
-            </nav>
             <div class="card">
                 <div class="row align-items-center text-start">
                     <div class="col-xl-6">

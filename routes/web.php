@@ -9,9 +9,11 @@ use App\Http\Controllers\PengukuranController;
 use App\Http\Controllers\PenataanBatasController;
 use App\Http\Controllers\DashboardController;
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+// Route::get('/', function () {
+//     return redirect('/login');
+// });
+
+Auth::routes();
 
 
 
@@ -20,7 +22,7 @@ Route::get('display/get-list', [DashboardController::class, 'getListdisplay'])->
 
 
 // Group routes that need authentication
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:api','auth:web'])->group(function () {
 
 
     Route::resource('users', UserController::class);
@@ -55,5 +57,3 @@ Route::middleware(['auth'])->group(function () {
     Route::any('user-reset-password/{id}', [UserController::class, 'userPassword'])->name('users.reset');
     Route::post('user-reset-password/{id}', [UserController::class, 'userPasswordReset'])->name('user.password.update');
 });
-
-Auth::routes();

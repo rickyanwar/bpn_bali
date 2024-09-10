@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,7 +13,24 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+
+
+        RedirectIfAuthenticated::redirectUsing(function ($request) {
+            return route('users.index');
+        });
+
+
+        $middleware->use([
+            // Illuminate\Auth\Middleware\RedirectIfAuthenticated::class,
+               // \Illuminate\Http\Middleware\TrustHosts::class,
+               \Illuminate\Http\Middleware\TrustProxies::class,
+               \Illuminate\Http\Middleware\HandleCors::class,
+               \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
+               \Illuminate\Http\Middleware\ValidatePostSize::class,
+               \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
+               \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+           ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
@@ -20,7 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Illuminate\Validation\ValidationException$e, $request) {
             if ($request->is('api/*')) {
                 $errorsMsg = '';
-                foreach($e->errors() as $key => $value) {
+                foreach ($e->errors() as $key => $value) {
                     if ($key === array_key_first($e->errors())) {
                         $errorsMsg .= $value[0];
                     }

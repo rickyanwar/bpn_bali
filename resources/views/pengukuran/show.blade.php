@@ -198,7 +198,7 @@
                             style="margin-left: 5px">Print</a>
 
 
-                        @if ($data->status !== 'draft' && $data->status !== 'selesai')
+                        @if ($data->status !== 'draft' && $data->status !== 'selesai' && $data->status !== 'ditolak')
                             <button type="button" id="btn-reject" data-url="{{ $urlTolak }}" style="margin-left: 5px"
                                 class="btn btn-danger">Tolak</button>
                         @endif
