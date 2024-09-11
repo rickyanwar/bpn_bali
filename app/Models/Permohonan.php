@@ -13,14 +13,15 @@ class Permohonan extends Model
     protected $fillable = [
         'di_305',
         'di_302',
-        'tanggal_pengukuran',
+        'tanggal_mulai_pengukuran',
+        'tanggal_berakhir_pengukuran',
         'no_surat',
         'nama_pemohon',
         'no_berkas',
         'kecamatan',
         'desa',
         'luas',
-        'jenis_permohonan',
+        'jenis_kegiatan',
         'diteruskan_ke',
         'alasan_penolakan',
         'dokumen_terlampir',
@@ -47,7 +48,7 @@ class Permohonan extends Model
         parent::boot();
         //while creating/inserting item into db
         static::creating(function ($item) {
-            $item->no_surat = Utility::generateCode($item, 'no_surat', null, 10);
+            // $item->no_surat = Utility::generateCode($item, 'no_surat', null, 10);
             $item->status = "draft";
             $item->created_by = auth()->user()->id;
         });

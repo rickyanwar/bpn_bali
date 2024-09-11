@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Permohonan;
 use Illuminate\Http\Request;
+use App\Models\Permohonan;
 use App\Http\Requests\PermohonanRequest;
 use App\Http\Requests\PermohonanDiteruskanRequest;
 use App\Models\Utility;
+use App\Models\User;
+use App\Models\Documents;
 use App\Models\PermohonanPetugasUkur;
 use App\Models\RiwayatPermohonanDiTeruskan;
 use DataTables;
@@ -16,37 +18,33 @@ use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\ApiMessage;
 use App\ApiCode;
+use Spatie\Permission\Models\Role;
 
-class PenggabunganController extends Controller
+class PermohonanController extends Controller
 {
-    protected $modulName = 'Penggabungan';
+    protected $modulName = 'Pengukuran';
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        if (\Auth::user()->can('manage invoice')) {
+        if (\Auth::user()->can('show permohonan')) {
 
             $query = Permohonan::query();
             $query->with('createdby');
-            $query->where('jenis_permohonan', 'penggabungan');
-
-
             // Get the currently authenticated user's ID
             $currentUserId = Auth::id();
 
 
-
             $query = Permohonan::with('createdby')
-                ->where('jenis_permohonan', 'penggabungan')
+                // ->where('jenis_permohonan', 'permohonan')
                 ->where(function ($q) use ($currentUserId) {
                     $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
-                      ->orWhere('created_by', $currentUserId) // Allow creator to see the data
-                      ->orWhereHas('petugasUkur', function ($q) use ($currentUserId) {
-                          $q->where('user_id', $currentUserId);
-                      });
+                      ->orWhere('created_by', $currentUserId);
+                    //   ->orWhereHas('petugasUkur', function ($q) use ($currentUserId) {
+                    //       $q->where('petugas_ukur', $currentUserId);
+                    //   });
                 });
-
 
 
 
@@ -58,18 +56,32 @@ class PenggabunganController extends Controller
                 return DataTables::of($query)
 
 
-                ->addColumn('status_badge', function ($data) {
-                    $status = $data->is_active > 0 ? 'bg-danger' : 'bg-success';
-                    return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
-                        . __($data->status) . '</span>';
-                })
+               ->addColumn('status_badge', function ($data) {
+                   $status = '';
+                   switch ($data->status) {
+                       case 'draft':
+                           $status = 'bg-danger';
+                           break;
+                       case 'proses':
+                           $status = 'bg-warning';
+                           break;
+                       case 'selesai':
+                           $status = 'bg-success';
+                           break;
+                       default:
+                           $status = 'bg-secondary'; // Default class if none of the above statuses match
+                           break;
+                   }
+                   return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                       . __($data->status) . '</span>';
+               })
                 ->addColumn('actions', function ($data) {
                     $actions = '';
 
                     // Show Invoice
-                    if (Gate::check('show invoice')) {
+                    if (Gate::check('show permohonan')) {
                         $actions .= '<div class="action-btn bg-info ms-2">
-                                        <a href="' . route('penggabungan.show', [Crypt::encrypt($data->id)]) . '"
+                                        <a href="' . route('permohonan.show', [Crypt::encrypt($data->id)]) . '"
                                             class="mx-3 btn btn-sm align-items-center"
                                             data-bs-toggle="tooltip" title="' . __('Show') . '"
                                             data-original-title="' . __('Detail') . '">
@@ -79,9 +91,9 @@ class PenggabunganController extends Controller
                     }
 
                     // Edit Invoice
-                    if (Gate::check('edit invoice')) {
+                    if (Gate::check('show permohonan') && $data->status == 'draft') {
                         $actions .= '<div class="action-btn bg-primary ms-2">
-                                        <a href="' . route('penggabungan.edit', [Crypt::encrypt($data->id)]) . '"
+                                        <a href="' . route('permohonan.edit', [Crypt::encrypt($data->id)]) . '"
                                             class="mx-3 btn btn-sm align-items-center"
                                             data-bs-toggle="tooltip" title="' . __('Edit') . '"
                                             data-original-title="' . __('Edit') . '">
@@ -91,9 +103,9 @@ class PenggabunganController extends Controller
                     }
 
                     // Delete Invoice
-                    if (Auth::user()->can('delete invoice')) {
+                    if (Auth::user()->can('show permohonan') && $data->status == 'draft') {
                         $actions .= '<div class="action-btn bg-danger ms-2">
-                                        <form method="POST" action="' . route('penggabungan.destroy', $data->id) . '" id="delete-form-' . $data->id . '">
+                                        <form method="POST" action="' . route('permohonan.destroy', $data->id) . '" id="delete-form-' . $data->id . '">
                                             ' . csrf_field() . '
                                             ' . method_field('DELETE') . '
                                             <a href="#"
@@ -118,7 +130,7 @@ class PenggabunganController extends Controller
 
             }
 
-            return view('penggabungan.index');
+            return view('permohonan.index');
         } else {
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
@@ -129,8 +141,8 @@ class PenggabunganController extends Controller
      */
     public function create()
     {
-        $url = route('penggabungan.store');
-        return view('penggabungan.create', compact('url'));
+        $url = route('permohonan.store');
+        return view('permohonan.create', compact('url'));
     }
 
     /**
@@ -139,23 +151,21 @@ class PenggabunganController extends Controller
     public function store(PermohonanRequest $request)
     {
 
-        $request->merge(['jenis_permohonan' => 'penggabungan',
-            'diteruskan_ke' => $request->petugas_ukur[0]
-        ]);
 
         $data = Permohonan::create($request->all());
 
-        foreach ($request->petugas_ukur as $dataId) {
+        foreach ($request->petugas_ukur as $petugas) {
             PermohonanPetugasUkur::create([
                 'permohonan_id' => $data->id,
-                'user_id' => $dataId,
+                'pendamping' => $petugas['pendamping'],
+                'petugas_ukur' => $petugas['petugas_ukur']
             ]);
         }
 
-        RiwayatPermohonanDiTeruskan::create([
-            'permohonan_id' => $data->id,
-            'user_id' => $dataId,
-        ]);
+        // RiwayatPermohonanDiTeruskan::create([
+        //     'permohonan_id' => $data->id,
+        //     'user_id' => $dataId,
+        // ]);
 
 
         //Utility::auditTrail('create', $this->modulName, $data->id, $data->no_surat, auth()->user());
@@ -170,11 +180,12 @@ class PenggabunganController extends Controller
     {
 
         $Id = \Crypt::decrypt($id);
-        $data = Permohonan::with('petugasUkur.user', 'createdby', 'kecamatan', 'desa')->find($Id);
-        $urlTeruskan = route('penggabungan.teruskan', $Id);
-        $urlTolak = route('penggabungan.tolak', $Id);
-
-        return view('penggabungan.show', compact('data', 'urlTeruskan', 'urlTolak'));
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.pendamping', 'createdby', 'kecamatan', 'desa')->find($Id);
+        $urlTeruskan = route('permohonan.teruskan', $Id);
+        $urlTolak = route('permohonan.tolak', $Id);
+        $dokument = Documents::get();
+        $roles = Role::get();
+        return view('permohonan.show', compact('data', 'urlTeruskan', 'urlTolak', 'dokument', 'roles'));
     }
 
 
@@ -183,8 +194,19 @@ class PenggabunganController extends Controller
 
         $Id = \Crypt::decrypt($id);
         $data = Permohonan::with('petugasUkur.user', 'createdby', 'kecamatan', 'desa')->find($Id);
-        return view('penggabungan.print', compact('data'));
+        return view('print.pemberitahuan', compact('data'));
     }
+
+
+
+    public function printPemberitahuan(string $id)
+    {
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
+
+        return view('print.pemberitahuan', compact('data'));
+
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -193,8 +215,8 @@ class PenggabunganController extends Controller
 
         $Id = \Crypt::decrypt($id);
         $data = Permohonan::with('petugasUkur.user')->find($Id);
-        $url = route('penggabungan.update', $Id);
-        return view('penggabungan.edit', compact('data', 'url', ));
+        $url = route('permohonan.update', $Id);
+        return view('permohonan.edit', compact('data', 'url', ));
 
     }
 
@@ -205,7 +227,7 @@ class PenggabunganController extends Controller
     {
         $request->merge([
             'updated_by' => auth()->user()->getId(),
-            'diteruskan_ke' => $request->petugas_ukur[0]
+            // 'diteruskan_ke' => $request->petugas_ukur[0]
         ]);
 
 
@@ -261,19 +283,23 @@ class PenggabunganController extends Controller
 
         $data = Permohonan::find($id);
         $data->diteruskan_ke = $request->user;
+        $data->dokumen_terlampir = json_encode($request->dokumen_terlampir);
+        $data->status = 'proses';
         $data->update();
-
 
         RiwayatPermohonanDiTeruskan::create([
             'permohonan_id' => $data->id,
             'user_id' => $request->user,
-            'diteruskan_ke' => $request->options_select,
+            'diteruskan_ke' => $request->diteruskan_ke_role,
+            'dokumen_terlampir' => json_encode($request->dokumen_terlampir),
+            'status' => 'peroses'
         ]);
 
 
         Utility::auditTrail('diteruskan', $this->modulName, $data->id, $data->no_surat, auth()->user());
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
+
 
     public function tolak(Request $request, $id)
     {
@@ -291,14 +317,12 @@ class PenggabunganController extends Controller
             $secondLatest = $records->first();
         }
 
-
         $data = Permohonan::find($id);
         $data->diteruskan_ke = $secondLatest->user_id;
         $data->status = 'ditolak';
         $data->alasan_penolakan = $request->alasan_penolakan;
+        $data->dokumen_terlampir = $secondLatest->dokumen_terlampir;
         $data->update();
-
-
 
         // Get the user
         $user = User::find($secondLatest->user_id);
@@ -318,6 +342,4 @@ class PenggabunganController extends Controller
         Utility::auditTrail('tolak', $this->modulName, $data->id, $data->no_surat, auth()->user());
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
-
-
 }

@@ -16,8 +16,8 @@ return new class () extends Migration {
             $table->foreignId('permohonan_id')
                          ->constrained('permohonan')
                          ->onDelete('cascade');
-
-            $table->integer('user_id');
+            $table->integer('petugas_ukur');
+            $table->integer('pendamping');
             $table->timestamps();
         });
     }

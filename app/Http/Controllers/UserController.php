@@ -30,7 +30,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        if (\Auth::user()->can('manage invoice')) {
+        if (\Auth::user()->can('manage user')) {
 
             $query = User::query();
 
@@ -56,8 +56,8 @@ class UserController extends Controller
                 ->addColumn('actions', function ($user) {
                     $actions = '';
 
-                    // Show Invoice
-                    if (Gate::check('show invoice')) {
+                    // Show user
+                    if (Gate::check('show user')) {
                         $actions .= '<div class="action-btn bg-info ms-2">
                                         <a href="' . route('users.show', [Crypt::encrypt($user->id)]) . '"
                                             class="mx-3 btn btn-sm align-items-center"
@@ -68,8 +68,8 @@ class UserController extends Controller
                                     </div>';
                     }
 
-                    // Edit Invoice
-                    if (Gate::check('edit invoice')) {
+                    // Edit user
+                    if (Gate::check('edit user')) {
                         $actions .= '<div class="action-btn bg-primary ms-2">
                                         <a href="' . route('users.edit', [Crypt::encrypt($user->id)]) . '"
                                             class="mx-3 btn btn-sm align-items-center"
@@ -80,8 +80,8 @@ class UserController extends Controller
                                     </div>';
                     }
 
-                    // Delete Invoice
-                    if (Auth::user()->can('delete invoice')) {
+                    // Delete user
+                    if (Auth::user()->can('delete user')) {
                         $actions .= '<div class="action-btn bg-danger ms-2">
                                         <form method="POST" action="' . route('users.destroy', $user->id) . '" id="delete-form-' . $user->id . '">
                                             ' . csrf_field() . '

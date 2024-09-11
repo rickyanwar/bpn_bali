@@ -95,32 +95,12 @@
                 <ul class="dash-submenu">
                     @can('manage user')
                         <li
-                            class="dash-item {{ Request::route()->getName() == 'penggabungan.index' || Request::route()->getName() == 'penggabungan.create' || Request::route()->getName() == 'penggabungan.edit' || Request::route()->getName() == 'user.userlog' ? ' active' : '' }}">
-                            <a class="dash-link" href="{{ route('penggabungan.index') }}">
-                                {{ __('Penggabungan') }}</a>
+                            class="dash-item {{ Request::route()->getName() == 'permohonan.index' || Request::route()->getName() == 'permohonan.create' || Request::route()->getName() == 'permohonan.edit' || Request::route()->getName() == 'user.userlog' ? ' active' : '' }}">
+                            <a class="dash-link" href="{{ route('permohonan.index') }}">
+                                {{ __('Permohonan') }}</a>
                         </li>
                     @endcan
-                    @can('manage user')
-                        <li
-                            class="dash-item {{ Request::route()->getName() == 'pemecahan.index' || Request::route()->getName() == 'pemecahan.create' || Request::route()->getName() == 'pemecahan.edit' || Request::route()->getName() == 'user.userlog' ? ' active' : '' }}">
-                            <a class="dash-link" href="{{ route('pemecahan.index') }}">
-                                {{ __('Pemecahan') }}</a>
-                        </li>
-                    @endcan
-                    @can('manage user')
-                        <li
-                            class="dash-item {{ Request::route()->getName() == 'pengukuran.index' || Request::route()->getName() == 'pengukuran.create' || Request::route()->getName() == 'pengukuran.edit' || Request::route()->getName() == 'user.userlog' ? ' active' : '' }}">
-                            <a class="dash-link" href="{{ route('pengukuran.index') }}">
-                                {{ __('Pengukuran') }}</a>
-                        </li>
-                    @endcan
-                    @can('manage user')
-                        <li
-                            class="dash-item {{ Request::route()->getName() == 'penataan_batas.index' || Request::route()->getName() == 'penataan_batas.create' || Request::route()->getName() == 'penataan_batas.edit' || Request::route()->getName() == 'user.userlog' ? ' active' : '' }}">
-                            <a class="dash-link" href="{{ route('penataan_batas.index') }}">
-                                {{ __('Penataan Batas') }}</a>
-                        </li>
-                    @endcan
+
                     {{--  @can('manage client')
                     <li
                         class="dash-item {{ Request::route()->getName() == 'clients.index' || Request::segment(1) == 'clients' || Request::route()->getName() == 'clients.edit' ? ' active' : '' }}">

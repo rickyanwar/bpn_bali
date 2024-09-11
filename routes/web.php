@@ -6,7 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PenggabunganController;
 use App\Http\Controllers\PemecahanController;
 use App\Http\Controllers\PengukuranController;
-use App\Http\Controllers\PenataanBatasController;
+use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\DashboardController;
 
 // Route::get('/', function () {
@@ -29,28 +29,13 @@ Route::middleware(['auth:api','auth:web'])->group(function () {
     Route::resource('roles', RoleController::class);
 
 
-    Route::post('penataan_batas/tolak/{id}', [PenataanBatasController::class, 'tolak'])->name('penataan_batas.tolak');
-    Route::post('penataan_batas/teruskan/{id}', [PenataanBatasController::class, 'teruskan'])->name('penataan_batas.teruskan');
-    Route::get('penataan_batas/print/{id}', [PenataanBatasController::class, 'print'])->name('penataan_batas.print');
-    Route::resource('penataan_batas', PenataanBatasController::class);
+    Route::post('permohonan/tolak/{id}', [PermohonanController::class, 'tolak'])->name('permohonan.tolak');
+    Route::post('permohonan/teruskan/{id}', [PermohonanController::class, 'teruskan'])->name('permohonan.teruskan');
+    Route::get('permohonan/print/{id}', [PermohonanController::class, 'print'])->name('permohonan.print');
 
+    Route::get('permohonan/print/pemberitahuan/{id}', [PermohonanController::class, 'printPemberitahuan'])->name('permohonan.print.pemberitahuan');
 
-    Route::post('penggabungan/tolak/{id}', [PenggabunganController::class, 'tolak'])->name('penggabungan.tolak');
-    Route::post('penggabungan/teruskan/{id}', [PenggabunganController::class, 'teruskan'])->name('penggabungan.teruskan');
-    Route::get('penggabungan/print/{id}', [PenggabunganController::class, 'print'])->name('penggabungan.print');
-    Route::resource('penggabungan', PenggabunganController::class);
-
-
-    Route::post('pemecahan/tolak/{id}', [PemecahanController::class, 'tolak'])->name('pemecahan.tolak');
-    Route::post('pemecahan/teruskan/{id}', [PemecahanController::class, 'teruskan'])->name('pemecahan.teruskan');
-    Route::get('pemecahan/print/{id}', [PemecahanController::class, 'print'])->name('pemecahan.print');
-    Route::resource('pemecahan', PemecahanController::class);
-
-
-    Route::post('pengukuran/tolak/{id}', [PengukuranController::class, 'tolak'])->name('pengukuran.tolak');
-    Route::post('pengukuran/teruskan/{id}', [PengukuranController::class, 'teruskan'])->name('pengukuran.teruskan');
-    Route::get('pengukuran/print/{id}', [PengukuranController::class, 'print'])->name('pengukuran.print');
-    Route::resource('pengukuran', PengukuranController::class);
+    Route::resource('permohonan', PermohonanController::class);
 
 
     // User password reset routes

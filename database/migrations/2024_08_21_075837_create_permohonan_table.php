@@ -14,7 +14,8 @@ return new class () extends Migration {
             $table->id();
             $table->string('di_305');
             $table->string('di_302');
-            $table->date('tanggal_pengukuran');
+            $table->date('tanggal_mulai_pengukuran');
+            $table->date('tanggal_berakhir_pengukuran');
             $table->string('no_surat');
             $table->string('nama_pemohon');
             $table->string('no_berkas');
@@ -22,7 +23,7 @@ return new class () extends Migration {
             $table->string('desa');
             $table->integer('luas');
             $table->string('status');
-            $table->string('jenis_permohonan');
+            $table->string('jenis_kegiatan');
             $table->integer('created_by');
             $table->integer('diteruskan_ke')->nullable();
             $table->string('diteruskan_ke_role')->nullable();

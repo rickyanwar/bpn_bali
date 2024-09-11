@@ -5,7 +5,7 @@
 
 @section('breadcrumb')
     {{--  <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>  --}}
-    <li class="breadcrumb-item"><a href="{{ route('pengukuran.index') }}">{{ __('Permohonan') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('permohonan.index') }}">{{ __('Permohonan') }}</a></li>
     <li class="breadcrumb-item">{{ __('Pengukuran ') }}</li>
 @endsection
 @push('script-page')
@@ -71,10 +71,21 @@
                         </div>
                         <div class="row justify-content-center">
                             <div class="col-5">
-                                <div class="form-group">
-                                    <label class="form-label">Tanggal Pengukuran</label>
-                                    <input class="form-control" type="date" name="tanggal_pengukuran"
-                                        id="tanggal_pengukuran">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Tanggal Mulai Pengukuran</label>
+                                            <input class="form-control " type="date" name="tanggal_mulai_pengukuran"
+                                                id="tanggal_mulai_pengukuran">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Tanggal Selesai Pengukuran</label>
+                                            <input class="form-control " type="date" name="tanggal_berakhir_pengukuran"
+                                                id="tanggal_berakhir_pengukuran">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-5">
@@ -84,45 +95,149 @@
                                         placeholder="Masukkan no surat">
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="row justify-content-center">
-
-                            <div class="col-10">
+                            <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">Nama Pemohon</label>
                                     <input class="form-control" type="text" name="nama_pemohon" id="nama_pemohon"
                                         placeholder="Masukkan nama pemohon">
                                 </div>
                             </div>
-                            <div class="col-10">
+                            <div class="col-5">
                                 <div class="form-group">
-                                    <label class="form-label">Petugas Ukur</label>
-                                    <select class="form-control " id="petugas_ukur" name="petugas_ukur[]"
-                                        multiple="multiple" style="width: 100%">
+                                    <label class="form-label">Jenis Permohonan</label>
+                                    <select class="form-control form-control" name="jenis_kegiatan" id="jenis_kegiatan"
+                                        style="width: 100%">
+
+                                        <option value="">Pilih</option>
+                                        <option value="Penggabungan">Penggabungan</option>
+                                        <option value="Pemecahan">Pemecahan</option>
+                                        <option value="Pengukuran">Pengukuran dan Pemetaan Kadastral
+                                        </option>
+                                        <option value="Penataan Batas">Penataan Batas</option>
+                                        <option value="Pengembalian Batas">Pengembalian Batas</option>
+                                        <option value="Permohonan SK">Permohonan SK</option>
+                                        <option value="Konversi">Konversi</option>
                                     </select>
-
-
                                 </div>
                             </div>
+
+
+                        </div>
+                        <div class="row justify-content-center mb-5">
+
+                            <div class="col-10">
+                                <!-- outer repeater -->
+                                <div class="container mt-5 repeater">
+                                    <!--outer repeater-->
+                                    <div data-repeater-list="petugas_ukur">
+                                        <div data-repeater-item>
+                                            <!-- innner repeater -->
+
+                                            <div data-repeater-list="inner-list">
+                                                <div data-repeater-item>
+                                                    <div class="row">
+                                                        <div class="col-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Petugas Ukur
+                                                                </label>
+                                                                <select class="form-control form-control petugas_ukur"
+                                                                    name="petugas_ukur" style="width: 100%">
+                                                                </select>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Pendamping
+                                                                </label>
+                                                                <select class="form-control form-control pendamping"
+                                                                    name="pendamping" style="width: 100%">
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2 mt-4">
+
+                                                            <button data-repeater-delete style="border-radius: 20px"
+                                                                class="btn btn-outline-secondary btn-sm">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
+                                        Petugas Ukur</button>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary mx-2">Cancel</button>
+                            <button type="button" class="btn btn-primary " id="btn-submit">Kirim Permohonan</button>
                         </div>
                     </div>
-
-                    <div class="card-footer d-flex justify-content-end">
-                        <button type="button" class="btn btn-secondary mx-2">Cancel</button>
-                        <button type="button" class="btn btn-primary " id="btn-submit">Kirim Permohonan</button>
-                    </div>
                 </div>
-            </div>
         </form>
     </div>
 @endsection
 @push('script-page')
-    @include('pengukuran.script')
+    @include('permohonan.script')
     <script>
-        $(document).ready(function() {
+        // Untuk No Berkas
+        var noBerkasPrefix = "1235/St-/";
+        var noBerkasSuffix = "/VII/2024";
 
+        // Set initial value for No Berkas input
+        $('#no_berkas').val(noBerkasPrefix + "..." + noBerkasSuffix);
+
+        // Event handler untuk input No Berkas
+        $('#no_berkas').on('input', function() {
+            var inputVal = $(this).val();
+            var editablePart = inputVal.substring(noBerkasPrefix.length, inputVal.length - noBerkasSuffix.length);
+            $(this).val(noBerkasPrefix + editablePart + noBerkasSuffix);
+        });
+
+        $('#no_berkas').on('focus', function() {
+            var input = this;
+            // Set posisi kursor di bagian yang dapat diubah
+            setTimeout(function() {
+                input.setSelectionRange(noBerkasPrefix.length, input.value.length - noBerkasSuffix.length);
+            }, 0);
+        });
+
+        // Untuk No Surat
+        var noSuratPrefix = "1235/St-22.02/VII/";
+        var noSuratSuffix = ""; // No suffix untuk No Surat
+
+        // Set initial value for No Surat input
+        $('#no_surat').val(noSuratPrefix + "....");
+
+        // Event handler untuk input No Surat
+        $('#no_surat').on('input', function() {
+            var inputVal = $(this).val();
+            var editablePart = inputVal.substring(noSuratPrefix.length);
+            $(this).val(noSuratPrefix + editablePart);
+        });
+
+        $('#no_surat').on('focus', function() {
+            var input = this;
+            // Set posisi kursor di bagian yang dapat diubah
+            setTimeout(function() {
+                input.setSelectionRange(noSuratPrefix.length, input.value.length);
+            }, 0);
+        });
+
+        $(document).ready(function() {
             loadKecamatan();
+            // Initialize Select2 for the first repeater row on page load
+            initializeSelect2($('.petugas_ukur, .pendamping'));
 
             $(document).on('click', '#btn-submit', function(e) {
                 e.preventDefault();
@@ -160,7 +275,7 @@
                                 showConfirmButton: false,
                             }).then(function() {
                                 window.location.replace(
-                                    "{{ route('pengukuran.index') }}");
+                                    "{{ route('permohonan.index') }}");
                             });
 
                             show_toastr('error', xhr.responseJSON?.message);

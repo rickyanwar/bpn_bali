@@ -12,7 +12,7 @@
     <li class="breadcrumb-item">
         {{--  <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>  --}}
     </li>
-    <li class="breadcrumb-item">{{ __('Penggabungan') }}</li>
+    <li class="breadcrumb-item">{{ __('Permohonan') }}</li>
 @endsection
 
 @section('content')
@@ -59,8 +59,7 @@
                         <div class="row d-flex align-items-center ">
                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box mt-3">
-                                    <a href="{{ route('penggabungan.create') }}"
-                                        data-url="{{ route('penggabungan.create') }}"
+                                    <a href="{{ route('permohonan.create') }}" data-url="{{ route('permohonan.create') }}"
                                         class="btn btn-xl btn-primary btn-block ">
                                         Tambah Data Baru
                                     </a>
@@ -94,7 +93,7 @@
                                     data-original-title="{{ __('apply') }}">
                                     <span class="btn-inner--icon"><i class="ti ti-search"></i></span>
                                 </a>
-                                <a href="{{ route('penggabungan.index') }}" class="btn btn-sm btn-danger"
+                                <a href="{{ route('permohonan.index') }}" class="btn btn-sm btn-danger"
                                     data-toggle="tooltip" data-original-title="{{ __('Reset') }}">
                                     <span class="btn-inner--icon"><i class="ti ti-trash-off text-white-off"></i></span>
                                 </a>
@@ -115,7 +114,7 @@
                         <div class="card-body table-border-style">
                             <h5></h5>
                             <div class="table-responsive">
-                                <table class="table" id="data-table">
+                                <table class="table table-sm" id="data-table">
                                     <thead>
                                         <tr>
                                             <th> {{ __('No Surat') }}</th>
@@ -159,7 +158,7 @@
             serverSide: true,
             autoWidth: false,
             ajax: {
-                url: "{{ route('penggabungan.index') }}",
+                url: "{{ route('permohonan.index') }}",
                 data: {
                     issue_date: function() {
                         return $('#pc-daterangepicker-1').val();

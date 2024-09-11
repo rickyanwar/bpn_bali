@@ -5,7 +5,7 @@
 
 @section('breadcrumb')
     {{--  <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>  --}}
-    <li class="breadcrumb-item"><a href="{{ route('pengukuran.index') }}">{{ __('Permohonan') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('permohonan.index') }}">{{ __('Permohonan') }}</a></li>
     <li class="breadcrumb-item">{{ __('Pengukuran ') }}</li>
 @endsection
 @push('script-page')
@@ -18,14 +18,20 @@
             <div class="col-12">
                 <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h5 class="mb-0">Detail</h5>
-                        <p class="m-0 text-sm" style="padding-left:20px">
-                            {{ \App\Models\Utility::formatRelativeTime($data->created_at) }}</p>
-                        <p class="m-0 text-danger text-sm" style="padding-left:20px">Perlu Di Tindak Lanjut</p>
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <h5 class="mb-0">Detail</h5>
+                            <p class="m-0 text-sm" style="padding-left:20px">
+                                {{ \App\Models\Utility::formatRelativeTime($data->created_at) }}
+                            </p>
+                            <p class="m-0 text-danger text-sm" style="padding-left:20px">Perlu Di Tindak Lanjut</p>
+                        </div>
+                        <div>
+                            <a href="{{ route('permohonan.print.pemberitahuan', $data->id) }}"
+                                class="btn btn-outline-primary" style="border-radius: 20px">Print Surat Pemberitahuan
+                                <i class="fas fa-print"></i></a>
+                        </div>
                     </div>
-
-
                     <div class="card-body">
                         <div class="row justify-content-center">
                             <div class="col-10 mb-2">
@@ -87,101 +93,7 @@
                                     <p class="text-secondary">{{ $data->nama_pemohon }}</p>
                                 </div>
                             </div>
-                            <div class="col-10 my-5">
-                                <h6>Petugas Ukur</h6>
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Nama/NIP</th>
-                                            <th>Jabatan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
 
-                                        @foreach ($data->petugasUkur as $index => $petugas)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>
-                                                    {{ $petugas->user->name }}
-                                                </td>
-                                                <td>
-                                                    @foreach ($petugas->user->roles as $role)
-                                                        {{ $role->name }}
-                                                    @endforeach
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-10 my-2" id="dokument_terlampir">
-                                <h6>Dokumen Terlampir</h6>
-                                @foreach ($dokument as $item)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="dokumen_terlampir[]"
-                                            value="{{ $item->nama_dokumen }}">
-                                        <label class="form-check-label">
-                                            {{ $item->nama_dokumen }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
-                            @if (Auth::user()->id !== $data->diteruskan_ke)
-                                <div class="col-10 my-5">
-                                    <h6>Riwayat Penerusan Dokument</h6>
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Di Teruskan Ke</th>
-                                                <th>Dokumen Terlampir</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                            @foreach ($data->riwayat as $index => $riwayat)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td>
-                                                        {{ $riwayat->user->name }}
-                                                    </td>
-                                                    @if (!empty($riwayat->dokumen_terlampir))
-                                                        <ul>
-                                                            @foreach ($riwayat->dokumen_terlampir as $item)
-                                                                <li>{{ $item }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                    @endif
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @endif
-                            @if (Auth::user()->id == $data->diteruskan_ke || ($data->status = 'draft'))
-                                <div class="col-10 mt-2">
-                                    <div class="form-group">
-                                        <h6>Di Teruskan Ke</h6>
-                                        <select class="form-control" id="diteruskan_ke_role" name="diteruskan_ke_role">
-                                            <option value="">Pilih Opsi</option>
-                                            @foreach ($roles as $item)
-                                                <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            @endif
-
-
-
-                            <div class="col-10 mt-2" id="user-selection">
-                                <div class="form-group">
-                                    <h6>Pilih Pengguna</h6>
-                                    <select class="form-control" id="user" name="user">
-                                    </select>
-                                </div>
-                            </div>
 
                             @if ($data->status == 'ditolak')
                                 <div class="col-10 mt-2" id="user-selection">
@@ -190,22 +102,99 @@
                                 </div>
                             @endif
                         </div>
+
+                        <div class="row justify-content-center mb-5">
+
+                            <div class="col-10 ">
+                                <!-- outer repeater -->
+                                <div class="container mt-5 repeater" data-value='{!! json_encode($data->petugasUkur) !!}'>
+                                    <!--outer repeater-->
+                                    <div data-repeater-list="petugas_ukur">
+                                        <!-- innner repeater -->
+
+                                        <div data-repeater-list="inner-list">
+                                            <div data-repeater-item>
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Petugas Ukur
+                                                            </label>
+                                                            <select class="form-control form-control petugas_ukur"
+                                                                name="petugas_ukur" style="width: 100%">
+                                                            </select>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Pendamping
+                                                            </label>
+                                                            <select class="form-control form-control pendamping"
+                                                                name="pendamping" style="width: 100%">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-2 mt-4">
+
+                                                        <button data-repeater-delete style="border-radius: 20px"
+                                                            class="btn btn-outline-secondary btn-sm">
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                    <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
+                                        Petugas Ukur</button>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-10">
+                                <div class="form-group">
+                                    <label class="form-label">Teruskan Ke
+                                    </label>
+                                    <select class="form-control form-control teruskan_ke_role" name="teruskan_ke_role"
+                                        id="teruskan_ke_role" style="width: 100%">
+                                        <option value="">Pilih</option>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-10 mt-2" id="user-selection">
+                                <div class="form-group">
+                                    <h6>Pilih Petugas</h6>
+                                    <select class="form-control" id="user" name="user">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
 
 
                     <div class="card-footer d-flex justify-content-end">
-                        <a href="{{ route('pengukuran.print', [Crypt::encrypt($data->id)]) }}" class="btn btn-info "
-                            style="margin-left: 5px">Print</a>
 
 
                         @if ($data->status !== 'draft' && $data->status !== 'selesai' && $data->status !== 'ditolak')
-                            <button type="button" id="btn-reject" data-url="{{ $urlTolak }}" style="margin-left: 5px"
-                                class="btn btn-danger">Tolak</button>
+                            <button type="button" id="btn-reject" data-url="{{ $urlTolak }}"
+                                style="margin-left: 5px" class="btn btn-danger">Tolak</button>
                         @endif
 
                         @if (Auth::user()->id == $data->diteruskan_ke || empty($data->diteruskan_ke))
                             <button type="button" style="margin-left: 5px" class="btn btn-primary"
-                                id="btn-submit">Teruskan</button>
+                                id="btn-submit">Kirim</button>
                             <button type="button" style="margin-left: 5px" class="btn btn-primary"
                                 id="btn-selesai">Selesai</button>
                         @endif
@@ -217,13 +206,68 @@
     </div>
 @endsection
 @push('script-page')
-    @include('pengukuran.script')
+    @include('permohonan.script')
     <script>
         let data = {!! json_encode($data) !!};
-        var selectedDocuments = data?.dokumen_terlampir ?? [];
-        console.log('selectedDocuments', selectedDocuments)
+
+
+
+
+        $('#teruskan_ke_role').on('change', function() {
+            const selectedRole = $(this).val();
+
+            if (selectedRole) {
+                // Show the user-selection section
+                $('#user-selection').show();
+
+                // Initialize Select2 with role based on selected option
+                $('#user').select2({
+                    ajax: {
+                        url: "{{ route('user.search') }}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            console.log('Params:', params); // Debug: Log the search term
+                            return {
+                                term: params.term,
+                                role: selectedRole // Pass the selected option as role
+                            };
+                        },
+                        processResults: function(response) {
+                            // Map the results from the API response to the format expected by Select2
+                            let results = response.data.data.map(function(user) {
+                                return {
+                                    id: user.id,
+                                    text: user.name
+                                };
+                            });
+
+                            return {
+                                results: results,
+                                pagination: {
+                                    more: response.data.next_page_url !==
+                                        null // Check if there's a next page
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: 'Pilih Pengguna',
+                    allowClear: true
+                });
+            } else {
+                // Hide the user-selection section if no option is selected
+                $('#user-selection').hide();
+            }
+        });
 
         $(document).ready(function() {
+            // If there's existing data, populate the form with it
+            // If there's existing data, populate the form with it
+            if (data?.petugas_ukur?.length > 0) {
+                // populateForm(data?.petugas_ukur);
+            }
+
 
             // Iterate over each checkbox
             $('#dokument_terlampir .form-check-input').each(function() {
@@ -314,7 +358,7 @@
                                 showConfirmButton: false,
                             }).then(function() {
                                 window.location.replace(
-                                    "{{ route('pengukuran.index') }}");
+                                    "{{ route('permohonan.index') }}");
                             });
                         }).fail(function(xhr) {
                             console.log('xhr', xhr);

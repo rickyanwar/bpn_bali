@@ -1,5 +1,95 @@
 <script>
+    var selector = "body";
+
+    // Function to initialize Select2 with AJAX
+    function initializeSelect2($element, selectedValue = null) {
+        $element.select2({
+            ajax: {
+                url: "{{ route('user.search') }}",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        term: params.term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data.data.map(function(user) {
+                            return {
+                                id: user.id,
+                                text: user.name
+                            };
+                        })
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Pilih Pengguna',
+            allowClear: true
+        });
+
+        // If we have a selected value, set it as the default selected option
+        if (selectedValue) {
+            const option = new Option(selectedValue.text, selectedValue.id, true, true);
+            $element.append(option).trigger('change'); // Append and trigger change to display the selected option
+        }
+    }
+
+
+
+    // Initialize repeater
+    var $repeater = $(".repeater").repeater({
+        show: function() {
+            $(this).slideDown();
+            initializeSelect2($(this).find('.petugas_ukur'));
+            initializeSelect2($(this).find('.pendamping'));
+        },
+        hide: function(deleteElement) {
+            if (confirm("Are you sure you want to delete this element?")) {
+                $(this).slideUp(deleteElement);
+            }
+        }
+    });
+
+    // Retrieve the value from the data attribute and parse it
+    var value = $(".repeater").attr('data-value');
+
+    if (value && value.length) {
+        value = JSON.parse(value); // Parse the JSON string
+
+        // Populate repeater with the existing data
+        $repeater.setList(value);
+
+        // Loop through each repeater item and set the selected values for Select2
+        value.forEach(function(item, index) {
+            console.log('item', item);
+            console.log('index', index)
+            var $repeaterItem = $('[data-repeater-item]').eq(index);
+
+            // Initialize Select2 for petugas_ukur and pendamping
+            var petugasUkurSelect = $repeaterItem.find('.petugas_ukur');
+            var pendampingSelect = $repeaterItem.find('.pendamping');
+
+            // Set the selected option for petugas_ukur
+            initializeSelect2(petugasUkurSelect, {
+                id: item.petugas.id,
+                text: item.petugas.name
+            });
+
+            // Set the selected option for pendamping_ukur
+            initializeSelect2(pendampingSelect, {
+                id: item.pendamping.id,
+                text: item.pendamping.name
+            });
+        });
+    }
+
+
+
+
     $(document).ready(function() {
+
 
         // Event handler for province select change
         $('#provinsi').on('change', function() {

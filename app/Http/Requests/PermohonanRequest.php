@@ -28,35 +28,44 @@ class PermohonanRequest extends FormRequest
 
         $request = $this->request->all();
         $rules = [
-                 'di_305' => 'required',
-                 'di_302' => 'required',
-                 'tanggal_pengukuran' => 'date|required',
-                 'no_surat' => 'required',
-                 'nama_pemohon' => 'required',
-                 'no_berkas' => 'required',
-                 'kecamatan' => [ 'required', function ($attr, $value, $fail) use ($request) {
-                     $kecamatan = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '8')
-                         ->where('nama', $this->request->get('kecamatan'))->first();
-                     if (!$kecamatan) {
-                         $fail($attr . ' tidak valid.');
-                     }
+                    'di_305' => 'required',
+                    'di_302' => 'required',
+                    'tanggal_mulai_pengukuran' => 'date|required',
+                    'tanggal_berakhir_pengukuran' => 'date|required',
+                    'no_surat' => 'required',
+                //  'nama_pemohon' => 'required',
+                    'no_berkas' => 'required',
+                    'kecamatan' => [ 'required', function ($attr, $value, $fail) use ($request) {
+                        $kecamatan = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '8')
+                            ->where('nama', $this->request->get('kecamatan'))->first();
+                        if (!$kecamatan) {
+                            $fail($attr . ' tidak valid.');
+                        }
 
-                 }],
-                'desa' => [ 'required', function ($attr, $value, $fail) use ($request) {
-                    $desa = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '13')
-                        ->where('nama', $this->request->get('desa'))->first();
-                    if (!$desa) {
-                        $fail($attr . ' tidak valid.');
-                    }
-                }],
-                 'luas' => 'required|numeric',
-                 'petugas_ukur' => [
-                 'required',
-                 'array',
-                 'min:1',
-                 'exists:users,id' // Validate that each ID in the array exists in the users table
-             ],
-         ];
+                    }],
+                    'desa' => [ 'required', function ($attr, $value, $fail) use ($request) {
+                        $desa = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '13')
+                            ->where('nama', $this->request->get('desa'))->first();
+                        if (!$desa) {
+                            $fail($attr . ' tidak valid.');
+                        }
+                    }],
+                    'luas' => 'required|numeric',
+                    'petugas_ukur' => [
+                                'required',
+                                'array',
+                                'min:1'
+                        ],
+                    'petugas_ukur.*.petugas_ukur' => [
+                            'required',
+                            'exists:users,id'  // Validate that the petugas_ukur exists in users table
+                        ],
+                    'petugas_ukur.*.pendamping' => [
+                            'required',
+                            'exists:users,id'  // Validate that the pendamping exists in users table
+                     ],
+                ]
+        ;
 
 
         return $rules;

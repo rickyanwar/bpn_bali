@@ -12,7 +12,8 @@ class PermohonanPetugasUkur extends Model
 
     protected $fillable = [
         'permohonan_id',
-        'user_id',
+        'petugas_ukur',
+        'pendamping'
     ];
 
     public function permohonan()
@@ -20,9 +21,14 @@ class PermohonanPetugasUkur extends Model
         return $this->belongsTo(Permohonan::class, 'permohonan_id');
     }
 
-    public function user()
+    public function petugas()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'petugas_ukur');
+    }
+
+    public function pendamping()
+    {
+        return $this->belongsTo(User::class, 'pendamping');
     }
 
 }
