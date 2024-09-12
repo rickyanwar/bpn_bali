@@ -28,7 +28,7 @@ class PermohonanDiteruskanRequest extends FormRequest
 
         $request = $this->request->all();
         $rules = [
-                 'dokumen_terlampir' => 'required',
+                 //'dokumen_terlampir' => 'required',
                  'user' => 'required|exists:users,id'
          ];
 
