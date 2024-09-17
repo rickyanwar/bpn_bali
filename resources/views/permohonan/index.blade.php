@@ -206,6 +206,12 @@
 
 
             ],
+            rowCallback: function(row, data, index) {
+                // Check if `perlu_diteruskan` is true apply red color
+                if (data.perlu_diteruskan) {
+                    $(row).addClass('bg-danger text-white');
+                }
+            }
         });
 
         $(document).on('click', '#submit-filter', function(e) {

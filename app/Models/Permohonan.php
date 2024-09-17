@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Utility;
+use Carbon\Carbon;
 
 class Permohonan extends Model
 {
@@ -32,6 +33,8 @@ class Permohonan extends Model
         'updated_at' => 'date:d-m-Y h:i A',
         'dokumen_terlampir' => 'json'
     ];
+
+    protected $appends = ['perlu_diteruskan'];
 
     public function createdby()
     {
@@ -71,5 +74,20 @@ class Permohonan extends Model
     public function riwayat()
     {
         return $this->hasMany(RiwayatPermohonanDiTeruskan::class, 'permohonan_id');
+    }
+
+    public function getPerluDiteruskanAttribute()
+    {
+        // Get the latest RiwayatPermohonanDiTeruskan record
+        $latestRiwayat = $this->riwayat()->latest()->first();
+        // Check if there's a day of penerusan more than > 2 day
+        if ($latestRiwayat) {
+            $isMoreThanTwoDaysOld = $latestRiwayat->created_at->lt(Carbon::now()->subDays(2));
+            $statusIsNotSelesai = $latestRiwayat->status !== 'selesai';
+
+            return $isMoreThanTwoDaysOld && $statusIsNotSelesai;
+        }
+
+        return false;
     }
 }

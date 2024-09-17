@@ -24,12 +24,35 @@
                             <p class="m-0 text-sm" style="padding-left:20px">
                                 {{ \App\Models\Utility::formatRelativeTime($data->created_at) }}
                             </p>
-                            <p class="m-0 text-danger text-sm" style="padding-left:20px">Perlu Di Tindak Lanjut</p>
+
+                            @if ($data->perlu_diteruskan)
+                                <p class="m-0 text-danger text-sm font-extrabold" style="padding-left:20px">Perlu Di Tindak
+                                    Lanjut
+                                </p>
+                            @endif
                         </div>
                         <div>
-                            <a href="{{ route('permohonan.print.pemberitahuan', $data->id) }}"
-                                class="btn btn-outline-primary" style="border-radius: 20px">Print Surat Pemberitahuan
-                                <i class="fas fa-print"></i></a>
+
+
+
+                            {{--  Tampilkan jika permohonan baru pertama kali di buat  --}}
+                            @if (empty($data->diteruskan_ke))
+                                <a href="{{ route('permohonan.print', $data->id) }}?type=pemberitahuan"
+                                    class="btn btn-outline-primary" style="border-radius: 20px">Print Surat Pemberitahuan
+                                    <i class="fas fa-print"></i></a>
+                            @endif
+
+                            @if (auth()->user()->hasRole('Petugas Cetak') && !empty($data->diteruskan_ke))
+                                <div class="form-group">
+                                    <select class="form-control" id="print-option"
+                                        style="padding-right: 2rem; border-radius:20px">
+                                        <option value="">Cetak Surat</option>
+                                        <option value="tugas pengukuran">Surat Tugas Petugas Ukur</option>
+                                        <option value="lampiran tugas pengukuran">Surat Tugas Pembantu Ukur</option>
+                                        <option value="perintah kerja">Surat Perintah Kerja</option>
+                                    </select>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">
@@ -209,9 +232,21 @@
     @include('permohonan.script')
     <script>
         let data = {!! json_encode($data) !!};
+        let urlPrint = "{{ route('permohonan.print', $data->id) }}";
+        $('#print-option').on('change', function() {
+            var selectedValue = $(this).val();
 
-
-
+            // Check if a value is selected
+            if (selectedValue) {
+                // Replace spaces with %20
+                var formattedValue = selectedValue.replace(/ /g, '%20');
+                var urlPrint = "{{ route('permohonan.print', $data->id) }}";
+                // Redirect
+                window.open(urlPrint + '/?type=' + formattedValue, '_blank');
+                // Reset Vall
+                $(this).val('');
+            }
+        });
 
         $('#teruskan_ke_role').on('change', function() {
             const selectedRole = $(this).val();

@@ -40,10 +40,10 @@ class PermohonanController extends Controller
                 // ->where('jenis_permohonan', 'permohonan')
                 ->where(function ($q) use ($currentUserId) {
                     $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
-                      ->orWhere('created_by', $currentUserId);
-                    //   ->orWhereHas('petugasUkur', function ($q) use ($currentUserId) {
-                    //       $q->where('petugas_ukur', $currentUserId);
-                    //   });
+                    //   ->orWhere('created_by', $currentUserId)
+                      ->orWhereHas('petugasUkur', function ($q) use ($currentUserId) {
+                          $q->where('petugas_ukur', $currentUserId);
+                      });
                 });
 
 
@@ -180,7 +180,7 @@ class PermohonanController extends Controller
     {
 
         $Id = \Crypt::decrypt($id);
-        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.pendamping', 'createdby', 'kecamatan', 'desa')->find($Id);
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($Id);
         $urlTeruskan = route('permohonan.teruskan', $Id);
         $urlTolak = route('permohonan.tolak', $Id);
         $dokument = Documents::get();
@@ -189,22 +189,28 @@ class PermohonanController extends Controller
     }
 
 
-    public function print(string $id)
+    public function print(Request $request, string $id)
     {
 
-        $Id = \Crypt::decrypt($id);
-        $data = Permohonan::with('petugasUkur.user', 'createdby', 'kecamatan', 'desa')->find($Id);
-        return view('print.pemberitahuan', compact('data'));
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
+
+        if ($request->type == 'tugas pengukuran') {
+            return view('print.tugas_pengukuran', compact('data'));
+        } elseif ($request->type == 'lampiran tugas pengukuran') {
+            return view('print.lampiran_tugas_pengukuran', compact('data'));
+        } elseif ($request->type == 'perintah kerja') {
+            return view('print.perintah_kerja', compact('data'));
+        } elseif ($request->type == 'pemberitahuan') {
+            return view('print.pemberitahuan', compact('data'));
+        }
     }
 
 
 
     public function printPemberitahuan(string $id)
     {
-        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
-
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
         return view('print.pemberitahuan', compact('data'));
-
     }
 
     /**

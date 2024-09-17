@@ -26,7 +26,7 @@ class PermohonanPetugasUkur extends Model
         return $this->belongsTo(User::class, 'petugas_ukur');
     }
 
-    public function pendamping()
+    public function petugas_pendamping()
     {
         return $this->belongsTo(User::class, 'pendamping');
     }

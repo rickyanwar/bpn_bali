@@ -79,8 +79,8 @@
 
             // Set the selected option for pendamping_ukur
             initializeSelect2(pendampingSelect, {
-                id: item.pendamping.id,
-                text: item.pendamping.name
+                id: item.petugas_pendamping.id,
+                text: item.petugas_pendamping.name
             });
         });
     }

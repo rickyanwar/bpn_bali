@@ -40,12 +40,11 @@
                         <img src="{{ asset('assets/images/avatar.png') }}" alt="{{ env('APP_NAME') }}"
                             class="img-fluid rounded-circle">
                     </span>
-                    <span class="hide-mob ms-2">{{ __('Hi, ') }}
+                    <span class="hide-mob ms-2">{{ Auth::user()->name }}
 
+                        - {{ Auth::user()->roles->pluck('name')[0] ?? '' }}
 
-                        {{--  {{ \Auth::user()->name }}
-                          --}}
-                        !</span>
+                    </span>
                     <i class="ti ti-chevron-down drp-arrow nocolor hide-mob"></i>
                 </a>
                 <div class="dropdown-menu dash-h-dropdown">
