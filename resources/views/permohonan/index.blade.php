@@ -20,7 +20,7 @@
         <div class="col-3">
             <div class="card text-center">
                 <div class="card-body">
-                    <h1 class="display-6" style="font-weight: 600">42</h1> <!-- Replace with your random number -->
+                    <h1 class="display-6" style="font-weight: 600">{{ $totalPermohonan ?? 0 }}</h1>
                     <h5 style="font-weight: 100">Total Permohonan</h5>
                 </div>
             </div>
@@ -28,7 +28,7 @@
         <div class="col-3">
             <div class="card text-center">
                 <div class="card-body">
-                    <h1 class="display-6" style="font-weight: 600">42</h1> <!-- Replace with your random number -->
+                    <h1 class="display-6" style="font-weight: 600">{{ $totalDiproses ?? 0 }}</h1>
                     <h5 style="font-weight: 100">Diproses</h5>
                 </div>
             </div>
@@ -36,7 +36,7 @@
         <div class="col-3">
             <div class="card text-center">
                 <div class="card-body">
-                    <h1 class="display-6" style="font-weight: 600">42</h1> <!-- Replace with your random number -->
+                    <h1 class="display-6" style="font-weight: 600">{{ $totalDitolak ?? 0 }}</h1>
                     <h5 style="font-weight: 100">Di Tolak</h5>
                 </div>
             </div>
@@ -44,7 +44,7 @@
         <div class="col-3">
             <div class="card text-center">
                 <div class="card-body">
-                    <h1 class="display-6" style="font-weight: 600">42</h1> <!-- Replace with your random number -->
+                    <h1 class="display-6" style="font-weight: 600">{{ $totalSelesai ?? 0 }}</h1>
                     <h5 style="font-weight: 100">Selesai</h5>
                 </div>
             </div>
@@ -80,10 +80,10 @@
                                 <div class="btn-box">
                                     <label class="form-label">Status </label>
                                     <select class="custom-select" id="inputGroupSelect01">
-                                        <option selected>Choose...</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
+                                        <option selected>Pilih...</option>
+                                        <option value="proses">Proses</option>
+                                        <option value="revisi">Two</option>
+                                        <option value="Selesai">Three</option>
                                     </select>
                                 </div>
                             </div>
@@ -119,13 +119,12 @@
                                         <tr>
                                             <th> {{ __('No Surat') }}</th>
                                             <th> {{ __('Nama Pemohon') }}</th>
-                                            <th>{{ __('No Berkas') }}</th>
+                                            {{--  <th>{{ __('No Berkas') }}</th>  --}}
                                             <th>{{ __('Tanggal Di buat') }}</th>
                                             <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Di Buat Oleh') }}</th>
-                                            @if (Gate::check('edit invoice') || Gate::check('delete invoice') || Gate::check('show invoice'))
-                                                <th>{{ __('Action') }}</th>
-                                            @endif
+                                            <th>{{ __('Di Teruskan Ke ') }}</th>
+                                            <th>{{ __('Di Buat') }}</th>
+                                            <th>{{ __('Action') }}</th>
                                             {{-- <th>
                                         <td class="barcode">
                                             {!! DNS1D::getBarcodeHTML($invoice->sku, "C128",1.4,22) !!}
@@ -179,10 +178,7 @@
                     data: "nama_pemohon",
                     name: "nama_pemohon",
                 },
-                {
-                    data: "no_berkas",
-                    name: "no_berkas",
-                },
+
                 {
                     data: "created_at",
                     name: "created_at",
@@ -190,6 +186,14 @@
                 {
                     data: "status_badge",
                     name: "status_badge",
+                },
+                {
+                    data: 'diteruskan',
+                    name: 'diteruskan',
+                    render: function(data) {
+                        console.log('data', data);
+                        return data?.name ?? '-';
+                    }
                 },
                 {
                     data: 'createdby',
@@ -217,5 +221,113 @@
         $(document).on('click', '#submit-filter', function(e) {
             table.draw();
         })
+
+        //Code for pindah tugas
+        $(document).on('click', '.dialihkan_ke', function(e) {
+            let id = $(this).data('id');
+            console.log('id', id);
+            // Ensure the modal is shown first
+            $('#commonModal').modal('show');
+
+            // Only initialize Select2 once when the modal is fully shown
+            $('#commonModal').one('shown.bs.modal', function() {
+                // Initialize Select2
+                $('#dialihkan_ke').select2({
+                    ajax: {
+                        url: "{{ route('user.search') }}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                term: params.term,
+                            };
+                        },
+                        processResults: function(response) {
+                            // Map the results from the API response to the format expected by Select2
+                            let results = response.data.data.map(function(user) {
+                                return {
+                                    id: user.id,
+                                    text: user.name
+                                };
+                            });
+
+                            return {
+                                results: results,
+                                pagination: {
+                                    more: response.data.next_page_url !==
+                                        null // Check if there's a next page
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: 'Pilih Petugas',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#commonModal') // Ensure the dropdown stays within the modal
+                });
+            });
+
+
+
+            $(document).on('click', '#btn-alihkan-tugas', function(e) {
+                e.preventDefault();
+
+                var url = "{{ route('permohonan.pindah_tugas', ':id') }}";
+                url = url.replace(':id', id);
+                console.log('url', url);
+                var form = $('#form-pindah-tugas')[0];
+                var formData = new FormData(form);
+                var findForm = $("#form-pindah-tugas");
+                swal({
+                    title: "Anda Yakin?",
+                    text: "Proses tidak dapat dibatalkan",
+                    icon: "warning",
+                    buttons: [
+                        'Tidak, Batalkan!',
+                        'Ya, Saya yakin!'
+                    ],
+                    dangerMode: true,
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
+                            console.log('res')
+                            swal({
+                                icon: 'success',
+                                title: res.message,
+                                showConfirmButton: false,
+                            }).then(function() {
+                                window.location.replace(
+                                    "{{ route('permohonan.index') }}");
+                            });
+
+                            show_toastr('error', xhr.responseJSON?.message);
+
+                        })
+                        ajaxPost.fail(function(e) {
+                            console.log('e', e);
+                            swal({
+                                icon: 'warning',
+                                title: e.responseJSON.message,
+                                showConfirmButton: false,
+                            });
+                            if (parseInt(e.status) == 422) {
+                                $.each(e.responseJSON.errors, function(elem, messages) {
+                                    findForm.find('#' + elem).after(
+                                        '<p class="text-danger text-sm">' +
+                                        messages.join('') + '</p>');
+                                    //ADD HAS FEEDBACK CLASS
+                                    findForm.find('#' + elem).closest(
+                                        '.form-group').addClass(
+                                        "has-error has-feedback");
+
+                                });
+                            }
+                        })
+                    }
+                })
+
+            })
+        });
     </script>
 @endpush

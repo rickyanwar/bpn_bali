@@ -33,8 +33,6 @@
                         </div>
                         <div>
 
-
-
                             {{--  Tampilkan jika permohonan baru pertama kali di buat  --}}
                             @if (empty($data->diteruskan_ke))
                                 <a href="{{ route('permohonan.print', $data->id) }}?type=pemberitahuan"
@@ -158,12 +156,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-2 mt-4">
-
-                                                        <button data-repeater-delete style="border-radius: 20px"
-                                                            class="btn btn-outline-secondary btn-sm">
-                                                            <i class="fas fa-minus"></i>
-                                                        </button>
-
+                                                        @role('Petugas Cetak')
+                                                            <button data-repeater-delete style="border-radius: 20px"
+                                                                class="btn btn-outline-secondary btn-sm">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+                                                        @endrole
                                                     </div>
                                                 </div>
                                             </div>
@@ -172,8 +170,10 @@
 
 
                                     </div>
-                                    <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
-                                        Petugas Ukur</button>
+                                    @role('Petugas Cetak')
+                                        <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
+                                            Petugas Ukur</button>
+                                    @endrole
                                 </div>
 
 
@@ -187,9 +187,10 @@
                                     <select class="form-control form-control teruskan_ke_role" name="teruskan_ke_role"
                                         id="teruskan_ke_role" style="width: 100%">
                                         <option value="">Pilih</option>
-                                        @foreach ($roles as $role)
-                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                        @foreach ($allowedRoles as $role)
+                                            <option value="{{ $role }}">{{ $role }}</option>
                                         @endforeach
+
                                     </select>
                                 </div>
                             </div>
@@ -202,14 +203,10 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
 
 
                     <div class="card-footer d-flex justify-content-end">
-
-
                         @if ($data->status !== 'draft' && $data->status !== 'selesai' && $data->status !== 'ditolak')
                             <button type="button" id="btn-reject" data-url="{{ $urlTolak }}"
                                 style="margin-left: 5px" class="btn btn-danger">Tolak</button>
@@ -218,7 +215,10 @@
                         @if (Auth::user()->id == $data->diteruskan_ke || empty($data->diteruskan_ke))
                             <button type="button" style="margin-left: 5px" class="btn btn-primary"
                                 id="btn-submit">Kirim</button>
-                            <button type="button" style="margin-left: 5px" class="btn btn-primary"
+                        @endif
+
+                        @if ($data->status !== 'draft' && $data->status !== 'ditolak')
+                            <button type="button" style="margin-left: 5px" class="btn btn-success"
                                 id="btn-selesai">Selesai</button>
                         @endif
 
@@ -233,6 +233,12 @@
     <script>
         let data = {!! json_encode($data) !!};
         let urlPrint = "{{ route('permohonan.print', $data->id) }}";
+
+        @if (!auth()->user()->hasRole('petugas cetak') && !empty($data->diteruskan_ke))
+            $('.pendamping').prop('disabled', true);
+            $('.petugas_ukur').prop('disabled', true);
+        @endif
+
         $('#print-option').on('change', function() {
             var selectedValue = $(this).val();
 

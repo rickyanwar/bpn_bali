@@ -25,25 +25,38 @@
                 @enderror
             </div>
         </div>
-        @if (\Auth::user()->type != 'super admin')
-            <div class="form-group col-md-6">
-                <style>
-                    .select2-container {
-                        z-index: 2050;
-                        /* Adjust as necessary to be higher than the modal */
-                    }
-                </style>
-                {!! Html::label(__('User Role'))->class('form-label') !!}
-                {!! Html::select('role', $roles)->class('form-control select2')->required() !!}
-                @error('role')
-                    <small class="invalid-role" role="alert">
+        <div class="form-group col-md-6">
+            <style>
+                .select2-container {
+                    z-index: 2050;
+                    /* Adjust as necessary to be higher than the modal */
+                }
+            </style>
+            {!! Html::label(__('User Role'))->class('form-label') !!}
+            <select class="form-control select2" id="role" name="role">
+                @foreach ($roles as $id => $name)
+                    <option value="{{ $id }}" data-name="{{ $name }}">{{ $name }}</option>
+                @endforeach
+            </select>
+            @error('role')
+                <small class="invalid-role" role="alert">
+                    <strong class="text-danger">{{ $message }}</strong>
+                </small>
+            @enderror
+        </div>
+
+        <!-- Additional Pendamping Select (Hidden by Default) -->
+        <div class="col-md-6" id="pendamping-select-container" style="display: none">
+            <div class="form-group">
+                {!! Html::label(__('Pendamping Ukur'), 'pendamping_id')->class('form-label') !!}
+                {!! Html::select('pendamping_id', $pendampingUkur, null)->class('form-control select2 ')->id('pendamping_id') !!}
+                @error('pendamping_id')
+                    <small class="invalid-user" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
                     </small>
                 @enderror
             </div>
-        @elseif(\Auth::user()->type == 'super admin')
-            {!! Html::hidden('role', 'company', ['class' => 'form-control select2', 'required' => 'required']) !!}
-        @endif
+        </div>
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('Password'), 'password')->class('form-label') !!}

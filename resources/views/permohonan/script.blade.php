@@ -1,49 +1,85 @@
 <script>
     var selector = "body";
 
-    // Function to initialize Select2 with AJAX
-    function initializeSelect2($element, selectedValue = null) {
-        $element.select2({
-            ajax: {
-                url: "{{ route('user.search') }}",
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        term: params.term
-                    };
+    // Function to initialize Select2 with or without AJAX
+    function initializeSelect2($element, selectedValue = null, useAjax = true) {
+        if (useAjax) {
+            $element.select2({
+                ajax: {
+                    url: "{{ route('user.search') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        };
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data.data.map(function(user) {
+                                return {
+                                    id: user.id,
+                                    text: user.name,
+                                    data: user
+                                };
+                            })
+                        };
+                    },
+                    cache: true
                 },
-                processResults: function(response) {
-                    return {
-                        results: response.data.data.map(function(user) {
-                            return {
-                                id: user.id,
-                                text: user.name
-                            };
-                        })
-                    };
-                },
-                cache: true
-            },
-            placeholder: 'Pilih Pengguna',
-            allowClear: true
-        });
+                placeholder: 'Pilih Pengguna',
+                allowClear: true
+            });
+        } else {
+            $element.select2({
+                placeholder: 'Pilih Pendamping',
+                allowClear: true
+            });
+        }
 
         // If we have a selected value, set it as the default selected option
         if (selectedValue) {
             const option = new Option(selectedValue.text, selectedValue.id, true, true);
+            // option.dataset.user = JSON.stringify(selectedValue.user); // Assuming user data is available
             $element.append(option).trigger('change'); // Append and trigger change to display the selected option
         }
     }
-
-
 
     // Initialize repeater
     var $repeater = $(".repeater").repeater({
         show: function() {
             $(this).slideDown();
-            initializeSelect2($(this).find('.petugas_ukur'));
-            initializeSelect2($(this).find('.pendamping'));
+            const $petugasUkurSelect = $(this).find('.petugas_ukur');
+            const $pendampingSelect = $(this).find('.pendamping');
+
+
+            initializeSelect2($petugasUkurSelect); // Initialize petugas_ukur with AJAX search
+            initializeSelect2($pendampingSelect, null, false); // Initialize pendamping without AJAX
+
+            $petugasUkurSelect.on('change', function() {
+                const $this = $(this);
+                const selectedPetugas = $this.select2('data')[0]; // Get selected data
+                // Find the nearest pendamping select element
+                const $pendampingSelect = $this.closest('[data-repeater-item]').find('.pendamping');
+                if (selectedPetugas) {
+                    // Assuming you want to set the pendamping to the selected petugas
+                    const pendampingData = {
+                        id: selectedPetugas?.data?.pendamping_ukur?.user
+                            ?.id, // Use selected ID for pendamping
+                        text: selectedPetugas?.data?.pendamping_ukur?.user?.name,
+                    };
+
+                    $pendampingSelect.empty(); // Clear previous options
+
+                    if (selectedPetugas?.data?.pendamping_ukur) {
+                        initializeSelect2($pendampingSelect, pendampingData,
+                            false); // Set new value
+                    }
+
+                } else {
+                    $pendampingSelect.empty().trigger('change'); // Clear if no selection
+                }
+            });
         },
         hide: function(deleteElement) {
             if (confirm("Are you sure you want to delete this element?")) {
@@ -63,8 +99,6 @@
 
         // Loop through each repeater item and set the selected values for Select2
         value.forEach(function(item, index) {
-            console.log('item', item);
-            console.log('index', index)
             var $repeaterItem = $('[data-repeater-item]').eq(index);
 
             // Initialize Select2 for petugas_ukur and pendamping
@@ -74,22 +108,22 @@
             // Set the selected option for petugas_ukur
             initializeSelect2(petugasUkurSelect, {
                 id: item.petugas.id,
-                text: item.petugas.name
+                text: item.petugas.name,
+                data: item
             });
 
-            // Set the selected option for pendamping_ukur
+            // Set the selected option for pendamping using the user data from pendamping_ukur
             initializeSelect2(pendampingSelect, {
                 id: item.petugas_pendamping.id,
-                text: item.petugas_pendamping.name
-            });
+                text: item.petugas_pendamping.name,
+                data: item,
+            }, false);
         });
     }
 
 
 
-
     $(document).ready(function() {
-
 
         // Event handler for province select change
         $('#provinsi').on('change', function() {
@@ -119,7 +153,6 @@
         // Event handler for city select change
         $('#kecamatan').on('change', function() {
             var kodeKecamatan = $('#kecamatan option:selected').attr('data-id');
-
             if (kodeKecamatan) {
                 loadDesa(kodeKecamatan);
             } else {
@@ -189,7 +222,7 @@
                         );
                     });
                     if (selectedKecamatan) {
-                        $('#kecamatan').val(selectedKecamatan).trigger('change');
+                        $('#kecamatan').val(selectedKecamatan.nama).trigger('change');
                     }
                     resolve();
                 }
@@ -218,7 +251,7 @@
                         );
                     });
                     if (selectedDesa) {
-                        $('#desa').val(selectedDesa).trigger('change');
+                        $('#desa').val(selectedDesa.nama).trigger('change');
                     }
                     resolve();
                 }

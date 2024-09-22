@@ -155,13 +155,14 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <div class="col-2 mt-4">
-
-                                                            <button data-repeater-delete style="border-radius: 20px"
-                                                                class="btn btn-outline-secondary btn-sm">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
-
+                                                        <div class"col-2 mt-4">
+                                                            @role('Petugas Cetak')
+                                                                <button type="button" data-repeater-delete
+                                                                    style="border-radius: 20px"
+                                                                    class="btn btn-outline-secondary btn-sm">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            @endrole
                                                         </div>
                                                     </div>
                                                 </div>
@@ -180,7 +181,7 @@
 
                         <div class="card-footer d-flex justify-content-end">
                             <button type="button" class="btn btn-secondary mx-2">Cancel</button>
-                            <button type="button" class="btn btn-primary " id="btn-submit">Kirim Permohonan</button>
+                            <button type="button" class="btn btn-primary " id="btn-submit">Simpan Permohonan</button>
                         </div>
                     </div>
                 </div>
@@ -237,8 +238,8 @@
         $(document).ready(function() {
             loadKecamatan();
             // Initialize Select2 for the first repeater row on page load
-            initializeSelect2($('.petugas_ukur, .pendamping'));
-
+            initializeSelect2($('.petugas_ukur'));
+            initializeSelect2($('.pendamping'), null, false);
             $(document).on('click', '#btn-submit', function(e) {
                 e.preventDefault();
                 $('.text-danger').remove();
@@ -306,6 +307,34 @@
 
             })
 
+
+            // Assuming this code is triggered on some event or after elements are created
+
+            $('.petugas_ukur').on('change', function() {
+                const $this = $(this);
+                const selectedPetugas = $this.select2('data')[0]; // Get selected data
+
+
+                // Find the nearest pendamping select element
+                const $pendampingSelect = $this.closest('[data-repeater-item]').find('.pendamping');
+                if (selectedPetugas) {
+                    // Assuming you want to set the pendamping to the selected petugas
+                    const pendampingData = {
+                        id: selectedPetugas?.data?.pendamping_ukur?.user
+                            ?.id, // Use selected ID for pendamping
+                        text: selectedPetugas?.data?.pendamping_ukur?.user?.name,
+                    };
+
+                    $pendampingSelect.empty(); // Clear previous options
+
+                    if (selectedPetugas?.data?.pendamping_ukur) {
+                        initializeSelect2($pendampingSelect, pendampingData, false); // Set new value
+                    }
+
+                } else {
+                    $pendampingSelect.empty().trigger('change'); // Clear if no selection
+                }
+            });
 
 
 

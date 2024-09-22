@@ -41,6 +41,12 @@ class Permohonan extends Model
         return $this->belongsTo(\App\Models\User::class, 'created_by');
     }
 
+    public function diteruskan()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'diteruskan_ke');
+    }
+
+
     public function petugasUkur()
     {
         return $this->hasMany(PermohonanPetugasUkur::class, 'permohonan_id');

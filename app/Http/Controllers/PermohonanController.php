@@ -19,6 +19,9 @@ use Illuminate\Database\Eloquent\Builder;
 use App\ApiMessage;
 use App\ApiCode;
 use Spatie\Permission\Models\Role;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+// use Barryvdh\DomPDF\Facade as PDF;
 
 class PermohonanController extends Controller
 {
@@ -29,18 +32,40 @@ class PermohonanController extends Controller
     public function index(Request $request)
     {
         if (\Auth::user()->can('show permohonan')) {
+            // Get the logged-in user
+            $user = Auth::user();
+            // Query the total number of permohonan (requests) for this user
+            $totalPermohonan = Permohonan::where('diteruskan_ke', $user->id)->count();
+            // Query the number of 'Diproses' status requests for this user
+            $totalDiproses = Permohonan::where('diteruskan_ke', $user->id)
+                ->where('status', 'proses')
+                ->count();
+
+            // Query the number of 'revisi' status requests for this user
+            $totalrevisi = Permohonan::where('diteruskan_ke', $user->id)
+                ->where('status', 'revisi')
+                ->count();
+
+            // Query the number of 'Selesai' status requests for this user
+            $totalSelesai = Permohonan::where('diteruskan_ke', $user->id)
+                ->where('status', 'selesai')
+                ->count();
 
             $query = Permohonan::query();
             $query->with('createdby');
             // Get the currently authenticated user's ID
             $currentUserId = Auth::id();
 
+            // if (!empty($request->date)) {
+            //     dd($request->date);
+            // }
 
-            $query = Permohonan::with('createdby')
+
+            $query = Permohonan::with('createdby', 'diteruskan')
                 // ->where('jenis_permohonan', 'permohonan')
                 ->where(function ($q) use ($currentUserId) {
                     $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
-                    //   ->orWhere('created_by', $currentUserId)
+                     ->orWhere('created_by', $currentUserId)
                       ->orWhereHas('petugasUkur', function ($q) use ($currentUserId) {
                           $q->where('petugas_ukur', $currentUserId);
                       });
@@ -54,8 +79,6 @@ class PermohonanController extends Controller
 
             if ($request->ajax()) {
                 return DataTables::of($query)
-
-
                ->addColumn('status_badge', function ($data) {
                    $status = '';
                    switch ($data->status) {
@@ -81,7 +104,7 @@ class PermohonanController extends Controller
                     // Show Invoice
                     if (Gate::check('show permohonan')) {
                         $actions .= '<div class="action-btn bg-info ms-2">
-                                        <a href="' . route('permohonan.show', [Crypt::encrypt($data->id)]) . '"
+                                        <a href="' . route('permohonan.show', ($data->id)) . '"
                                             class="mx-3 btn btn-sm align-items-center"
                                             data-bs-toggle="tooltip" title="' . __('Show') . '"
                                             data-original-title="' . __('Detail') . '">
@@ -93,11 +116,26 @@ class PermohonanController extends Controller
                     // Edit Invoice
                     if (Gate::check('show permohonan') && $data->status == 'draft') {
                         $actions .= '<div class="action-btn bg-primary ms-2">
-                                        <a href="' . route('permohonan.edit', [Crypt::encrypt($data->id)]) . '"
+                                        <a href="' . route('permohonan.edit', $data->id) . '"
                                             class="mx-3 btn btn-sm align-items-center"
                                             data-bs-toggle="tooltip" title="' . __('Edit') . '"
                                             data-original-title="' . __('Edit') . '">
                                             <i class="ti ti-pencil text-white"></i>
+                                        </a>
+                                    </div>';
+                    }
+
+
+
+                    if (Gate::check('show permohonan')) {
+                        $actions .= '<div class="action-btn bg-primary ms-2 dialihkan_ke" data-id="'. $data->id .'" >
+                                        <a  href="#" data-url="' . route('permohonan.pindah_tugas', $data->id) . '"
+                                            class="mx-3 btn btn-sm align-items-center"
+                                            data-size="md"
+                                            data-ajax-popup="true"
+                                            data-bs-toggle="tooltip" title="' . __('Alihkan Penugasan') . '"
+                                            data-original-title="' . __('Alihkan Penugasan') . '">
+                                            <i class="ti ti-report text-white"></i>
                                         </a>
                                     </div>';
                     }
@@ -130,7 +168,7 @@ class PermohonanController extends Controller
 
             }
 
-            return view('permohonan.index');
+            return view('permohonan.index', compact('totalPermohonan', 'totalDiproses', 'totalrevisi', 'totalSelesai'));
         } else {
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
@@ -179,14 +217,56 @@ class PermohonanController extends Controller
     public function show(string $id)
     {
 
-        $Id = \Crypt::decrypt($id);
-        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($Id);
-        $urlTeruskan = route('permohonan.teruskan', $Id);
-        $urlTolak = route('permohonan.tolak', $Id);
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
+        $urlTeruskan = route('permohonan.teruskan', $id);
+        $urlTolak = route('permohonan.tolak', $id);
         $dokument = Documents::get();
         $roles = Role::get();
-        return view('permohonan.show', compact('data', 'urlTeruskan', 'urlTolak', 'dokument', 'roles'));
+
+        // Define the role hierarchy
+        $roleHierarchy = [
+            "Petugas Jadwal" => [
+                "Petugas Cetak Surat Tugas"
+            ],
+            "Petugas Cetak Surat Tugas" => [
+                "Petugas Ukur"
+            ],
+            "Petugas Ukur" => [
+                "Admin Pengukuran"
+            ],
+            "Admin Pengukuran" => [
+                "Koordinator Pengukuran"
+            ],
+            "Admin" => [
+                "Petugas Gambar",
+                "Koordinator Wilayah",
+                "Kasi SP"
+            ],
+            "Petugas Gambar" => [
+                "Koordinator Wilayah",
+                "Petugas Ukur",
+                "Admin Pengukuran"
+            ],
+            "Koordinator Wilayah" => [
+                "Petugas Gambar",
+                "Petugas Ukur",
+                "Koordinator Pengukuran",
+                "Admin"
+            ],
+            "Kepala Seksi" => [
+                "Koordinator Wilayah",
+                "Koordinator Pengukuran",
+                "Admin"
+            ]
+        ];
+
+        $user = auth()->user();
+        $userRole = $user->roles()->first()->name;
+        $allowedRoles = $roleHierarchy[$userRole] ?? [];
+
+        return view('permohonan.show', compact('data', 'urlTeruskan', 'urlTolak', 'dokument', 'allowedRoles'));
     }
+
 
 
     public function print(Request $request, string $id)
@@ -194,16 +274,24 @@ class PermohonanController extends Controller
 
         $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
 
+        // Generate the URL for the permohonan.show route
+        $url = route('permohonan.show', ['permohonan' => $id]);
+        $qrCode = QrCode::size(80)->generate($url);
+
+
         if ($request->type == 'tugas pengukuran') {
-            return view('print.tugas_pengukuran', compact('data'));
+            return view('print.tugas_pengukuran', compact('data', 'qrCode'));
         } elseif ($request->type == 'lampiran tugas pengukuran') {
-            return view('print.lampiran_tugas_pengukuran', compact('data'));
+            return view('print.lampiran_tugas_pengukuran', compact('data', 'qrCode'));
         } elseif ($request->type == 'perintah kerja') {
-            return view('print.perintah_kerja', compact('data'));
+            return view('print.perintah_kerja', compact('data', 'qrCode'));
         } elseif ($request->type == 'pemberitahuan') {
-            return view('print.pemberitahuan', compact('data'));
+            return view('print.pemberitahuan', compact('data', 'qrCode'));
         }
+
     }
+
+
 
 
 
@@ -218,10 +306,8 @@ class PermohonanController extends Controller
      */
     public function edit(string $id)
     {
-
-        $Id = \Crypt::decrypt($id);
-        $data = Permohonan::with('petugasUkur.user')->find($Id);
-        $url = route('permohonan.update', $Id);
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
+        $url = route('permohonan.update', $id);
         return view('permohonan.edit', compact('data', 'url', ));
 
     }
@@ -247,12 +333,6 @@ class PermohonanController extends Controller
                 'user_id' => $dataId,
             ]);
         }
-
-
-        RiwayatPermohonanDiTeruskan::create([
-                'permohonan_id' => $data->id,
-                'user_id' =>  $request->petugas_ukur[0]
-            ]);
 
 
         Utility::auditTrail('update', $this->modulName, $data->id, $data->no_surat, auth()->user());
@@ -295,8 +375,8 @@ class PermohonanController extends Controller
 
         RiwayatPermohonanDiTeruskan::create([
             'permohonan_id' => $data->id,
-            'user_id' => $request->user,
-            'diteruskan_ke' => $request->diteruskan_ke_role,
+            'diteruskan_ke' => $request->user,
+            'diteruskan_ke_role' => $request->diteruskan_ke_role,
             'dokumen_terlampir' => json_encode($request->dokumen_terlampir),
             'status' => 'peroses'
         ]);
@@ -325,7 +405,7 @@ class PermohonanController extends Controller
 
         $data = Permohonan::find($id);
         $data->diteruskan_ke = $secondLatest->user_id;
-        $data->status = 'ditolak';
+        $data->status = 'revisi';
         $data->alasan_penolakan = $request->alasan_penolakan;
         $data->dokumen_terlampir = $secondLatest->dokumen_terlampir;
         $data->update();
@@ -339,13 +419,42 @@ class PermohonanController extends Controller
 
         RiwayatPermohonanDiTeruskan::create([
             'permohonan_id' => $data->id,
-            'user_id' => $secondLatest->user_id,
-            'diteruskan_ke' => $roleName,
+            'diteruskan_ke' => $secondLatest->user_id,
+            'diteruskan_ke_role' => $roleName,
             'alasan_penolakan' => !empty($request->alasan_penolakan) ? $request->alasan_penolakan : null
         ]);
 
 
-        Utility::auditTrail('tolak', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        Utility::auditTrail('revisi', $this->modulName, $data->id, $data->no_surat, auth()->user());
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+    }
+
+    public function pindahTugasView($id)
+    {
+        return view('permohonan.pindah_tugas');
+    }
+
+    public function pindahTugas($id, Request $request)
+    {
+        $data = Permohonan::find($id);
+        $data->status = 'peroses';
+        $data->diteruskan_ke = $request->dialihkan_ke;
+        $data->update();
+
+        $user = User::find($request->dialihkan_ke);
+        // Get the user's roles
+        $roleNames = $user->getRoleNames();
+        // the first role name or concatenated names:
+        $roleName = $roleNames->implode(', ');
+
+        RiwayatPermohonanDiTeruskan::create([
+            'permohonan_id' => $data->id,
+            'diteruskan_ke' => $user->id,
+            'diteruskan_ke_role' => $roleName,
+        ]);
+
+
+        return $this->respond($data, "Berhasil Mengalihkan penugasan");
+
     }
 }

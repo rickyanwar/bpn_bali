@@ -21,10 +21,14 @@ Route::get('display/', [DashboardController::class, 'display'])->name('dashboard
 Route::get('display/get-list', [DashboardController::class, 'getListdisplay'])->name('dashboard.get.list');
 
 
+
+Route::get('/', function () {
+    return redirect('/login');
+});
+
+
 // Group routes that need authentication
 Route::middleware(['auth:api','auth:web'])->group(function () {
-
-
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
 
@@ -35,6 +39,8 @@ Route::middleware(['auth:api','auth:web'])->group(function () {
 
     Route::get('permohonan/print/pemberitahuan/{id}', [PermohonanController::class, 'printPemberitahuan'])->name('permohonan.print.pemberitahuan');
 
+    Route::post('permohonan/pindah_tugas/{id}', [PermohonanController::class, 'pindahTugas'])->name('permohonan.pindah_tugas');
+    Route::get('permohonan/pindah_tugas/{id}', [PermohonanController::class, 'pindahTugasView'])->name('permohonan.pindah_tugas_view');
     Route::resource('permohonan', PermohonanController::class);
 
 

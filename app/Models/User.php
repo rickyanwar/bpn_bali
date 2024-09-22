@@ -74,4 +74,9 @@ class User extends Authenticatable
     {
         return $this->permohonansAssigned()->where('status', '!=', 'selesai')->count();
     }
+
+    public function pendamping_ukur()
+    {
+        return $this->hasOne(\App\Models\UserPembantuUkur::class, 'user_id');
+    }
 }

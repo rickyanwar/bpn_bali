@@ -299,6 +299,11 @@
                 <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 182736263738272839</p>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                {{ $qrCode }}
+            </div>
+        </div>
     </div>
 </body>
 

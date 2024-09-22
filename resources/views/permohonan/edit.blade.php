@@ -5,8 +5,8 @@
 
 @section('breadcrumb')
     {{--  <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>  --}}
-    <li class="breadcrumb-item"><a href="{{ route('pengukuran.index') }}">{{ __('Permohonan') }}</a></li>
-    <li class="breadcrumb-item">{{ __('Pengukuran ') }}</li>
+    <li class="breadcrumb-item"><a href="{{ route('permohonan.index') }}">{{ __('Permohonan') }}</a></li>
+    <li class="breadcrumb-item">{{ __('Edit ') }}</li>
 @endsection
 @push('script-page')
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
@@ -86,31 +86,65 @@
                             </div>
 
                         </div>
-                        <div class="row justify-content-center">
+                        <div class="row justify-content-center mb-5">
 
-                            <div class="col-10">
-                                <div class="form-group">
-                                    <label class="form-label">Nama Pemohon</label>
-                                    <input class="form-control" type="text" name="nama_pemohon" id="nama_pemohon"
-                                        placeholder="Masukkan nama pemohon">
+                            <div class="col-10 ">
+                                <!-- outer repeater -->
+                                <div class="container mt-5 repeater" data-value='{!! json_encode($data->petugasUkur) !!}'>
+                                    <!--outer repeater-->
+                                    <div data-repeater-list="petugas_ukur">
+                                        <!-- innner repeater -->
+
+                                        <div data-repeater-list="inner-list">
+                                            <div data-repeater-item>
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Petugas Ukur
+                                                            </label>
+                                                            <select class="form-control form-control petugas_ukur"
+                                                                name="petugas_ukur" style="width: 100%">
+                                                            </select>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Pendamping
+                                                            </label>
+                                                            <select class="form-control form-control pendamping"
+                                                                name="pendamping" style="width: 100%">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-2 mt-4">
+
+                                                        <button type="button" data-repeater-delete
+                                                            style="border-radius: 20px"
+                                                            class="btn btn-outline-secondary btn-sm">
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                    <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
+                                        Petugas Ukur</button>
                                 </div>
-                            </div>
-                            <div class="col-10">
-                                <div class="form-group">
-                                    <label class="form-label">Petugas Ukur</label>
-                                    <select class="form-control " id="petugas_ukur" name="petugas_ukur[]"
-                                        multiple="multiple" style="width: 100%">
-                                    </select>
 
 
-                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="card-footer d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary mx-2">Cancel</button>
-                        <button type="button" class="btn btn-primary " id="btn-submit">Kirim Permohonan</button>
+                        <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
                     </div>
                 </div>
             </div>
@@ -118,7 +152,7 @@
     </div>
 @endsection
 @push('script-page')
-    @include('pengukuran.script')
+    @include('permohonan.script')
     <script>
         let data = {!! json_encode($data) !!};
         let url = `{!! !empty($url) ? $url : '' !!}`;
@@ -132,22 +166,11 @@
         $('#nama_pemohon').val(data?.nama_pemohon);
 
 
-        // Transforming the data
-        let selectedPetugasUkur = data?.petugas_ukur?.map(item => {
-            if (item?.user) {
-                return {
-                    id: item.user.id,
-                    text: item.user.name // Rename 'name' to 'text'
-                };
-            }
-            return item;
-        });
 
         $(document).ready(function() {
 
-
             if ((data.kecamatan)) {
-                loadKecamatan("51.02", data.kecamatan).then(function() {
+                loadKecamatan("51.01", data.kecamatan).then(function() {
                         let kodeKecamatan = $('#kecamatan option:selected').attr('data-id');
                         return loadDesa(kodeKecamatan, data.desa);
                     })
@@ -198,7 +221,7 @@
                                 showConfirmButton: false,
                             }).then(function() {
                                 window.location.replace(
-                                    "{{ route('pengukuran.index') }}");
+                                    "{{ route('permohonan.index') }}");
                             });
 
                             show_toastr('error', xhr.responseJSON?.message);
@@ -228,22 +251,6 @@
                 })
 
             })
-
-            if (selectedPetugasUkur.length > 0) {
-                // Set the selected options by their IDs
-                let selectedIds = selectedPetugasUkur.map(item => item.id);
-                $('#petugas_ukur').val(selectedIds).trigger('change');
-
-                // Optionally, you can preload the text for the selected items (to make them visible in the dropdown)
-                selectedPetugasUkur.forEach(item => {
-                    let option = new Option(item.text, item.id, true, true);
-                    $('#petugas_ukur').append(option).trigger('change');
-                });
-            }
-
-
-
-
 
         });
     </script>

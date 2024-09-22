@@ -120,15 +120,20 @@ class UserController extends Controller
 
         $user  = \Auth::user();
         $roles = Role::get()->pluck('name', 'id')->toArray();
+
+        $pendampingUkur = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Pembantu Ukur');
+        })->pluck('name', 'id');
+
         // return $roles;
-        return view('user.create', compact('roles'));
+        return view('user.create', compact('roles', 'pendampingUkur'));
 
     }
 
     public function store(Request $request)
     {
 
-        if (\Auth::user()->can('create user')) {
+        if (\Auth::user()->can('manage user')) {
             $default_language = DB::table('settings')->select('value')->where('name', 'default_language')->first();
 
 
@@ -162,12 +167,12 @@ class UserController extends Controller
             $role_r = Role::findById($request->role);
             $user->assignRole($role_r);
 
-            // GenerateOfferLetter::defaultOfferLetterRegister($user->id);
-            // ExperienceCertificate::defaultExpCertificatRegister($user->id);
-            // JoiningLetter::defaultJoiningLetterRegister($user->id);
-            // NOC::defaultNocCertificateRegister($user->id);
-
-            // Send Email
+            if ($role_r->name == "Petugas Ukur") {
+                $pembantuUkur = new \App\Models\UserPembantuUkur();
+                $pembantuUkur->pendamping_id = $request->pendamping_id;
+                $pembantuUkur->user_id = $user->id;
+                $pembantuUkur->save();
+            }
 
             return redirect()->route('users.index')->with('success', __('User successfully created.'));
 

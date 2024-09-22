@@ -11,6 +11,8 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $userQuery = User::query();
+        $userQuery->with('pendamping_ukur.user');
+
 
         // Check if role is provided in the request
         if ($request->role) {

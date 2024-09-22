@@ -12,8 +12,8 @@ return new class () extends Migration {
     {
         Schema::create('riwayat_permohonan_diteruskan', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->string('diteruskan_ke')->nullable();
+            $table->integer('diteruskan_ke');
+            $table->string('diteruskan_ke_role')->nullable();
             $table->string('opsi')->nullable();
             $table->string('status')->nullable();
             $table->string('dokumen_terlampir')->nullable();

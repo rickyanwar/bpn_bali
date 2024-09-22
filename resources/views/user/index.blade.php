@@ -36,13 +36,8 @@
                                         <tr>
                                             <th> {{ __('Name') }}</th>
                                             <th>{{ __('Email') }}</th>
-                                            <th>{{ __('Type') }}</th>
-                                            <th>{{ __('Total Expense') }}</th>
-                                            <th>{{ __('Due Amount') }}</th>
                                             <th>{{ __('Status') }}</th>
-                                            @if (Gate::check('edit invoice') || Gate::check('delete invoice') || Gate::check('show invoice'))
-                                                <th>{{ __('Action') }}</th>
-                                            @endif
+                                            <th>{{ __('Action') }}</th>
                                             {{-- <th>
                                         <td class="barcode">
                                             {!! DNS1D::getBarcodeHTML($invoice->sku, "C128",1.4,22) !!}
@@ -101,16 +96,12 @@
                     name: "email",
                 },
                 {
-                    data: 'type',
-                    name: 'type',
-                },
-                {
                     data: 'is_active',
                     name: 'is_active',
                 },
                 {
-                    data: 'created_by',
-                    name: 'created_by',
+                    data: 'actions',
+                    name: 'actions',
                 },
 
 
@@ -121,5 +112,25 @@
         $(document).on('click', '#submit-filter', function(e) {
             table.draw();
         })
+
+        //On change to role Petugas Ukur
+        $('#commonModal').one('shown.bs.modal', function() {
+            $("#role").on('change', function(ret) {
+
+                const userSelectContainer = $('#pendamping-select-container');
+                const userSelect = $('#pendamping_id');
+
+                let selectedOption = $(this).find('option:selected');
+                let dataName = selectedOption.data('name');
+
+                if (selectedOption.data('name') === 'Petugas Ukur') {
+                    userSelectContainer.show();
+                    userSelect.prop('required', true);
+                } else {
+                    userSelectContainer.hide();
+                    userSelect.prop('required', false);
+                }
+            })
+        });
     </script>
 @endpush
