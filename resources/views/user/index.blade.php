@@ -35,8 +35,9 @@
                                     <thead>
                                         <tr>
                                             <th> {{ __('Name') }}</th>
+                                            <th> {{ __('Role') }}</th>
                                             <th>{{ __('Email') }}</th>
-                                            <th>{{ __('Status') }}</th>
+                                            <th>{{ __('Pembantu Ukur') }}</th>
                                             <th>{{ __('Action') }}</th>
                                             {{-- <th>
                                         <td class="barcode">
@@ -92,12 +93,16 @@
                     name: "name",
                 },
                 {
+                    data: "role",
+                    name: "role",
+                },
+                {
                     data: "email",
                     name: "email",
                 },
                 {
-                    data: 'is_active',
-                    name: 'is_active',
+                    data: 'pembantu_ukur',
+                    name: 'pembantu_ukur',
                 },
                 {
                     data: 'actions',
@@ -114,23 +119,67 @@
         })
 
         //On change to role Petugas Ukur
-        $('#commonModal').one('shown.bs.modal', function() {
+        $('#commonModal').on('shown.bs.modal', function() {
             $("#role").on('change', function(ret) {
-
-                const userSelectContainer = $('#pendamping-select-container');
-                const userSelect = $('#pendamping_id');
+                const pendampingInputContainer = $('#pendamping-container');
+                const pendampingInput = $('#pembantu_ukur');
 
                 let selectedOption = $(this).find('option:selected');
                 let dataName = selectedOption.data('name');
-
+                console.log(selectedOption.data('name'))
                 if (selectedOption.data('name') === 'Petugas Ukur') {
-                    userSelectContainer.show();
-                    userSelect.prop('required', true);
+                    pendampingInputContainer.show();
+                    pendampingInput.prop('required', true);
                 } else {
-                    userSelectContainer.hide();
-                    userSelect.prop('required', false);
+                    pendampingInputContainer.hide();
+                    pendampingInput.prop('required', false);
                 }
             })
+
+            $("#role").trigger('change');
         });
+
+        $(document).on('click', '.btn-delete', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let url = "{{ route('users.destroy', ':id') }}"
+            url = url.replace(':id', id);
+
+            swal({
+                title: "Anda Yakin?",
+                text: "Proses tidak dapat dibatalkan",
+                icon: "warning",
+                buttons: [
+                    'Tidak, Batalkan!',
+                    'Ya, Saya yakin!'
+                ],
+                dangerMode: true,
+            }).then(function(isConfirm) {
+                if (isConfirm) {
+                    let ajaxPost = ajaxRequest(url, 'DELETE', []).done(function(res) {
+                        console.log('res')
+                        swal({
+                            icon: 'success',
+                            title: res.message,
+                            showConfirmButton: false,
+                        }).then(function() {
+                            table.draw();
+                        });
+
+                        show_toastr('success', xhr.responseJSON?.message);
+
+                    })
+                    ajaxPost.fail(function(e) {
+                        swal({
+                            icon: 'warning',
+                            title: e.responseJSON.message || "Terjadi Kesalahan",
+                            showConfirmButton: false,
+                        });
+
+                    })
+                }
+            })
+
+        })
     </script>
 @endpush

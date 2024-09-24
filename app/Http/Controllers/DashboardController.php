@@ -4,16 +4,40 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Auth;
+use App\Models\Permohonan;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all 'permohonan' where the status is not 'selesai'
-        $permohonan = Permohonan::where('status', '!=', 'selesai')->get();
 
-        // Return data as JSON response
-        return response()->json($permohonan);
+        $currentUserId = Auth::user()->id;
+
+        // Fetch totals by status
+        $totalByStatus = Permohonan::with('createdby', 'diteruskan')
+            ->where(function ($q) use ($currentUserId) {
+                $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
+                  ->orWhere('created_by', $currentUserId);
+            })
+            ->select('status', \DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->get();
+
+        // Calculate total count of all applications for the current user
+        $totalAll = $totalByStatus->sum('total');
+
+        // Check if the request is an AJAX request
+        if ($request->ajax()) {
+            return response()->json([
+                'totalByStatus' => $totalByStatus,
+                'totalAll' => $totalAll
+            ]);
+        }
+
+        // If it's not an AJAX request, return the view
+        return view('dashboard.index', compact('totalByStatus', 'totalAll'));
+
     }
 
     public function getListdisplay()

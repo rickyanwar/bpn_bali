@@ -26,27 +26,33 @@ class Utility extends Model
 
     public static function generateCode($model, $field, $prefix, $length = 5)
     {
-
-        $data = $model::orderBy('id', 'desc')->first();
+        // Get the last record of the model (with soft deletes if applicable)
         if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($model))) {
             $data = $model::withTrashed()->orderBy('id', 'desc')->first();
-        }
-        if (!$data) {
-            $og_length = $length - 1;
-            $last_number = 1;
         } else {
+            $data = $model::orderBy('id', 'desc')->first();
+        }
+
+        // If no previous data, start with 1
+        if (!$data) {
+            $last_number = 1;
+            $og_length = $length - 1;
+        } else {
+            // Extract the numeric part of the field by removing the prefix
             $code = substr($data->$field, strlen($prefix));
-            $act_last_no = ($code / 1) * 1;
+
+            // Convert to a number and increment
+            $act_last_no = intval($code); // More reliable to use intval
             $inc_last_no = $act_last_no + 1;
+
+            // Calculate number of zeros required
             $last_number_length = strlen($inc_last_no);
             $og_length = $length - $last_number_length;
             $last_number = $inc_last_no;
+        }
 
-        }
-        $zeros = "";
-        for ($i = 0; $i < $og_length; $i++) {
-            $zeros .= "0";
-        }
+        // Generate the prefix + padded zeros + last number
+        $zeros = str_repeat("0", $og_length); // Use str_repeat for cleaner code
         return $prefix . $zeros . $last_number;
     }
 

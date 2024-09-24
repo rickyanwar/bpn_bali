@@ -26,7 +26,7 @@ class UsersTableSeeder extends Seeder
         // Define permissions
         $arrPermissions = [
             [
-                'name' => 'show all permohonan',
+                'name' => 'manage all permohonan',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -50,12 +50,11 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'teruskan permohonan',
+                'name' => 'alihkan permohonan',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
 
             [
                 'name' => 'manage user',
@@ -123,7 +122,7 @@ class UsersTableSeeder extends Seeder
                 'role_name' => "Petugas Cetak Surat Tugas",
                 'user_name' => 'Indah Corry',
                 'user_email' => 'indah.corry@example.com',
-                'user_password' => 'password',
+                'user_password' => 'password'
             ],
             // Petugas Ukur
             [
@@ -144,13 +143,7 @@ class UsersTableSeeder extends Seeder
                 'user_email' => '1',
                 'user_password' => 'password',
             ],
-            // Pembantu Ukur
-            [
-                'role_name' => "Pembantu Ukur",
-                'user_name' => 'IKadek Andi Pramana',
-                'user_email' => 'pembantu.ukur1@example.com',
-                'user_password' => 'password',
-            ],
+
             // Admin Pengukuran
             [
                 'role_name' => "Admin Pengukuran",
@@ -256,7 +249,6 @@ class UsersTableSeeder extends Seeder
                 [
                     'name' => $data['user_name'],
                     'password' => Hash::make($data['user_password']),
-                    'type' => 'user',
                     'lang' => 'en',
                     'created_by' => 0,
                     'email_verified_at' => now(),
@@ -270,21 +262,60 @@ class UsersTableSeeder extends Seeder
 
             // Assign permissions to the role (to avoid duplicates)
             $role->syncPermissions([
-                'show all permohonan',
                 'show permohonan',
                 'edit permohonan',
                 'delete permohonan',
-                'teruskan permohonan',
-                'manage role',
-                'show role',
-                'edit role',
-                'delete role',
-                'manage user',
-                'show user',
-                'edit user',
-                'delete user',
             ]);
         }
+
+
+
+        $data = [
+            'admin_role_name' => 'Super Admin', // Set the admin role name to "Super Admin"
+            'admin_name' => 'John Doe', // Example admin data (replace with actual data)
+            'admin_email' => 'superadmin@example.com',
+            'admin_password' => 'password', // Replace with an actual password or request input
+        ];
+
+        // Create the role "Super Admin" if it doesn't exist
+        $adminRole = Role::firstOrCreate(
+            ['name' => $data['admin_role_name']],
+            ['created_by' => 0] // You can customize the created_by field as necessary
+        );
+
+        // Check if the admin user exists, or create it
+        $adminUser = User::firstOrCreate(
+            ['email' => $data['admin_email']],
+            [
+                'name' => $data['admin_name'],
+                'password' => Hash::make($data['admin_password']),
+                'lang' => 'en',
+                'created_by' => 0,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Assign the "Super Admin" role to the user if they don't already have it
+        if (!$adminUser->hasRole($adminRole->name)) {
+            $adminUser->assignRole($adminRole);
+        }
+
+        // Sync permissions for the "Super Admin" role
+        $adminRole->syncPermissions([
+            'manage all permohonan',
+            'show permohonan',
+            'edit permohonan',
+            'delete permohonan',
+            'alihkan permohonan',
+            'manage role',
+            'show role',
+            'edit role',
+            'delete role',
+            'manage user',
+            'show user',
+            'edit user',
+            'delete user',
+        ]);
 
     }
 

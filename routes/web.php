@@ -8,6 +8,7 @@ use App\Http\Controllers\PemecahanController;
 use App\Http\Controllers\PengukuranController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuditTrailController;
 
 // Route::get('/', function () {
 //     return redirect('/login');
@@ -33,6 +34,12 @@ Route::middleware(['auth:api','auth:web'])->group(function () {
     Route::resource('roles', RoleController::class);
 
 
+    Route::get('audit-trails', [AuditTrailController::class, 'index'])->name('audit.index');
+
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('permohonan/detail/{id}', [PermohonanController::class, 'detail'])->name('permohonan.detail');
+    Route::get('permohonan/audit-trails/{id}', [PermohonanController::class, 'auditTrails'])->name('permohonan.audit-trails');
+    Route::get('permohonan/riwayat-penerusan/{id}', [PermohonanController::class, 'riwayatDiteruskan'])->name('permohonan.riwayat-penerusan');
     Route::post('permohonan/tolak/{id}', [PermohonanController::class, 'tolak'])->name('permohonan.tolak');
     Route::post('permohonan/teruskan/{id}', [PermohonanController::class, 'teruskan'])->name('permohonan.teruskan');
     Route::get('permohonan/print/{id}', [PermohonanController::class, 'print'])->name('permohonan.print');

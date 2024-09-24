@@ -46,10 +46,10 @@
         </div>
 
         <!-- Additional Pendamping Select (Hidden by Default) -->
-        <div class="col-md-6" id="pendamping-select-container" style="display: none">
+        <div class="col-md-6" id="pendamping-container" style="display: none">
             <div class="form-group">
-                {!! Html::label(__('Pendamping Ukur'), 'pendamping_id')->class('form-label') !!}
-                {!! Html::select('pendamping_id', $pendampingUkur, null)->class('form-control select2 ')->id('pendamping_id') !!}
+                {!! Html::label(__('Pembantu Ukur'))->class('form-label') !!}
+                {!! Html::text('pembantu_ukur')->class('form-control')->id('pembantu_ukur')->placeholder(__('Masukkan Pembantu ukur'))->required() !!}
                 @error('pendamping_id')
                     <small class="invalid-user" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>

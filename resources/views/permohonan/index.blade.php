@@ -57,15 +57,18 @@
                     <div class="card-body">
 
                         <div class="row d-flex align-items-center ">
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
-                                <div class="btn-box mt-3">
-                                    <a href="{{ route('permohonan.create') }}" data-url="{{ route('permohonan.create') }}"
-                                        class="btn btn-xl btn-primary btn-block ">
-                                        Tambah Data Baru
-                                    </a>
+                            @if (auth()->user()->hasRole('Petugas Jadwal') || auth()->user()->can('manage all permohonan'))
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
+                                    <div class="btn-box mt-3">
+                                        <a href="{{ route('permohonan.create') }}"
+                                            data-url="{{ route('permohonan.create') }}"
+                                            class="btn btn-xl btn-primary btn-block ">
+                                            Tambah Data Baru
+                                        </a>
 
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     {{--  {{ Form::label('issue_date', __('Issue Date'), ['class' => 'form-label']) }}
@@ -191,7 +194,6 @@
                     data: 'diteruskan',
                     name: 'diteruskan',
                     render: function(data) {
-                        console.log('data', data);
                         return data?.name ?? '-';
                     }
                 },

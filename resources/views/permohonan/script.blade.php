@@ -3,42 +3,36 @@
 
     // Function to initialize Select2 with or without AJAX
     function initializeSelect2($element, selectedValue = null, useAjax = true) {
-        if (useAjax) {
-            $element.select2({
-                ajax: {
-                    url: "{{ route('user.search') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            term: params.term
-                        };
-                    },
-                    processResults: function(response) {
-                        return {
-                            results: response.data.data.map(function(user) {
-                                return {
-                                    id: user.id,
-                                    text: user.name,
-                                    data: user
-                                };
-                            })
-                        };
-                    },
-                    cache: true
+        $element.select2({
+            ajax: {
+                url: "{{ route('user.search') }}",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        term: params.term,
+                        role: "Petugas Ukur"
+                    };
                 },
-                placeholder: 'Pilih Pengguna',
-                allowClear: true
-            });
-        } else {
-            $element.select2({
-                placeholder: 'Pilih Pendamping',
-                allowClear: true
-            });
-        }
-
+                processResults: function(response) {
+                    return {
+                        results: response.data.data.map(function(user) {
+                            return {
+                                id: user.id,
+                                text: user.name,
+                                data: user
+                            };
+                        })
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Pilih Pengguna',
+            allowClear: true
+        });
         // If we have a selected value, set it as the default selected option
         if (selectedValue) {
+            console.log('selectedValue', selectedValue);
             const option = new Option(selectedValue.text, selectedValue.id, true, true);
             // option.dataset.user = JSON.stringify(selectedValue.user); // Assuming user data is available
             $element.append(option).trigger('change'); // Append and trigger change to display the selected option
@@ -50,34 +44,26 @@
         show: function() {
             $(this).slideDown();
             const $petugasUkurSelect = $(this).find('.petugas_ukur');
-            const $pendampingSelect = $(this).find('.pendamping');
-
 
             initializeSelect2($petugasUkurSelect); // Initialize petugas_ukur with AJAX search
-            initializeSelect2($pendampingSelect, null, false); // Initialize pendamping without AJAX
 
             $petugasUkurSelect.on('change', function() {
                 const $this = $(this);
                 const selectedPetugas = $this.select2('data')[0]; // Get selected data
                 // Find the nearest pendamping select element
-                const $pendampingSelect = $this.closest('[data-repeater-item]').find('.pendamping');
+                const $pembantuUkur = $this.closest('[data-repeater-item]').find('.pembantu_ukur');
                 if (selectedPetugas) {
                     // Assuming you want to set the pendamping to the selected petugas
-                    const pendampingData = {
-                        id: selectedPetugas?.data?.pendamping_ukur?.user
-                            ?.id, // Use selected ID for pendamping
-                        text: selectedPetugas?.data?.pendamping_ukur?.user?.name,
-                    };
 
-                    $pendampingSelect.empty(); // Clear previous options
 
-                    if (selectedPetugas?.data?.pendamping_ukur) {
-                        initializeSelect2($pendampingSelect, pendampingData,
-                            false); // Set new value
+                    $pembantuUkur.empty(); // Clear previous options
+
+                    if (selectedPetugas?.data?.pembantu_ukur) {
+                        $pembantuUkur.val(selectedPetugas?.data?.pembantu_ukur);
                     }
 
                 } else {
-                    $pendampingSelect.empty().trigger('change'); // Clear if no selection
+                    $pembantuUkur.empty().trigger('change'); // Clear if no selection
                 }
             });
         },
@@ -94,16 +80,13 @@
     if (value && value.length) {
         value = JSON.parse(value); // Parse the JSON string
 
-        // Populate repeater with the existing data
-        $repeater.setList(value);
-
         // Loop through each repeater item and set the selected values for Select2
         value.forEach(function(item, index) {
             var $repeaterItem = $('[data-repeater-item]').eq(index);
 
             // Initialize Select2 for petugas_ukur and pendamping
             var petugasUkurSelect = $repeaterItem.find('.petugas_ukur');
-            var pendampingSelect = $repeaterItem.find('.pendamping');
+            var pembantuUkur = $repeaterItem.find('.pembantu_ukur');
 
             // Set the selected option for petugas_ukur
             initializeSelect2(petugasUkurSelect, {
@@ -112,12 +95,7 @@
                 data: item
             });
 
-            // Set the selected option for pendamping using the user data from pendamping_ukur
-            initializeSelect2(pendampingSelect, {
-                id: item.petugas_pendamping.id,
-                text: item.petugas_pendamping.name,
-                data: item,
-            }, false);
+            pembantuUkur.val(item.petugas.pembantu_ukur)
         });
     }
 

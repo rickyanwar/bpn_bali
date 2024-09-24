@@ -13,7 +13,7 @@ class PermohonanPetugasUkur extends Model
     protected $fillable = [
         'permohonan_id',
         'petugas_ukur',
-        'pendamping'
+        'pembantu_ukur'
     ];
 
     public function permohonan()

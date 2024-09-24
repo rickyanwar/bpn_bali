@@ -32,9 +32,8 @@ class PermohonanRequest extends FormRequest
                     'di_302' => 'required',
                     'tanggal_mulai_pengukuran' => 'date|required',
                     'tanggal_berakhir_pengukuran' => 'date|required',
-                    'no_surat' => 'required',
-                //  'nama_pemohon' => 'required',
-                    'no_berkas' => 'required',
+             'jenis_kegiatan' => 'required|in:Penggabungan,Pemecahan,Pengukuran,Penataan Batas,Pengembalian Batas,Permohonan SK,Konversi',
+                    'nama_pemohon' => 'required',
                     'kecamatan' => [ 'required', function ($attr, $value, $fail) use ($request) {
                         $kecamatan = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '8')
                             ->where('nama', $this->request->get('kecamatan'))->first();
@@ -60,9 +59,9 @@ class PermohonanRequest extends FormRequest
                             'required',
                             'exists:users,id'  // Validate that the petugas_ukur exists in users table
                         ],
-                    'petugas_ukur.*.pendamping' => [
+                    'petugas_ukur.*.pembantu_ukur' => [
                             'required',
-                            'exists:users,id'  // Validate that the pendamping exists in users table
+
                      ],
                 ]
         ;

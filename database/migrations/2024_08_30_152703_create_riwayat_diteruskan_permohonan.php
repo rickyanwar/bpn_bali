@@ -14,9 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->integer('diteruskan_ke');
             $table->string('diteruskan_ke_role')->nullable();
-            $table->string('opsi')->nullable();
             $table->string('status')->nullable();
-            $table->string('dokumen_terlampir')->nullable();
             $table->text('alasan_penolakan')->nullable();
             $table->foreignId('permohonan_id')
                          ->constrained('permohonan')

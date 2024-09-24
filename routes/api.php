@@ -32,16 +32,22 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 
     //Protecting Routes
+
     Route::group(['middleware' => ['auth:api,web']], function () {
-        // Route::get('/profile', [App\Http\Controllers\Api\AuthController::class, 'profile']);
+        // Explicitly named routes for permohonan
+        Route::post('permohonan/tolak/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'tolak']);
+        Route::post('permohonan/teruskan/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'teruskan']);
+        Route::get('permohonan/print/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'print']);
 
-        // // API route for logout user
-        // Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
-        // Route::post('/change-password', [App\Http\Controllers\Api\AuthController::class, 'changePassword']);
-        // Route::post('/profile/update', [App\Http\Controllers\Api\AuthController::class, 'updateProfile']);
-
-        Route::apiResource('req_penggabungan', App\Http\Controllers\Api\PenggabunganController::class);
-
+        Route::apiResource('permohonan', App\Http\Controllers\Api\PermohonanController::class, [
+            'names' => [
+                'index' => 'permohonan.api.index',
+                'store' => 'permohonan.api.store',
+                'show' => 'permohonan.api.show',
+                'update' => 'permohonan.api.update',
+                'destroy' => 'permohonan.api.destroy',
+            ]
+        ]);
     });
 
 });

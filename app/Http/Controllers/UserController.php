@@ -25,6 +25,8 @@ use Session;
 use Spatie\Permission\Models\Role;
 use DataTables;
 use Illuminate\Support\Facades\Gate;
+use App\ApiMessage;
+use App\ApiCode;
 
 class UserController extends Controller
 {
@@ -32,13 +34,9 @@ class UserController extends Controller
     {
         if (\Auth::user()->can('manage user')) {
 
-            $query = User::query();
 
 
-            if (!empty($request->customer)) {
-                $query->where('customer_id', '=', $request->customer);
-            }
-
+            $query = User::with('roles');  // Include roles in the query
 
             if (!empty($request->status)) {
                 $query->where('status', '=', (int) $request->status);
@@ -47,7 +45,9 @@ class UserController extends Controller
             if ($request->ajax()) {
                 return DataTables::of($query)
 
-
+                ->addColumn('role', function ($user) {
+                    return $user->roles->pluck('name')->implode(', ');
+                })
                 ->addColumn('status_badge', function ($user) {
                     $status = $user->is_active > 0 ? 'bg-danger' : 'bg-success';
                     return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
@@ -57,22 +57,24 @@ class UserController extends Controller
                     $actions = '';
 
                     // Show user
-                    if (Gate::check('show user')) {
-                        $actions .= '<div class="action-btn bg-info ms-2">
-                                        <a href="' . route('users.show', [Crypt::encrypt($user->id)]) . '"
-                                            class="mx-3 btn btn-sm align-items-center"
-                                            data-bs-toggle="tooltip" title="' . __('Show') . '"
-                                            data-original-title="' . __('Detail') . '">
-                                            <i class="ti ti-eye text-white"></i>
-                                        </a>
-                                    </div>';
-                    }
+                    // if (Gate::check('show user')) {
+                    //     $actions .= '<div class="action-btn bg-info ms-2">
+                    //                     <a href="' . route('users.show', $user->id) . '"
+                    //                         class="mx-3 btn btn-sm align-items-center"
+                    //                         data-bs-toggle="tooltip" title="' . __('Show') . '"
+                    //                         data-original-title="' . __('Detail') . '">
+                    //                         <i class="ti ti-eye text-white"></i>
+                    //                     </a>
+                    //                 </div>';
+                    // }
 
                     // Edit user
                     if (Gate::check('edit user')) {
-                        $actions .= '<div class="action-btn bg-primary ms-2">
-                                        <a href="' . route('users.edit', [Crypt::encrypt($user->id)]) . '"
+                        $actions .= '<div class="action-btn bg-primary ms-2 dialihkan_ke" data-id="'. $user->id .'" >
+                                        <a  href="#" data-url="' . route('users.edit', $user->id) . '"
                                             class="mx-3 btn btn-sm align-items-center"
+                                            data-size="lg"
+                                            data-ajax-popup="true"
                                             data-bs-toggle="tooltip" title="' . __('Edit') . '"
                                             data-original-title="' . __('Edit') . '">
                                             <i class="ti ti-pencil text-white"></i>
@@ -83,11 +85,8 @@ class UserController extends Controller
                     // Delete user
                     if (Auth::user()->can('delete user')) {
                         $actions .= '<div class="action-btn bg-danger ms-2">
-                                        <form method="POST" action="' . route('users.destroy', $user->id) . '" id="delete-form-' . $user->id . '">
-                                            ' . csrf_field() . '
-                                            ' . method_field('DELETE') . '
-                                            <a href="#"
-                                                class="mx-3 btn btn-sm align-items-center bs-pass-para"
+                                       <a href="#" data-id="'.$user->id.'"
+                                                class="mx-3 btn btn-sm btn-delete align-items-center"
                                                 data-bs-toggle="tooltip"
                                                 title="' . __('Delete') . '"
                                                 data-original-title="' . __('Delete') . '"
@@ -95,7 +94,6 @@ class UserController extends Controller
                                                 data-confirm-yes="document.getElementById(\'delete-form-' . $user->id . '\').submit();">
                                                 <i class="ti ti-trash text-white"></i>
                                             </a>
-                                        </form>
                                     </div>';
                     }
 
@@ -158,21 +156,17 @@ class UserController extends Controller
             $user['email']      = $request->email;
             $psw                = $request->password;
             $user['password']   = Hash::make($request->password);
-            $user['type']       = $role_r->name;
             $user['lang']       = !empty($default_language) ? $default_language->value : 'en';
             $user['created_by'] = \Auth::user()->id;
             $user['email_verified_at'] = date('Y-m-d H:i:s');
+            $user['pembantu_ukur']   = null;
+            if ($role_r->name == "Petugas Ukur") {
+                $user['pembantu_ukur']       = $request->pembantu_ukur;
+            }
 
             $user->save();
             $role_r = Role::findById($request->role);
             $user->assignRole($role_r);
-
-            if ($role_r->name == "Petugas Ukur") {
-                $pembantuUkur = new \App\Models\UserPembantuUkur();
-                $pembantuUkur->pendamping_id = $request->pendamping_id;
-                $pembantuUkur->user_id = $user->id;
-                $pembantuUkur->save();
-            }
 
             return redirect()->route('users.index')->with('success', __('User successfully created.'));
 
@@ -188,14 +182,12 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $user  = \Auth::user();
-        $roles = Role::where('created_by', '=', $user->creatorId())->where('name', '!=', 'client')->get()->pluck('name', 'id');
+
         if (\Auth::user()->can('edit user')) {
             $user              = User::findOrFail($id);
-            $user->customField = CustomField::getData($user, 'user');
-            $customFields      = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'user')->get();
+            $roles = Role::get();
 
-            return view('user.edit', compact('user', 'roles', 'customFields'));
+            return view('user.edit', compact('user', 'roles'));
         } else {
             return redirect()->back();
         }
@@ -207,61 +199,36 @@ class UserController extends Controller
     {
 
         if (\Auth::user()->can('edit user')) {
-            if (\Auth::user()->type == 'super admin') {
-                $user = User::findOrFail($id);
-                $validator = \Validator::make(
-                    $request->all(),
-                    [
-                                       'name' => 'required|max:120',
-                                       'email' => 'required|email|unique:users,email,' . $id,
-                                   ]
-                );
-                if ($validator->fails()) {
-                    $messages = $validator->getMessageBag();
-                    return redirect()->back()->with('error', $messages->first());
-                }
 
-                //                $role = Role::findById($request->role);
-                $role = Role::findByName('company');
-                $input = $request->all();
-                $input['type'] = $role->name;
-
-                $user->fill($input)->save();
-                CustomField::saveData($user, $request->customField);
-
-                $roles[] = $role->id;
-                $user->roles()->sync($roles);
-
-                return redirect()->route('users.index')->with(
-                    'success',
-                    'User successfully updated.'
-                );
-            } else {
-                $user = User::findOrFail($id);
-                $this->validate(
-                    $request,
-                    [
-                                'name' => 'required|max:120',
-                                'email' => 'required|email|unique:users,email,' . $id,
-                                'role' => 'required',
-                            ]
-                );
-
-                $role          = Role::findById($request->role);
-                $input         = $request->all();
-                $input['type'] = $role->name;
-                $user->fill($input)->save();
-                Utility::employeeDetailsUpdate($user->id, \Auth::user()->creatorId());
-                CustomField::saveData($user, $request->customField);
-
-                $roles[] = $request->role;
-                $user->roles()->sync($roles);
-
-                return redirect()->route('users.index')->with(
-                    'success',
-                    'User successfully updated.'
-                );
+            $user = User::findOrFail($id);
+            $validator = \Validator::make(
+                $request->all(),
+                [
+                                   'name' => 'required|max:120',
+                                   'email' => 'required|email|unique:users,email,' . $id,
+                               ]
+            );
+            if ($validator->fails()) {
+                $messages = $validator->getMessageBag();
+                return redirect()->back()->with('error', $messages->first());
             }
+
+            $role = Role::findById($request->role);
+            $input = $request->all();
+
+
+            if ($role->name == "Petugas Ukur") {
+                $user['pembantu_ukur']       = $request->pembantu_ukur;
+            }
+            $user->fill($input)->update();
+
+            $user->roles()->sync($request->role);
+
+            return redirect()->route('users.index')->with(
+                'success',
+                'User successfully updated.'
+            );
+
         } else {
             return redirect()->back();
         }
@@ -273,33 +240,9 @@ class UserController extends Controller
 
         if (\Auth::user()->can('delete user')) {
             $user = User::find($id);
-            if ($user) {
-                if (\Auth::user()->type == 'super admin') {
-                    if ($user->delete_status == 0) {
-                        $user->delete_status = 1;
-                    } else {
-                        $user->delete_status = 0;
-                    }
-                    $user->save();
-                }
-                if (\Auth::user()->type == 'company') {
-                    $employee = Employee::where(['user_id' => $user->id])->delete();
-                    if ($employee) {
-                        $delete_user = User::where(['id' => $user->id])->delete();
-                        if ($delete_user) {
-                            return redirect()->route('users.index')->with('success', __('User successfully deleted .'));
-                        } else {
-                            return redirect()->back()->with('error', __('Something is wrong.'));
-                        }
-                    } else {
-                        return redirect()->back()->with('error', __('Something is wrong.'));
-                    }
-                }
+            $user->delete();
 
-                return redirect()->route('users.index')->with('success', __('User successfully deleted .'));
-            } else {
-                return redirect()->back()->with('error', __('Something is wrong.'));
-            }
+            return $this->respond(null, ApiMessage::SUCCESFULL_DELETE);
         } else {
             return redirect()->back();
         }

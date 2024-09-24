@@ -23,25 +23,26 @@
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
-                                    <input class="form-control" type="text" name="no_berkas" id="no_berkas"
-                                        placeholder="Masukkan no berkas">
+                                    <input class="form-control" type="text" id="no_berkas"
+                                        placeholder="Otomatis Oleh System" disabled>
                                 </div>
                             </div>
+                            <div class="col-5">
+                                <div class="form-group">
+                                    <label class="form-label">No Surat</label>
+                                    <input class="form-control" type="text" id="no_surat"
+                                        placeholder="Otomatis Oleh System" disabled>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row justify-content-center">
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">Kecamatan</label>
                                     <select class="form-control form-control select2" id="kecamatan" name="kecamatan"
                                         style="width: 100%">
                                     </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-5">
-                                <div class="form-group">
-                                    <label class="form-label">DI 305</label>
-                                    <input class="form-control" type="text" name="di_305" id="di_305"
-                                        placeholder="Masukkan DI 305">
                                 </div>
                             </div>
                             <div class="col-5">
@@ -52,13 +53,43 @@
                                     </select>
                                 </div>
                             </div>
+
                         </div>
                         <div class="row justify-content-center">
+                            <div class="col-5">
+                                <div class="form-group">
+                                    <label class="form-label">DI 305</label>
+                                    <input class="form-control" type="text" name="di_305" id="di_305"
+                                        placeholder="Masukkan DI 305">
+                                </div>
+                            </div>
+
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">DI 302</label>
                                     <input class="form-control" type="text" name="di_302" id="di_302"
                                         placeholder="Masukkan DI 302">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-5">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Tanggal Mulai Pengukuran</label>
+                                            <input class="form-control " type="date" name="tanggal_mulai_pengukuran"
+                                                id="tanggal_mulai_pengukuran">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Tanggal Selesai Pengukuran</label>
+                                            <input class="form-control " type="date" name="tanggal_berakhir_pengukuran"
+                                                id="tanggal_berakhir_pengukuran">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-5">
@@ -68,83 +99,181 @@
                                         placeholder="Masukkan Luas">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row justify-content-center">
                             <div class="col-5">
                                 <div class="form-group">
-                                    <label class="form-label">Tanggal Pengukuran</label>
-                                    <input class="form-control" type="date" name="tanggal_pengukuran"
-                                        id="tanggal_pengukuran">
+                                    <label class="form-label">Nama Pemohon</label>
+                                    <input class="form-control" type="text" name="nama_pemohon" id="nama_pemohon"
+                                        placeholder="Masukkan nama pemohon">
                                 </div>
                             </div>
                             <div class="col-5">
                                 <div class="form-group">
-                                    <label class="form-label">No Surat</label>
-                                    <input class="form-control" type="text" name="no_surat" id="no_surat"
-                                        placeholder="Masukkan no surat">
+                                    <label class="form-label">Jenis Permohonan</label>
+                                    <select class="form-control form-control" name="jenis_kegiatan" id="jenis_kegiatan"
+                                        style="width: 100%">
+
+                                        <option value="">Pilih</option>
+                                        <option value="Penggabungan">Penggabungan</option>
+                                        <option value="Pemecahan">Pemecahan</option>
+                                        <option value="Pengukuran">Pengukuran dan Pemetaan Kadastral
+                                        </option>
+                                        <option value="Penataan Batas">Penataan Batas</option>
+                                        <option value="Pengembalian Batas">Pengembalian Batas</option>
+                                        <option value="Permohonan SK">Permohonan SK</option>
+                                        <option value="Konversi">Konversi</option>
+                                    </select>
                                 </div>
                             </div>
 
-                        </div>
-                        <div class="row justify-content-center mb-5">
 
-                            <div class="col-10 ">
+                        </div>
+                        <div class="row justify-content-center mb-3">
+
+                            <div class="col-10">
                                 <!-- outer repeater -->
-                                <div class="container mt-5 repeater" data-value='{!! json_encode($data->petugasUkur) !!}'>
-                                    <!--outer repeater-->
-                                    <div data-repeater-list="petugas_ukur">
-                                        <!-- innner repeater -->
-
-                                        <div data-repeater-list="inner-list">
+                                <div class="mt-2 repeater" data-value='{!! json_encode($data->petugasUkur) !!}'>
+                                    @if (auth()->user()->hasRole('Petugas Jadwal') && $data->status == 'draft')
+                                        <div data-repeater-list="petugas_ukur">
                                             <div data-repeater-item>
-                                                <div class="row">
-                                                    <div class="col-4">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Petugas Ukur
-                                                            </label>
-                                                            <select class="form-control form-control petugas_ukur"
-                                                                name="petugas_ukur" style="width: 100%">
-                                                            </select>
+                                                <!-- innner repeater -->
+                                                <div data-repeater-list="inner-list">
+                                                    <div data-repeater-item>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Petugas Ukur
+                                                                    </label>
+                                                                    <select class="form-control form-control petugas_ukur"
+                                                                        name="petugas_ukur" style="width: 100%">
+                                                                    </select>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Pembantu ukur
+                                                                    </label>
+                                                                    <input class="form-control form-control pembantu_ukur"
+                                                                        name="pembantu_ukur" readonly>
+
+                                                                </div>
+                                                            </div>
+
                                                         </div>
-
                                                     </div>
-                                                    <div class="col-4">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Pendamping
-                                                            </label>
-                                                            <select class="form-control form-control pendamping"
-                                                                name="pendamping" style="width: 100%">
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-2 mt-4">
 
-                                                        <button type="button" data-repeater-delete
-                                                            style="border-radius: 20px"
-                                                            class="btn btn-outline-secondary btn-sm">
-                                                            <i class="fas fa-minus"></i>
-                                                        </button>
-
-                                                    </div>
                                                 </div>
                                             </div>
-
                                         </div>
+                                    @elseif (auth()->user()->hasRole('Petugas Cetak Surat Tugas') && $data->diteruskan_ke == auth()->user()->id)
+                                        {{--  if petugas cetak show delete and minus button  --}}
+                                        <div data-repeater-list="petugas_ukur">
+                                            <div data-repeater-item>
+                                                <!-- innner repeater -->
+                                                <div data-repeater-list="inner-list">
+                                                    <div data-repeater-item>
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Petugas Ukur
+                                                                    </label>
+                                                                    <select class="form-control form-control petugas_ukur"
+                                                                        name="petugas_ukur" style="width: 100%">
+                                                                    </select>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="col-5">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">Pembantu ukur
+                                                                    </label>
+                                                                    <input class="form-control form-control pembantu_ukur"
+                                                                        name="pembantu_ukur" readonly>
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-2 mt-4">
+                                                                <button type="button" data-repeater-delete
+                                                                    style="border-radius: 20px"
+                                                                    class="btn btn-outline-secondary btn-sm">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <button data-repeater-create type="button"
+                                                            class="btn btn-outline-primary">Tambah
+                                                            Petugas Ukur</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Petugas Ukur</th>
+                                                    <th scope="col">Pembantu Ukur</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($data->petugasUkur as $petugas)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}.
+
+                                                            <input type="hidden"
+                                                                name="petugas_ukur[{{ $loop->index }}][petugas_ukur]"
+                                                                value="{{ $petugas->petugas->id }}">
+                                                            <input type="hidden"
+                                                                name="petugas_ukur[{{ $loop->index }}][pembantu_ukur]"
+                                                                value="{{ $petugas->pembantu_ukur }}">
+                                                        </td>
+                                                        <td>{{ $petugas->petugas->name }}</td>
+                                                        <td>{{ $petugas->pembantu_ukur }}</td>
 
 
-                                    </div>
-                                    <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
-                                        Petugas Ukur</button>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
                                 </div>
-
-
                             </div>
                         </div>
-                    </div>
+                        @if (
+                            ($data->diteruskan_ke == auth()->user()->id && !auth()->user()->hasRole('Petugas Cetak Surat Tugas')) ||
+                                ($data->status == 'draft' && auth()->user()->hasRole('Petugas Jadwal')) ||
+                                auth()->user()->can('manage all permohonan'))
+                            <div class="row justify-content-center">
+                                <div class="col-10">
+                                    <div class="form-group">
+                                        <label class="form-label">Teruskan Ke
+                                        </label>
+                                        <select class="form-control form-control teruskan_ke_role" name="teruskan_ke_role"
+                                            id="teruskan_ke_role" style="width: 100%">
+                                            <option value="">Pilih</option>
+                                            @foreach ($allowedRoles as $role)
+                                                <option value="{{ $role }}">{{ $role }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-10 mt-2" id="user-selection">
+                                    <div class="form-group">
+                                        <h6>Pilih Petugas</h6>
+                                        <select class="form-control" id="user" name="user">
 
-                    <div class="card-footer d-flex justify-content-end">
-                        <button type="button" class="btn btn-secondary mx-2">Cancel</button>
-                        <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary mx-2">Cancel</button>
+                            <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -160,11 +289,12 @@
         $('#no_berkas').val(data?.no_berkas);
         $('#di_305').val(data?.di_305);
         $('#di_302').val(data?.di_302);
-        $('#tanggal_pengukuran').val(data?.tanggal_pengukuran);
+        $('#tanggal_mulai_pengukuran').val(data?.tanggal_mulai_pengukuran);
+        $('#tanggal_berakhir_pengukuran').val(data?.tanggal_berakhir_pengukuran);
         $('#luas').val(data?.luas);
         $('#no_surat').val(data?.no_surat);
         $('#nama_pemohon').val(data?.nama_pemohon);
-
+        $('#jenis_kegiatan').val(data?.jenis_kegiatan).trigger('change')
 
 
         $(document).ready(function() {
@@ -181,11 +311,56 @@
                 loadKecamatan()
             }
 
+            $('#user-selection').hide();
+            $('#teruskan_ke_role').on('change', function() {
+                const selectedRole = $(this).val();
 
+                if (selectedRole) {
+                    // Show the user-selection section
+                    $('#user-selection').show();
+
+                    // Initialize Select2 with role based on selected option
+                    $('#user').select2({
+                        ajax: {
+                            url: "{{ route('user.search') }}",
+                            dataType: 'json',
+                            delay: 250,
+                            data: function(params) {
+                                console.log('Params:', params); // Debug: Log the search term
+                                return {
+                                    term: params.term,
+                                    role: selectedRole // Pass the selected option as role
+                                };
+                            },
+                            processResults: function(response) {
+                                // Map the results from the API response to the format expected by Select2
+                                let results = response.data.data.map(function(user) {
+                                    return {
+                                        id: user.id,
+                                        text: user.name
+                                    };
+                                });
+
+                                return {
+                                    results: results,
+                                    pagination: {
+                                        more: response.data.next_page_url !==
+                                            null // Check if there's a next page
+                                    }
+                                };
+                            },
+                            cache: true
+                        },
+                        placeholder: 'Pilih Pengguna',
+                        allowClear: true
+                    });
+                } else {
+                    // Hide the user-selection section if no option is selected
+                    $('#user-selection').hide();
+                }
+            });
 
             $(document).on('click', '#btn-submit', function(e) {
-
-                console.log('btn submit')
                 e.preventDefault();
                 $('.text-danger').remove();
                 $(".form-group").removeClass('has-error has-feedback');

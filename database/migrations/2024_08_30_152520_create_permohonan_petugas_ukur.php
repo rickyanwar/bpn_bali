@@ -17,7 +17,7 @@ return new class () extends Migration {
                          ->constrained('permohonan')
                          ->onDelete('cascade');
             $table->integer('petugas_ukur');
-            $table->integer('pendamping');
+            $table->text('pembantu_ukur');
             $table->timestamps();
         });
     }

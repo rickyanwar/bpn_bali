@@ -43,19 +43,7 @@
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="staff" role="tabpanel" aria-labelledby="pills-home-tab">
                     @php
-                        $modules = [
-                            'user',
-                            'role',
-                            'client',
-                            'product & service',
-                            'constant unit',
-                            'constant tax',
-                            'constant category',
-                            'company settings',
-                        ];
-                        if (\Auth::user()->type == 'company') {
-                            $modules[] = 'permission';
-                        }
+                        $modules = ['user', 'role', 'permohonan'];
                     @endphp
                     <div class="col-md-12">
                         <div class="form-group">
@@ -227,30 +215,6 @@
                                                                 </div>
                                                             @endif
                                                         @endif
-                                                        @if (in_array('expense ' . $module, (array) $permissions))
-                                                            @if ($key = array_search('expense ' . $module, $permissions))
-                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                    {{-- Checkbox input --}}
-                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace(' ', '', str_replace('&', '', $module)))->id('permission' . $key) !!}
-                                                                    {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Expense')->class('custom-control-label') !!} <br>
-
-                                                                </div>
-                                                            @endif
-                                                        @endif
-
-                                                        @if (in_array('tax ' . $module, (array) $permissions))
-                                                            @if ($key = array_search('tax ' . $module, $permissions))
-                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                    {{ Form::checkbox('permissions[]', $role->permissions->contains('id', $key), $key, ['class' => 'form-check-input isscheck staff_checkall isscheck_' . str_replace(' ', '', str_replace('&', '', $module)), 'id' => 'permission' . $key]) }}
-                                                                    {{ Form::label('Tax', ['class' => 'custom-control-label']) }}<br>
-                                                                </div>
-                                                            @endif
-                                                        @endif
-
-
-
-
                                                     </div>
                                                 </td>
                                             </tr>

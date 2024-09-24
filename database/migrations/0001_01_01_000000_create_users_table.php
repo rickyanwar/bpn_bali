@@ -18,16 +18,10 @@ return new class () extends Migration {
                 $table->string('email')->unique();
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password')->nullable();
-                $table->integer('plan')->nullable();
-                $table->date('plan_expire_date')->nullable();
-                $table->string('type', 100)->nullable();
                 $table->string('pangkat')->nullable();
-
-                $table->float('storage_limit')->default('0.00');
                 // $table->string('avatar')->default(config('chatify.user_avatar.default'));
                 $table->string('messenger_color')->default('#2180f3');
                 $table->string('lang', 100)->nullable();
-                $table->integer('default_pipeline')->nullable();
                 $table->boolean('active_status')->default(0);
                 $table->integer('delete_status')->default(1);
                 $table->string('mode', 10)->default('light');
@@ -35,6 +29,7 @@ return new class () extends Migration {
                 $table->integer('is_active')->default(1);
                 $table->datetime('last_login_at')->nullable();
                 $table->integer('created_by')->default(0);
+                $table->text('pembantu_ukur')->nullable();
                 $table->rememberToken();
                 $table->timestamps();
             }

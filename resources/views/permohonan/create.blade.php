@@ -6,7 +6,7 @@
 @section('breadcrumb')
     {{--  <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>  --}}
     <li class="breadcrumb-item"><a href="{{ route('permohonan.index') }}">{{ __('Permohonan') }}</a></li>
-    <li class="breadcrumb-item">{{ __('Pengukuran ') }}</li>
+    <li class="breadcrumb-item">{{ __('Create ') }}</li>
 @endsection
 @push('script-page')
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
@@ -23,25 +23,24 @@
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
-                                    <input class="form-control" type="text" name="no_berkas" id="no_berkas"
-                                        placeholder="Masukkan no berkas">
+                                    <input class="form-control" type="text" placeholder="Otomatis Oleh System" disabled>
                                 </div>
                             </div>
+                            <div class="col-5">
+                                <div class="form-group">
+                                    <label class="form-label">No Surat</label>
+                                    <input class="form-control" type="text" placeholder="Otomatis Oleh System" disabled>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row justify-content-center">
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">Kecamatan</label>
                                     <select class="form-control form-control select2" id="kecamatan" name="kecamatan"
                                         style="width: 100%">
                                     </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-5">
-                                <div class="form-group">
-                                    <label class="form-label">DI 305</label>
-                                    <input class="form-control" type="text" name="di_305" id="di_305"
-                                        placeholder="Masukkan DI 305">
                                 </div>
                             </div>
                             <div class="col-5">
@@ -52,8 +51,17 @@
                                     </select>
                                 </div>
                             </div>
+
                         </div>
                         <div class="row justify-content-center">
+                            <div class="col-5">
+                                <div class="form-group">
+                                    <label class="form-label">DI 305</label>
+                                    <input class="form-control" type="text" name="di_305" id="di_305"
+                                        placeholder="Masukkan DI 305">
+                                </div>
+                            </div>
+
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">DI 302</label>
@@ -61,13 +69,7 @@
                                         placeholder="Masukkan DI 302">
                                 </div>
                             </div>
-                            <div class="col-5">
-                                <div class="form-group">
-                                    <label class="form-label">Luas (m2)</label>
-                                    <input class="form-control" type="number" name="luas" id="luas"
-                                        placeholder="Masukkan Luas">
-                                </div>
-                            </div>
+
                         </div>
                         <div class="row justify-content-center">
                             <div class="col-5">
@@ -90,9 +92,9 @@
                             </div>
                             <div class="col-5">
                                 <div class="form-group">
-                                    <label class="form-label">No Surat</label>
-                                    <input class="form-control" type="text" name="no_surat" id="no_surat"
-                                        placeholder="Masukkan no surat">
+                                    <label class="form-label">Luas (m2)</label>
+                                    <input class="form-control" type="number" name="luas" id="luas"
+                                        placeholder="Masukkan Luas">
                                 </div>
                             </div>
                             <div class="col-5">
@@ -127,7 +129,7 @@
 
                             <div class="col-10">
                                 <!-- outer repeater -->
-                                <div class="container mt-5 repeater">
+                                <div class="mt-2 repeater">
                                     <!--outer repeater-->
                                     <div data-repeater-list="petugas_ukur">
                                         <div data-repeater-item>
@@ -136,7 +138,7 @@
                                             <div data-repeater-list="inner-list">
                                                 <div data-repeater-item>
                                                     <div class="row">
-                                                        <div class="col-4">
+                                                        <div class="col-6">
                                                             <div class="form-group">
                                                                 <label class="form-label">Petugas Ukur
                                                                 </label>
@@ -146,24 +148,24 @@
                                                             </div>
 
                                                         </div>
-                                                        <div class="col-4">
+                                                        <div class="col-6">
                                                             <div class="form-group">
-                                                                <label class="form-label">Pendamping
+                                                                <label class="form-label">Pembantu ukur
                                                                 </label>
-                                                                <select class="form-control form-control pendamping"
-                                                                    name="pendamping" style="width: 100%">
-                                                                </select>
+                                                                <input class="form-control form-control pembantu_ukur"
+                                                                    name="pembantu_ukur" readonly>
+
                                                             </div>
                                                         </div>
-                                                        <div class"col-2 mt-4">
-                                                            @role('Petugas Cetak')
+                                                        {{--  <div class"col-2 mt-4">
+                                                            @role('Petugas Cetak Surat Tugas')
                                                                 <button type="button" data-repeater-delete
                                                                     style="border-radius: 20px"
                                                                     class="btn btn-outline-secondary btn-sm">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
                                                             @endrole
-                                                        </div>
+                                                        </div>  --}}
                                                     </div>
                                                 </div>
 
@@ -171,8 +173,8 @@
                                         </div>
 
                                     </div>
-                                    <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
-                                        Petugas Ukur</button>
+                                    {{--  <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
+                                        Petugas Ukur</button>  --}}
                                 </div>
 
 
@@ -316,19 +318,13 @@
 
 
                 // Find the nearest pendamping select element
-                const $pendampingSelect = $this.closest('[data-repeater-item]').find('.pendamping');
+                const $pembantuUkur = $this.closest('[data-repeater-item]').find('.pembantu_ukur');
                 if (selectedPetugas) {
                     // Assuming you want to set the pendamping to the selected petugas
-                    const pendampingData = {
-                        id: selectedPetugas?.data?.pendamping_ukur?.user
-                            ?.id, // Use selected ID for pendamping
-                        text: selectedPetugas?.data?.pendamping_ukur?.user?.name,
-                    };
 
-                    $pendampingSelect.empty(); // Clear previous options
-
-                    if (selectedPetugas?.data?.pendamping_ukur) {
-                        initializeSelect2($pendampingSelect, pendampingData, false); // Set new value
+                    $pembantuUkur.empty(); // Clear previous options
+                    if (selectedPetugas?.data?.pembantu_ukur) {
+                        $pembantuUkur.val(selectedPetugas?.data?.pembantu_ukur);
                     }
 
                 } else {

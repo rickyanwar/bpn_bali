@@ -1,53 +1,74 @@
-{{Form::model($user,array('route' => array('users.update', $user->id), 'method' => 'PUT')) }}
+{!! Html::form('put', route('users.update', $user->id))->open() !!}
+
 <div class="modal-body">
     <div class="row">
         <div class="col-md-6">
-            <div class="form-group ">
-                {{Form::label('name',__('Name'),['class'=>'form-label']) }}
-                {{Form::text('name',null,array('class'=>'form-control font-style','placeholder'=>__('Enter User Name')))}}
+            <div class="form-group">
+                {!! Html::label(__('Name'), 'name')->class('form-label') !!}
+                {!! Html::text('name', $user->name)->class('form-control')->placeholder(__('Enter User Name'))->required() !!}
                 @error('name')
-                <small class="invalid-name" role="alert">
-                    <strong class="text-danger">{{ $message }}</strong>
-                </small>
+                    <small class="invalid-name" role="alert">
+                        <strong class="text-danger">{{ $message }}</strong>
+                    </small>
                 @enderror
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {{Form::label('email',__('Email'),['class'=>'form-label'])}}
-                {{Form::text('email',null,array('class'=>'form-control','placeholder'=>__('Enter User Email')))}}
+                {!! Html::label(__('Email'), 'email')->class('form-label') !!}
+                {!! Html::text('email', $user->email)->class('form-control')->placeholder(__('Enter User Email'))->required() !!}
                 @error('email')
-                <small class="invalid-email" role="alert">
-                    <strong class="text-danger">{{ $message }}</strong>
-                </small>
+                    <small class="invalid-email" role="alert">
+                        <strong class="text-danger">{{ $message }}</strong>
+                    </small>
                 @enderror
             </div>
         </div>
-        @if(\Auth::user()->type != 'super admin')
-            <div class="form-group col-md-12">
-                {{ Form::label('role', __('User Role'),['class'=>'form-label']) }}
-                {!! Form::select('role', $roles, $user->roles,array('class' => 'form-control select','required'=>'required')) !!}
-                @error('role')
+        <div class="form-group col-md-6">
+            {!! Html::label(__('User Role'))->class('form-label') !!}
+            <select class="form-control select2" id="role" name="role">
+                @foreach ($roles as $role)
+                    <option value="{{ $role->id }}" data-name="{{ $role->name }}"
+                        {{ $user->roles->pluck('id')->contains($role->id) ? 'selected' : '' }}>
+                        {{ $role->name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('role')
                 <small class="invalid-role" role="alert">
                     <strong class="text-danger">{{ $message }}</strong>
                 </small>
+            @enderror
+        </div>
+
+        <!-- Additional Pendamping Select (Hidden by Default) -->
+        <div class="col-md-6" id="pendamping-container" style="display: none">
+            <div class="form-group">
+                {!! Html::label(__('Pembantu Ukur'))->class('form-label') !!}
+                {!! Html::text('pembantu_ukur', $user->pembantu_ukur ?? '')->class('form-control')->id('pembantu_ukur')->placeholder(__('Masukkan Pembantu ukur')) !!}
+                @error('pendamping_id')
+                    <small class="invalid-user" role="alert">
+                        <strong class="text-danger">{{ $message }}</strong>
+                    </small>
                 @enderror
             </div>
-        @endif
-        @if(!$customFields->isEmpty())
-            <div class="col-md-6">
-                <div class="tab-pane fade show" id="tab-2" role="tabpanel">
-                    @include('customFields.formBuilder')
-                </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Html::label(__('Password'), 'password')->class('form-label') !!}
+                {!! Html::password('password')->class('form-control')->placeholder(__('Enter User Password'))->attribute('minlength', '6') !!}
+                @error('password')
+                    <small class="invalid-password" role="alert">
+                        <strong class="text-danger">{{ $message }}</strong>
+                    </small>
+                @enderror
             </div>
-        @endif
+        </div>
     </div>
-
 </div>
 
 <div class="modal-footer">
-    <input type="button" value="{{__('Cancel')}}" class="btn  btn-light"data-bs-dismiss="modal">
-    <input type="submit" value="{{__('Update')}}" class="btn  btn-primary">
+    <input type="button" value="{{ __('Cancel') }}" class="btn btn-light" data-bs-dismiss="modal">
+    <input type="submit" value="{{ __('Update') }}" class="btn btn-primary">
 </div>
-
-{{Form::close()}}
+{!! Html::form()->close() !!}

@@ -12,7 +12,7 @@ class RiwayatPermohonanDiTeruskan extends Model
         'permohonan_id',
         'diteruskan_ke',
         'diteruskan_ke_role',
-        'opsi'
+        'peroses'
     ];
 
     protected $casts = [

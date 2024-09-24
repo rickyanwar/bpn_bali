@@ -275,7 +275,7 @@ function summernote() {
 
 $(document).on("click", '.bs-pass-para', function () {
     var form = $(this).closest("form");
-    const swalWithBootstrapButtons = Swal.mixin({
+    const swalWithBootstrapButtons = swal.mixin({
         customClass: {
             confirmButton: 'btn btn-success',
             cancelButton: 'btn btn-danger'
@@ -296,7 +296,7 @@ $(document).on("click", '.bs-pass-para', function () {
             form.submit();
 
         } else if (
-            result.dismiss === Swal.DismissReason.cancel
+            result.dismiss === swal.DismissReason.cancel
         ) {
         }
     })
