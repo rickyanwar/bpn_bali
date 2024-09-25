@@ -65,31 +65,26 @@
 
 <body class="theme-4">
     <div class="auth-wrapper auth-v3">
-        <div class="bg-auth-side bg-primary"></div>
+
         <div class="auth-content">
 
-            <div class="card">
-                <div class="row align-items-center text-start">
-                    <div class="col-xl-6">
-                        <div class="card-body">
-                            @yield('content')
-                        </div>
-                    </div>
-                    <div class="col-xl-6 img-card-side">
-                        <div class="auth-img-content">
-                            <img src="{{ asset('assets/images/auth/img-auth-3.svg') }}" alt=""
-                                class="img-fluid" />
-                            <h3 class="text-white mb-4 mt-5">
-                                “Attention is the new currency”
-                            </h3>
-                            <p class="text-white">
-                                The more effortless the writing looks, the more effort the
-                                writer actually put into the process.
-                            </p>
+            <div class="d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card"
+                    style="
+                    box-shadow: 0 6px 30px rgba(182, 186, 203, 0.3);
+                    margin-bottom: 24px;
+                    transition: box-shadow 0.2s ease-in-out;
+                ">
+                    <div class="row align-items-center text-start justify-content-center">
+                        <div class="col-12 align-items-center text-start justify-content-center">
+                            <div class="card-body">
+                                @yield('content')
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="auth-footer">
                 <div class="container-fluid">
                     <div class="row">

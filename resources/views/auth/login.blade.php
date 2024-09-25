@@ -28,12 +28,16 @@
 @endsection
 
 @section('content')
-    <div class="">
-        <h2 class="mb-3 f-w-600">{{ __('Login') }}</h2>
+    <div class="text-center">
+        <img src="{{ asset('assets/images/logo-with-subtitle.png') }}" alt="{{ env('APP_NAME') }}" class="logo logo-lg" />
+    </div>
+    <div>
+        <h2 class="mb-3 f-w-600">{{ __('Masuk') }}</h2>
     </div>
     <form action="{{ route('login') }}" method="POST" id="loginForm">
         @csrf
         <div class="">
+
             <div class="form-group mb-3">
                 <label for="email" class="form-label">{{ __('Email') }}</label>
                 <input class="form-control @error('email') is-invalid @enderror" id="email" type="email"
@@ -67,8 +71,8 @@
                 @endif
             </div>
             <div class="d-grid">
-                <button type="submit" class="btn-login btn btn-primary btn-block mt-2"
-                    id="login_button">{{ __('Login') }}</button>
+                <button type="submit" class="btn-login btn btn-primary btn-block mt-2 " style="border-radius: 20px"
+                    id="login_button">{{ __('Masuk') }}</button>
             </div>
 
         </div>
