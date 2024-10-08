@@ -114,9 +114,6 @@
                     <p>Tempat Menunggu :</p>
                     <p>Kantor Desa : </p>
                 </div>
-                <div class="col-12">
-                    {{ $qrCode }}
-                </div>
             </div>
         </div>
     </div>

@@ -38,21 +38,27 @@
                li {
                    margin-left: 40px;
                }
+
+               .double {
+                   display: flex;
+                   justify-content: space-between;
+                   margin-top: 20px;
+               }
            </style>
            <div class="header">
-               <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Logo_BPN-KemenATR_%282017%29.png" alt="Logo">
+               <img src="{{ asset('assets/images/logo_bpn.png') }}" alt="Logo">
                <!-- Replace with the actual logo path -->
-               <div>
-                   <h2>KEMENTRIAN AGRARIA DAN TATA RUANG/ BADAN PERTANAHAN NASIONAL<br>
-                       KANTOR PERTANAHAN KABUPATEN TABANAN</h2>
-                   <p>JALAN PULAU SERIBU NO. 16 TABANAN Telp. 0361-811573</p>
+               <div class="header-content">
+                   <h3 class="">KEMENTRIAN AGRARIA DAN TATA RUANG/ BADAN PERTANAHAN NASIONAL<br>
+                       KANTOR PERTANAHAN KABUPATEN TABANAN</h3>
+                   <p style="font-size:12px">JALAN PULAU SERIBU NO. 16 TABANAN Telp. 0361-811573</p>
                </div>
            </div>
 
-           <h3 style="text-align: center;">SURAT TUGAS PENGUKURAN</h3>
-           <p style="text-align: center;">Nomor : {{ $data->no_surat }}</p>
+           <h3 style="text-align: center; margin-bottom: 0px">SURAT TUGAS PENGUKURAN</h3>
+           <p class="m-0" style="text-align: center;margin-b">Nomor : {{ $data->no_surat }}</p>
 
-           <div class="content">
+           <div class="content mt-1">
                <p>Dengan ini Kepala Kantor menugaskan kepada:</p>
 
                <p>1. a. Petugas Ukur</p>
@@ -104,9 +110,10 @@
                        <h4>Survey Kepuasan Layanan Pengukuran Bidang Tanah</h4>
                        <img src="https://pngimg.com/d/qr_code_PNG33.png" alt="QR Code" style="width:150px;">
                    </div>
+                   <p>KEMENTERIAN AGRARIA DAN TATA RUANG/BADAN PERTANAHAN NASIONAL<br>KANTOR PERTANAHAN KABUPATEN
+                       TABANAN</p>
                </div>
-               <p>KEMENTERIAN AGRARIA DAN TATA RUANG/BADAN PERTANAHAN NASIONAL<br>KANTOR PERTANAHAN KABUPATEN
-                   TABANAN</p>
+
 
            </div>
 
@@ -132,11 +139,6 @@
                </div>
                <div class="col-6">
                    <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 182736263738272839</p>
-               </div>
-           </div>
-           <div class="row">
-               <div class="col-12">
-                   {{ $qrCode }}
                </div>
            </div>
        </div>

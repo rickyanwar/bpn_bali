@@ -21,8 +21,7 @@ use App\ApiMessage;
 use App\ApiCode;
 use Spatie\Permission\Models\Role;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
-// use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class PermohonanController extends Controller
 {
@@ -96,17 +95,161 @@ class PermohonanController extends Controller
 
 
         $query = Permohonan::with('createdby', 'diteruskan')
-            // ->where('jenis_permohonan', 'permohonan')
-            ->where(function ($q) use ($currentUserId) {
-                $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
-                 ->orWhere('created_by', $currentUserId);
-            });
+                 ->where(function ($q) {
+                     $currentUserId = auth()->id();
+                     $q->where(function ($subQuery) use ($currentUserId) {
+                         // If diteruskan_ke is not null, it must match the current user
+                         $subQuery->whereNotNull('diteruskan_ke')
+                                  ->where('diteruskan_ke', $currentUserId);
+                     })
+                     ->orWhere(function ($subQuery) use ($currentUserId) {
+                         // If diteruskan_ke is null, show records where created_by is the current user
+                         $subQuery->whereNull('diteruskan_ke')
+                                  ->where('created_by', $currentUserId);
+                     });
+                 })->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
+
+        if (!empty($request->status)) {
+            $query->where('status', '=', (int) $request->status);
+        }
+
+        if ($request->ajax()) {
+            return DataTables::of($query)
+               ->addColumn('status_badge', function ($data) {
+                   $status = '';
+                   switch ($data->status) {
+                       case 'draft':
+                           $status = 'bg-danger';
+                           break;
+                       case 'proses':
+                           $status = 'bg-warning';
+                           break;
+                       case 'selesai':
+                           $status = 'bg-success';
+                           break;
+                       default:
+                           $status = 'bg-secondary'; // Default class if none of the above statuses match
+                           break;
+                   }
+                   return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                       . __($data->status) . '</span>';
+               })
+            ->addColumn('actions', function ($data) {
+                $actions = '';
+                // Edit
+                if (($data->status == 'draft') || $data->diteruskan_ke == auth()->user()->id) {
+                    $actions .= '<div class="action-btn bg-primary ms-2">
+                                        <a href="' . route('permohonan.edit', $data->id) . '"
+                                            class="mx-3 btn btn-sm align-items-center"
+                                            data-bs-toggle="tooltip" title="' . __('Edit') . '"
+                                            data-original-title="' . __('Edit') . '">
+                                            <i class="ti ti-pencil text-white"></i>
+                                        </a>
+                                    </div>';
+                }
+
+
+
+                $actions .= '<div class="action-btn bg-success ms-2 btn_print" data-id="'. $data->id .'" >
+                                        <a  href="#" data-url="' . route('permohonan.print_view', $data->id) . '"
+                                            class="mx-3 btn btn-sm align-items-center"
+                                            data-size="md"
+                                            data-ajax-popup="true"
+                                            data-bs-toggle="tooltip" title="' . __('Print') . '"
+                                            data-original-title="' . __('Print') . '">
+                                            <i class="ti ti-printer text-white"></i>
+                                        </a>
+                                    </div>';
+
+
+                if (Gate::check('alihkan permohonan') && $data->status !== 'draft') {
+                    $actions .= '<div class="action-btn bg-warning ms-2 paksa_dialihkan_ke" data-id="'. $data->id .'" >
+                                        <a  href="#" data-url="' . route('permohonan.pindah_tugas', $data->id) . '"
+                                            class="mx-3 btn btn-sm align-items-center"
+                                            data-size="md"
+                                            data-ajax-popup="true"
+                                            data-bs-toggle="tooltip" title="' . __('Alihkan Penugasan') . '"
+                                            data-original-title="' . __('Alihkan Penugasan') . '">
+                                            <i class="ti ti-report text-white"></i>
+                                        </a>
+                                    </div>';
+                }
+
+                if (Auth::user()->id == $data->diteruskan_ke || (Auth::user()->id == $data->created_by && $data->status == 'draft')) {
+                    $actions .= '<div class="action-btn bg-primary ms-2 btn_teruskan" data-id="'. $data->id .'" >
+                                        <a  href="#" data-url="' . route('permohonan.teruskan_view', $data->id) . '"
+                                            class="mx-3 btn btn-sm align-items-center"
+                                            data-size="md"
+                                            data-ajax-popup="true"
+                                            data-bs-toggle="tooltip" title="' . __('Teruskan Penugasan') . '"
+                                            data-original-title="' . __('Teruskan Penugasan') . '">
+                                            <i class="ti ti-send text-white"></i>
+                                        </a>
+                                    </div>';
+                }
+
+
+                if ($data->status !== 'draft' &&
+                                $data->status !== 'selesai' &&
+                                $data->status !== 'revisi' &&
+                                $data->diteruskan_ke == auth()->user()->id) {
+
+                    $actions .= '<div class="action-btn bg-warning ms-2 btn-reject" data-id="'. $data->id .'" data-url="' . route('permohonan.tolak', $data->id) . '">
+                                        <a  href="#"
+                                            data-original-title="' . __('Revisi/Tolak') . '"
+                                            class="mx-3 btn btn-sm align-items-center">
+                                                 <i class="ti ti-ban text-white"></i>
+                                        </a>
+                                    </div>';
+                }
+
+
+                if ($data->diteruskan_ke == auth()->user()->id ||
+                                ($data->status == 'draft' && auth()->user()->hasRole('Petugas Jadwal')) ||
+                                ($data->status == 'revisi' && auth()->user()->id == $data->diteruskan_ke)) {
+                }
+
+                // Delete
+                if (Auth::user()->can('delete permohonan') && $data->status == 'draft') {
+                    $actions .= '<div class="action-btn bg-danger ms-2">
+                                        <form method="POST" action="' . route('permohonan.destroy', $data->id) . '" id="delete-form-' . $data->id . '">
+                                            ' . csrf_field() . '
+                                            ' . method_field('DELETE') . '
+                                            <a href="#"
+                                                class="mx-3 btn btn-sm align-items-center bs-pass-para"
+                                                data-bs-toggle="tooltip"
+                                                title="' . __('Delete') . '"
+                                                data-original-title="' . __('Delete') . '"
+                                                data-confirm="' . __('Are You Sure?') . '|' . __('This action can not be undone. Do you want to continue?') . '"
+                                                data-confirm-yes="document.getElementById(\'delete-form-' . $data->id . '\').submit();">
+                                                <i class="ti ti-trash text-white"></i>
+                                            </a>
+                                        </form>
+                                    </div>';
+                }
+                return $actions;
+            })
+            ->rawColumns([ 'status_badge', 'actions'])
+            ->make(true);
+        }
+
+        return view('permohonan.index', compact('totalPermohonan', 'totalDiproses', 'totalrevisi', 'totalSelesai'));
+
+    }
+
+
+    public function getAll(Request $request)
+    {
+
+        $currentUserId = Auth::id();
+        $query = Permohonan::with('createdby', 'diteruskan')->latest();
+
 
 
         //Show all permhonan
-        if (Gate::check('manage all permohonan')) {
-            $query = Permohonan::with('createdby', 'diteruskan')->latest();
-        }
+        // if (Gate::check('manage all permohonan')) {
+        //     $query = Permohonan::with('createdby', 'diteruskan')->latest();
+        // }
 
 
         if (!empty($request->status)) {
@@ -136,24 +279,20 @@ class PermohonanController extends Controller
                })
             ->addColumn('actions', function ($data) {
                 $actions = '';
-
-                // Show Invoice
-                if (Gate::check('show permohonan')) {
-                    $actions .= '<div class="action-btn bg-info ms-2">
-                                        <a href="' . route('permohonan.show', ($data->id)) . '"
+                if (Auth::user()->id == $data->diteruskan_ke || (Auth::user()->id == $data->created_by && $data->status == 'draft')) {
+                    $actions .= '<div class="action-btn bg-primary ms-2 btn_teruskan" data-id="'. $data->id .'" >
+                                        <a  href="#" data-url="' . route('permohonan.teruskan_view', $data->id) . '"
                                             class="mx-3 btn btn-sm align-items-center"
-                                            data-bs-toggle="tooltip" title="' . __('Show') . '"
-                                            data-original-title="' . __('Detail') . '">
-                                            <i class="ti ti-eye text-white"></i>
+                                            data-size="md"
+                                            data-ajax-popup="true"
+                                            data-bs-toggle="tooltip" title="' . __('Teruskan Penugasan') . '"
+                                            data-original-title="' . __('Teruskan Penugasan') . '">
+                                            <i class="ti ti-send text-white"></i>
                                         </a>
                                     </div>';
                 }
 
-                // Edit Invoice
-                if ((Gate::check('edit permohonan') && $data->status == 'draft') ||
-                (auth()->user()->hasRole('Petugas Cetak Surat Tugas') && $data->diteruskan_ke == auth()->user()->id)) {
-
-                    $actions .= '<div class="action-btn bg-primary ms-2">
+                $actions .= '<div class="action-btn bg-primary ms-2">
                                         <a href="' . route('permohonan.edit', $data->id) . '"
                                             class="mx-3 btn btn-sm align-items-center"
                                             data-bs-toggle="tooltip" title="' . __('Edit') . '"
@@ -161,41 +300,6 @@ class PermohonanController extends Controller
                                             <i class="ti ti-pencil text-white"></i>
                                         </a>
                                     </div>';
-                }
-
-
-
-                if (Gate::check('alihkan permohonan') && $data->status !== 'draft') {
-                    $actions .= '<div class="action-btn bg-warning ms-2 dialihkan_ke" data-id="'. $data->id .'" >
-                                        <a  href="#" data-url="' . route('permohonan.pindah_tugas', $data->id) . '"
-                                            class="mx-3 btn btn-sm align-items-center"
-                                            data-size="md"
-                                            data-ajax-popup="true"
-                                            data-bs-toggle="tooltip" title="' . __('Alihkan Penugasan') . '"
-                                            data-original-title="' . __('Alihkan Penugasan') . '">
-                                            <i class="ti ti-report text-white"></i>
-                                        </a>
-                                    </div>';
-                }
-
-                // Delete Invoice
-                if (Auth::user()->can('delete permohonan') && $data->status == 'draft') {
-                    $actions .= '<div class="action-btn bg-danger ms-2">
-                                        <form method="POST" action="' . route('permohonan.destroy', $data->id) . '" id="delete-form-' . $data->id . '">
-                                            ' . csrf_field() . '
-                                            ' . method_field('DELETE') . '
-                                            <a href="#"
-                                                class="mx-3 btn btn-sm align-items-center bs-pass-para"
-                                                data-bs-toggle="tooltip"
-                                                title="' . __('Delete') . '"
-                                                data-original-title="' . __('Delete') . '"
-                                                data-confirm="' . __('Are You Sure?') . '|' . __('This action can not be undone. Do you want to continue?') . '"
-                                                data-confirm-yes="document.getElementById(\'delete-form-' . $data->id . '\').submit();">
-                                                <i class="ti ti-trash text-white"></i>
-                                            </a>
-                                        </form>
-                                    </div>';
-                }
 
                 return $actions;
             })
@@ -206,10 +310,9 @@ class PermohonanController extends Controller
 
         }
 
-        return view('permohonan.index', compact('totalPermohonan', 'totalDiproses', 'totalrevisi', 'totalSelesai'));
+        return view('permohonan.all');
 
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -309,7 +412,19 @@ class PermohonanController extends Controller
         $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
         $user = auth()->user();
         $userRole = $user->roles()->first()->name;
-        $allowedRoles = $this->roleHierarchy[$userRole] ?? [];
+
+
+        // Check if the user is a Super Admin
+        if ($userRole === "Super Admin") {
+            // If Super Admin, set allowed roles to all roles
+            $allowedRoles = array_keys($this->roleHierarchy);
+        } else {
+            // Otherwise, get allowed roles based on user role
+            $allowedRoles = $this->roleHierarchy[$userRole] ?? [];
+
+        }
+
+
         $url = route('permohonan.update', $id);
         return view('permohonan.edit', compact('data', 'url', 'allowedRoles'));
     }
@@ -440,6 +555,11 @@ class PermohonanController extends Controller
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
 
+    public function printView($id)
+    {
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
+        return view('permohonan.print_view', compact('data'));
+    }
     public function pindahTugasView($id)
     {
         return view('permohonan.pindah_tugas');
@@ -469,6 +589,27 @@ class PermohonanController extends Controller
         return $this->respond($data, "Berhasil Mengalihkan penugasan");
 
     }
+
+    public function teruskanView($id)
+    {
+
+        //allowedRoles
+        $user = auth()->user();
+        $userRole = $user->roles()->first()->name;
+        $allowedRoles = $this->roleHierarchy[$userRole] ?? [];
+
+        // Check if the user is a Super Admin
+        if ($userRole === "Super Admin") {
+            // If Super Admin, set allowed roles to all roles
+            $allowedRoles = array_keys($this->roleHierarchy);
+        } else {
+            // Otherwise, get allowed roles based on user role
+            $allowedRoles = $this->roleHierarchy[$userRole] ?? [];
+        }
+
+        return view('permohonan.teruskan', compact('allowedRoles'));
+    }
+
 
 
     public function riwayatDiteruskan($id, Request $request)

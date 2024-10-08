@@ -4,7 +4,7 @@
     // $profile=\App\Models\Utility::get_file('uploads/avatar');
 @endphp
 @section('page-title')
-    {{ __(' Permohonan') }}
+    {{ __('Semua Permohonan') }}
 @endsection
 @push('script-page')
 @endpush
@@ -12,44 +12,10 @@
     <li class="breadcrumb-item">
         {{--  <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>  --}}
     </li>
-    <li class="breadcrumb-item">{{ __('Permohonan') }}</li>
+    <li class="breadcrumb-item">{{ __('Semua Permohonan') }}</li>
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h1 class="display-6" style="font-weight: 600">{{ $totalPermohonan ?? 0 }}</h1>
-                    <h5 style="font-weight: 100">Total Permohonan</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h1 class="display-6" style="font-weight: 600">{{ $totalDiproses ?? 0 }}</h1>
-                    <h5 style="font-weight: 100">Diproses</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h1 class="display-6" style="font-weight: 600">{{ $totalDitolak ?? 0 }}</h1>
-                    <h5 style="font-weight: 100">Di Tolak</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h1 class="display-6" style="font-weight: 600">{{ $totalSelesai ?? 0 }}</h1>
-                    <h5 style="font-weight: 100">Selesai</h5>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="mt-2 " id="multiCollapseExample1">
@@ -101,7 +67,6 @@
                                 </a>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -159,7 +124,7 @@
             serverSide: true,
             autoWidth: false,
             ajax: {
-                url: "{{ route('permohonan.index') }}",
+                url: "{{ route('permohonan.all') }}",
                 data: {
                     issue_date: function() {
                         return $('#pc-daterangepicker-1').val();
@@ -269,13 +234,14 @@
             table.draw();
         })
 
+        //Code for pindah tugas
         $(document).on('click', '.paksa_dialihkan_ke', function(e) {
             let id = $(this).data('id');
             // Ensure the modal is shown first
             $('#commonModal').modal('show');
 
             // Only initialize Select2 once when the modal is fully shown
-            $('#commonModal').on('shown.bs.modal', function() {
+            $('#commonModal').one('shown.bs.modal', function() {
                 // Initialize Select2
                 $('#dialihkan_ke').select2({
                     ajax: {
@@ -375,13 +341,15 @@
             })
         });
 
+
+        //Code for teruskans
         $(document).on('click', '.btn_teruskan', function(e) {
             let id = $(this).data('id');
             // Ensure the modal is shown first
             $('#commonModal').modal('show');
 
             // Only initialize Select2 once when the modal is fully shown
-            $('#commonModal').on('shown.bs.modal', function() {
+            $('#commonModal').one('shown.bs.modal', function() {
                 // Initialize Select2
                 $('#teruskan_ke_role').on('change', function() {
                     const selectedRole = $(this).val();
@@ -501,92 +469,6 @@
                     } else {
                         // Hide the user-selection section if no option is selected
                         $('#user-selection').hide();
-                    }
-                });
-            });
-
-
-
-            $(document).on('click', '#btn-alihkan-tugas', function(e) {
-                e.preventDefault();
-
-                var url = "{{ route('permohonan.pindah_tugas', ':id') }}";
-                url = url.replace(':id', id);
-                console.log('url', url);
-                var form = $('#form-pindah-tugas')[0];
-                var formData = new FormData(form);
-                var findForm = $("#form-pindah-tugas");
-                swal({
-                    title: "Anda Yakin?",
-                    text: "Proses tidak dapat dibatalkan",
-                    icon: "warning",
-                    buttons: [
-                        'Tidak, Batalkan!',
-                        'Ya, Saya yakin!'
-                    ],
-                    dangerMode: true,
-                }).then(function(isConfirm) {
-                    if (isConfirm) {
-                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
-                            console.log('res')
-                            swal({
-                                icon: 'success',
-                                title: res.message,
-                                showConfirmButton: false,
-                            }).then(function() {
-                                window.location.replace(
-                                    "{{ route('permohonan.index') }}");
-                            });
-
-                            show_toastr('error', xhr.responseJSON?.message);
-
-                        })
-                        ajaxPost.fail(function(e) {
-                            console.log('e', e);
-                            swal({
-                                icon: 'warning',
-                                title: e.responseJSON.message,
-                                showConfirmButton: false,
-                            });
-                            if (parseInt(e.status) == 422) {
-                                $.each(e.responseJSON.errors, function(elem, messages) {
-                                    findForm.find('#' + elem).after(
-                                        '<p class="text-danger text-sm">' +
-                                        messages.join('') + '</p>');
-                                    //ADD HAS FEEDBACK CLASS
-                                    findForm.find('#' + elem).closest(
-                                        '.form-group').addClass(
-                                        "has-error has-feedback");
-
-                                });
-                            }
-                        })
-                    }
-                })
-
-            })
-        });
-
-        $(document).on('click', '.btn_print', function(e) {
-            let id = $(this).data('id');
-            // Ensure the modal is shown first
-            $('#commonModal').modal('show');
-
-            // Only initialize Select2 once when the modal is fully shown
-            $('#commonModal').on('shown.bs.modal', function() {
-                // Initialize Select2
-                $('#print-option').on('change', function() {
-                    var selectedValue = $(this).val();
-
-                    // Check if a value is selected
-                    if (selectedValue) {
-                        // Replace spaces with %20
-                        var formattedValue = selectedValue.replace(/ /g, '%20');
-                        var urlPrint = "{{ route('permohonan.print', ':id') }}".replace(':id', id);
-                        // Redirect
-                        window.open(urlPrint + '/?type=' + formattedValue, '_blank');
-                        // Reset Vall
-                        $(this).val('');
                     }
                 });
             });

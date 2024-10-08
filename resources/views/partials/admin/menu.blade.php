@@ -71,13 +71,20 @@
                     </ul>
                 </li>
             @endif
-
-
             <li class="dash-item  {{ Request::segment(1) == 'permohonan' ? ' active dash-trigger' : '' }}">
-                <a href="{{ route('permohonan.index') }}" class="dash-link "><span class="dash-micon"><i
+                <a href="#" class="dash-link "><span class="dash-micon"><i
                             class="ti ti-message-report"></i></span><span
                         class="dash-mtext">{{ __('Pelayanan') }}</span><span class="dash-arrow"><i
                             data-feather="chevron-right"></i></span></a>
+
+                <ul class="dash-submenu">
+                    <li class="dash-item {{ Request::route()->getName() == 'permohonan' ? ' active' : '' }}">
+                        <a class="dash-link" href="{{ route('permohonan.index') }}">Tugas</a>
+                    </li>
+                    <li class="dash-item {{ Request::route()->getName() == 'permohonan/get-all' ? ' active' : '' }} ">
+                        <a class="dash-link" href="{{ route('permohonan.all') }}">Semua Permohonan</a>
+                    </li>
+                </ul>
             </li>
 
             <li class="dash-item  {{ Request::segment(1) == 'audit' ? ' active dash-trigger' : '' }}">

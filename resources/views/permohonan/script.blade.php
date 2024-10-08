@@ -1,6 +1,7 @@
 <script>
     var selector = "body";
 
+
     // Function to initialize Select2 with or without AJAX
     function initializeSelect2($element, selectedValue = null, useAjax = true) {
         $element.select2({

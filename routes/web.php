@@ -45,9 +45,10 @@ Route::middleware(['auth:api','auth:web'])->group(function () {
     Route::get('permohonan/print/{id}', [PermohonanController::class, 'print'])->name('permohonan.print');
 
     Route::get('permohonan/print/pemberitahuan/{id}', [PermohonanController::class, 'printPemberitahuan'])->name('permohonan.print.pemberitahuan');
-
+    Route::get('permohonan/print-view/{id}', [PermohonanController::class, 'printView'])->name('permohonan.print_view');
     Route::post('permohonan/pindah_tugas/{id}', [PermohonanController::class, 'pindahTugas'])->name('permohonan.pindah_tugas');
-    Route::get('permohonan/pindah_tugas/{id}', [PermohonanController::class, 'pindahTugasView'])->name('permohonan.pindah_tugas_view');
+    Route::get('permohonan/teruskan_view/{id}', [PermohonanController::class, 'teruskanView'])->name('permohonan.teruskan_view');
+    Route::get('permohonan/get-all', [PermohonanController::class, 'getAll'])->name('permohonan.all');
     Route::resource('permohonan', PermohonanController::class);
 
 

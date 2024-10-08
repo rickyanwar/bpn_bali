@@ -16,10 +16,10 @@ class DashboardController extends Controller
 
         // Fetch totals by status
         $totalByStatus = Permohonan::with('createdby', 'diteruskan')
-            ->where(function ($q) use ($currentUserId) {
-                $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
-                  ->orWhere('created_by', $currentUserId);
-            })
+            // ->where(function ($q) use ($currentUserId) {
+            //     $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
+            //       ->orWhere('created_by', $currentUserId);
+            // })
             ->select('status', \DB::raw('count(*) as total'))
             ->groupBy('status')
             ->get();

@@ -23,16 +23,17 @@
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
-                                    <input class="form-control" type="text" placeholder="Otomatis Oleh System" disabled>
+                                    <input class="form-control" type="text" id="no_berkas"
+                                        placeholder="Masukkan no berkas">
                                 </div>
                             </div>
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Surat</label>
-                                    <input class="form-control" type="text" placeholder="Otomatis Oleh System" disabled>
+                                    <input class="form-control" type="text" id="no_surat"
+                                        placeholder="Masukkan No Berkas">
                                 </div>
                             </div>
-
                         </div>
                         <div class="row justify-content-center">
                             <div class="col-5">
@@ -193,50 +194,6 @@
 @push('script-page')
     @include('permohonan.script')
     <script>
-        // Untuk No Berkas
-        var noBerkasPrefix = "1235/St-/";
-        var noBerkasSuffix = "/VII/2024";
-
-        // Set initial value for No Berkas input
-        $('#no_berkas').val(noBerkasPrefix + "..." + noBerkasSuffix);
-
-        // Event handler untuk input No Berkas
-        $('#no_berkas').on('input', function() {
-            var inputVal = $(this).val();
-            var editablePart = inputVal.substring(noBerkasPrefix.length, inputVal.length - noBerkasSuffix.length);
-            $(this).val(noBerkasPrefix + editablePart + noBerkasSuffix);
-        });
-
-        $('#no_berkas').on('focus', function() {
-            var input = this;
-            // Set posisi kursor di bagian yang dapat diubah
-            setTimeout(function() {
-                input.setSelectionRange(noBerkasPrefix.length, input.value.length - noBerkasSuffix.length);
-            }, 0);
-        });
-
-        // Untuk No Surat
-        var noSuratPrefix = "1235/St-22.02/VII/";
-        var noSuratSuffix = ""; // No suffix untuk No Surat
-
-        // Set initial value for No Surat input
-        $('#no_surat').val(noSuratPrefix + "....");
-
-        // Event handler untuk input No Surat
-        $('#no_surat').on('input', function() {
-            var inputVal = $(this).val();
-            var editablePart = inputVal.substring(noSuratPrefix.length);
-            $(this).val(noSuratPrefix + editablePart);
-        });
-
-        $('#no_surat').on('focus', function() {
-            var input = this;
-            // Set posisi kursor di bagian yang dapat diubah
-            setTimeout(function() {
-                input.setSelectionRange(noSuratPrefix.length, input.value.length);
-            }, 0);
-        });
-
         $(document).ready(function() {
             loadKecamatan();
             // Initialize Select2 for the first repeater row on page load

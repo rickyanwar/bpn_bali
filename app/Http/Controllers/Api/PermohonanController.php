@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Gate;
 use Auth;
 use App\ApiMessage;
 use App\ApiCode;
+use Illuminate\Support\Facades\DB;
 
 class PermohonanController extends Controller
 {
@@ -45,22 +46,34 @@ class PermohonanController extends Controller
      */
     public function store(PermohonanRequest $request)
     {
+        DB::beginTransaction();
 
+        try {
 
-        $data = Permohonan::create($request->all());
-        foreach ($request->petugas_ukur as $petugas) {
-            PermohonanPetugasUkur::create([
-                'permohonan_id' => $data->id,
-                'pendamping' => $petugas['pendamping'],
-                'petugas_ukur' => $petugas['petugas_ukur']
-            ]);
+            $data = Permohonan::create($request->all());
+
+            foreach ($request->petugas_ukur as $petugas) {
+                PermohonanPetugasUkur::create([
+                    'permohonan_id' => $data->id,
+                    'pembantu_ukur' => $petugas['pembantu_ukur'],
+                    'petugas_ukur' => $petugas['petugas_ukur']
+                ]);
+            }
+
+            Utility::auditTrail('create', $this->modulName, $data->id, $data->no_surat, auth()->user());
+            return $this->respond($data);
+            DB::commit();
+
+            return $this->respond($data);
+        } catch (\Exception $e) {
+            // Rollback the transaction if anything fails
+            DB::rollBack();
+
+            // Optionally, log the error and rethrow it or return an error response
+            return $this->respondWithError('An error occurred: ' . $e->getMessage());
         }
-
-        Utility::auditTrail('create', $this->modulName, $data->id, $data->no_surat, auth()->user());
-        return $this->respond($data);
-
-
     }
+
     /**
      * Display the specified resource.
      */

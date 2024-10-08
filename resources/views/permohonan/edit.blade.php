@@ -1,3 +1,9 @@
+@php
+    $currentUserId = auth()->id();
+    $diteruskanKe = $data->diteruskan_ke;
+    $createdBy = $data->created_by;
+    $status = $data->status;
+@endphp
 @extends('layouts.admin')
 @section('page-title')
     {{ __('Pengukuran') }}
@@ -18,23 +24,57 @@
             <input type="hidden" name="_method" value="put">
             <div class="col-12">
                 <div class="card">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <h5 class="mb-0">No Berkas #{{ $data->no_berkas }}</h5>
+                            <p class="m-0 text-sm" style="padding-left:20px">
+                                {{ \App\Models\Utility::formatRelativeTime($data->created_at) }}
+                            </p>
+
+                            @if ($data->perlu_diteruskan)
+                                <p class="m-0 text-danger text-sm font-extrabold" style="padding-left:20px">Perlu Di Tindak
+                                    Lanjut
+                                </p>
+                            @endif
+                        </div>
+                        <div>
+
+                            {{--  Tampilkan jika permohonan baru pertama kali di buat  --}}
+                            @if (auth()->user()->hasRole('Petugas Jadwal'))
+                                <a href="{{ route('permohonan.print', $data->id) }}?type=pemberitahuan"
+                                    class="btn btn-outline-primary" style="border-radius: 20px">Print Surat Pemberitahuan
+                                    <i class="fas fa-print"></i></a>
+                            @endif
+
+                            @if (auth()->user()->hasRole('Petugas Cetak Surat Tugas') && !empty($data->diteruskan_ke))
+                                <div class="form-group">
+                                    <select class="form-control" id="print-option"
+                                        style="padding-right: 2rem; border-radius:20px">
+                                        <option value="">Cetak Surat</option>
+                                        <option value="tugas pengukuran">Surat Tugas Petugas Ukur</option>
+                                        <option value="lampiran tugas pengukuran">Surat Tugas Pembantu Ukur</option>
+                                        <option value="perintah kerja">Surat Perintah Kerja</option>
+                                    </select>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div class="row justify-content-center">
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
                                     <input class="form-control" type="text" id="no_berkas"
-                                        placeholder="Otomatis Oleh System" disabled>
+                                        placeholder="Masukkan no berkas">
                                 </div>
                             </div>
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Surat</label>
                                     <input class="form-control" type="text" id="no_surat"
-                                        placeholder="Otomatis Oleh System" disabled>
+                                        placeholder="Masukkan No Berkas">
                                 </div>
                             </div>
-
                         </div>
                         <div class="row justify-content-center">
                             <div class="col-5">
@@ -111,7 +151,6 @@
                                     <label class="form-label">Jenis Permohonan</label>
                                     <select class="form-control form-control" name="jenis_kegiatan" id="jenis_kegiatan"
                                         style="width: 100%">
-
                                         <option value="">Pilih</option>
                                         <option value="Penggabungan">Penggabungan</option>
                                         <option value="Pemecahan">Pemecahan</option>
@@ -124,15 +163,12 @@
                                     </select>
                                 </div>
                             </div>
-
-
                         </div>
                         <div class="row justify-content-center mb-3">
-
                             <div class="col-10">
                                 <!-- outer repeater -->
                                 <div class="mt-2 repeater" data-value='{!! json_encode($data->petugasUkur) !!}'>
-                                    @if (auth()->user()->hasRole('Petugas Jadwal') && $data->status == 'draft')
+                                    @if (auth()->user()->hasRole('Petugas Jadwal') && ($status == 'draft' && $createdBy === $currentUserId))
                                         <div data-repeater-list="petugas_ukur">
                                             <div data-repeater-item>
                                                 <!-- innner repeater -->
@@ -158,10 +194,8 @@
 
                                                                 </div>
                                                             </div>
-
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -200,14 +234,13 @@
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                        <button data-repeater-create type="button"
-                                                            class="btn btn-outline-primary">Tambah
-                                                            Petugas Ukur</button>
-                                                    </div>
 
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
+                                            Petugas Ukur</button>
                                     @else
                                         <table class="table table-sm">
                                             <thead>
@@ -242,9 +275,8 @@
                             </div>
                         </div>
                         @if (
-                            ($data->diteruskan_ke == auth()->user()->id && !auth()->user()->hasRole('Petugas Cetak Surat Tugas')) ||
-                                ($data->status == 'draft' && auth()->user()->hasRole('Petugas Jadwal')) ||
-                                auth()->user()->can('manage all permohonan'))
+                            $data->diteruskan_ke == auth()->user()->id ||
+                                ($diteruskanKe === null && $status !== 'draft' && $createdBy === $currentUserId))
                             <div class="row justify-content-center">
                                 <div class="col-10">
                                     <div class="form-group">
@@ -271,8 +303,13 @@
                         @endif
 
                         <div class="card-footer d-flex justify-content-end">
-                            <button type="button" class="btn btn-secondary mx-2">Cancel</button>
-                            <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
+
+                            @if (
+                                ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
+                                    ($diteruskanKe == $currentUserId && auth()->user()->can('edit permohonan')))
+                                <button type="button" class="btn btn-secondary mx-2">Cancel</button>
+                                <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -283,9 +320,31 @@
 @push('script-page')
     @include('permohonan.script')
     <script>
+        let urlPrint = "{{ route('permohonan.print', $data->id) }}";
+
+        @if (!auth()->user()->hasRole('Petugas Cetak Surat Tugas') && !empty($data->diteruskan_ke))
+            $('.pendamping').prop('disabled', true);
+            $('.petugas_ukur').prop('disabled', true);
+        @endif
+
+        $('#print-option').on('change', function() {
+            var selectedValue = $(this).val();
+
+            // Check if a value is selected
+            if (selectedValue) {
+                // Replace spaces with %20
+                var formattedValue = selectedValue.replace(/ /g, '%20');
+                var urlPrint = "{{ route('permohonan.print', $data->id) }}";
+                // Redirect
+                window.open(urlPrint + '/?type=' + formattedValue, '_blank');
+                // Reset Vall
+                $(this).val('');
+            }
+        });
+
+
         let data = {!! json_encode($data) !!};
         let url = `{!! !empty($url) ? $url : '' !!}`;
-
         $('#no_berkas').val(data?.no_berkas);
         $('#di_305').val(data?.di_305);
         $('#di_302').val(data?.di_302);
@@ -295,6 +354,16 @@
         $('#no_surat').val(data?.no_surat);
         $('#nama_pemohon').val(data?.nama_pemohon);
         $('#jenis_kegiatan').val(data?.jenis_kegiatan).trigger('change')
+
+
+        @if (
+            !($diteruskanKe === null && $status !== 'draft' && $createdBy === $currentUserId) ||
+                ($diteruskanKe !== $currentUserId && !auth()->user()->can('edit permohonan')))
+
+            $('input[type="date"], input[type="number"], input[type="text"], select:not(#teruskan_ke_role, #user)')
+                .not('select[name^="petugas_ukur"]')
+                .prop('disabled', true);
+        @endif
 
 
         $(document).ready(function() {
@@ -376,6 +445,15 @@
                     var formattedDate = moment(tanggalLahirValue).format('DD-MM-YYYY');
                     formData.set('tanggal_lahir', formattedDate);
                 }
+
+                // Append values of disabled inputs to formData
+                $('input:disabled, select:disabled').each(function() {
+                    var name = $(this).attr('name');
+                    var value = $(this).val();
+                    if (name) {
+                        formData.append(name, value);
+                    }
+                });
 
                 swal({
                     title: "Anda Yakin?",

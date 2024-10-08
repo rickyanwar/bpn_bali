@@ -35,7 +35,7 @@
 
                             {{--  Tampilkan jika permohonan baru pertama kali di buat  --}}
                             @if (auth()->user()->hasRole('Petugas Jadwal'))
-                                <a href="{{ route('permohonan.print', $data->id) }}?type=pemberitahuan"
+                                <a target="_blank" href="{{ route('permohonan.print', $data->id) }}?type=pemberitahuan"
                                     class="btn btn-outline-primary" style="border-radius: 20px">Print Surat Pemberitahuan
                                     <i class="fas fa-print"></i></a>
                             @endif
@@ -225,7 +225,7 @@
                                 class="btn btn-danger">Tolak/Revisi</button>
                         @endif
 
-                        @if (Auth::user()->id == $data->diteruskan_ke)
+                        @if (Auth::user()->id == $data->diteruskan_ke || (Auth::user()->id == $data->created_by && $data->status == 'draft'))
                             <button type="button" style="margin-left: 5px" class="btn btn-primary"
                                 id="btn-submit">Kirim</button>
                         @endif

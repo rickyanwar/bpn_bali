@@ -22,7 +22,6 @@
 
         .header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 20px;
             margin-left: 30px;
@@ -35,6 +34,10 @@
             max-width: 100px;
             /* Adjust the size as needed */
             margin-right: 20px;
+        }
+
+        .header-content {
+            max-width: 70%;
         }
 
         .header p {
@@ -62,6 +65,12 @@
             margin-left: 13%;
             margin-right: 7%;
 
+        }
+
+        .content p {
+            font-size: 14px;
+            margin-top: 0px;
+            margin-bottom: 3px;
         }
 
         .row {
@@ -157,6 +166,13 @@
 
         .mt-5 {
             margin-top: 6rem !important;
+        }
+
+        .m-0 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            margin-left: 0px !important;
+            margin-right: 0px !important;
         }
 
         .mt-1 {

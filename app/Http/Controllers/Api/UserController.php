@@ -13,18 +13,17 @@ class UserController extends Controller
         $userQuery = User::query();
 
 
-        // Check if role is provided in the request
-        if ($request->role) {
-            $userQuery->whereHas('roles', function ($query) use ($request) {
-                $query->where('name', $request->role);
-            });
-        }
-
-
         // Search for users by name or email
         if ($request->term) {
             $userQuery->where('name', 'LIKE', '%' . $request->term . '%')
                       ->orWhere('email', 'LIKE', '%' . $request->term . '%');
+        }
+
+
+        if ($request->role) {
+            $userQuery->whereHas('roles', function ($query) use ($request) {
+                $query->where('name', $request->role);
+            });
         }
 
         // Paginate the result with 10 users per page
