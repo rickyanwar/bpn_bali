@@ -436,7 +436,9 @@ class PermohonanController extends Controller
 
 
         $url = route('permohonan.update', $id);
-        return view('permohonan.edit', compact('data', 'url', 'allowedRoles'));
+        $urlTeruskan = route('permohonan.teruskan', $id);
+        $urlTolak = route('permohonan.tolak', $id);
+        return view('permohonan.edit', compact('data', 'url', 'urlTeruskan', 'urlTolak', 'allowedRoles'));
     }
 
     /**

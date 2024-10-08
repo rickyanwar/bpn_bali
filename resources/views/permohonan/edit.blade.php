@@ -26,7 +26,9 @@
                 <div class="card">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
+
                             <h5 class="mb-0">No Berkas #{{ $data->no_berkas }}</h5>
+
                             <p class="m-0 text-sm" style="padding-left:20px">
                                 {{ \App\Models\Utility::formatRelativeTime($data->created_at) }}
                             </p>
@@ -36,6 +38,27 @@
                                     Lanjut
                                 </p>
                             @endif
+                            @php
+                                switch ($data->status) {
+                                    case 'draft':
+                                        $statusClass = 'bg-danger';
+                                        break;
+                                    case 'revisi':
+                                        $statusClass = 'bg-danger';
+                                        break;
+                                    case 'proses':
+                                        $statusClass = 'bg-warning';
+                                        break;
+                                    case 'selesai':
+                                        $statusClass = 'bg-success';
+                                        break;
+                                    default:
+                                        $statusClass = 'bg-secondary';
+                                        break;
+                                }
+                            @endphp
+                            <span style="margin-left: 10px"
+                                class="status_badge  badge p-2 px-3 rounded {{ $statusClass }} text-capitalize">{{ $data->status }}</span>
                         </div>
                         <div>
 
@@ -274,9 +297,38 @@
                                 </div>
                             </div>
                         </div>
-                        @if (
-                            $data->diteruskan_ke == auth()->user()->id ||
-                                ($diteruskanKe === null && $status !== 'draft' && $createdBy === $currentUserId))
+                        <div class="card-footer d-flex justify-content-end">
+                            @if (
+                                ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
+                                    auth()->user()->can('edit permohonan'))
+                                <button type="button" class="btn btn-secondary mx-2">Cancel</button>
+                                @if (
+                                    $data->status !== 'draft' &&
+                                        $data->status !== 'selesai' &&
+                                        $data->status !== 'revisi' &&
+                                        $data->diteruskan_ke == auth()->user()->id)
+                                    <button type="button" id="btn-reject" data-url="{{ $urlTolak }}"
+                                        class="btn btn-danger  mx-2">Tolak/Revisi</button>
+                                @endif
+                                <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        @if (
+            $data->diteruskan_ke == auth()->user()->id ||
+                ($diteruskanKe === null && $status == 'draft' && $createdBy === $currentUserId))
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h5 class="mb-0">Teruskan Permohonan</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-teruskan">
                             <div class="row justify-content-center">
                                 <div class="col-10">
                                     <div class="form-group">
@@ -291,31 +343,32 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-10 mt-2" id="user-selection">
-                                    <div class="form-group">
-                                        <h6>Pilih Petugas</h6>
-                                        <select class="form-control" id="user" name="user">
+                        </form>
+                        <div class="col-10 mt-2" id="user-selection">
+                            <div class="form-group">
+                                <h6>Pilih Petugas</h6>
+                                <select class="form-control" id="user" name="user">
 
-                                        </select>
-                                    </div>
-                                </div>
+                                </select>
                             </div>
-                        @endif
-
-                        <div class="card-footer d-flex justify-content-end">
-
-                            @if (
-                                ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
-                                    $diteruskanKe == $currentUserId ||
-                                    auth()->user()->can('edit permohonan'))
-                                <button type="button" class="btn btn-secondary mx-2">Cancel</button>
-                                <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
-                            @endif
                         </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+
+                        @if (
+                            ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
+                                $diteruskanKe == $currentUserId ||
+                                auth()->user()->can('edit permohonan'))
+                            <button type="button" class="btn btn-secondary mx-2">Cancel</button>
+                            <button type="button" class="btn btn-primary " id="btn-teruskan-permohoanan">Teruskan
+                                Permohoan</button>
+                        @endif
                     </div>
                 </div>
             </div>
-        </form>
+    </div>
+    @endif
+
     </div>
 @endsection
 @push('script-page')
@@ -358,7 +411,7 @@
 
 
         @if (
-            !($diteruskanKe === null && $status !== 'draft' && $createdBy === $currentUserId) ||
+            !($diteruskanKe === null && $status == 'draft' && $createdBy === $currentUserId) ||
                 ($diteruskanKe !== $currentUserId && !auth()->user()->can('edit permohonan')))
 
             $('input[type="date"], input[type="number"], input[type="text"], select:not(#teruskan_ke_role, #user)')
@@ -506,6 +559,120 @@
                 })
 
             })
+
+
+            $(document).on('click', '#btn-teruskan-permohoanan', function(e) {
+                e.preventDefault();
+                $('.text-danger').remove();
+                $(".form-group").removeClass('has-error has-feedback');
+                var url = "{{ $urlTeruskan }}";
+                var form = $('#form-teruskan')[0];
+                var formData = new FormData(form);
+                var findForm = $("#form-teruskan");
+
+                // Append values of disabled inputs to formData
+                $('input:disabled, select:disabled').each(function() {
+                    var name = $(this).attr('name');
+                    var value = $(this).val();
+                    if (name) {
+                        formData.append(name, value);
+                    }
+                });
+
+                swal({
+                    title: "Anda Yakin?",
+                    text: "Proses tidak dapat dibatalkan",
+                    icon: "warning",
+                    buttons: [
+                        'Tidak, Batalkan!',
+                        'Ya, Saya yakin!'
+                    ],
+                    dangerMode: true,
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
+                            console.log('res')
+                            swal({
+                                icon: 'success',
+                                title: res.message,
+                                showConfirmButton: false,
+                            }).then(function() {
+                                window.location.replace(
+                                    "{{ route('permohonan.index') }}");
+                            });
+
+                            show_toastr('error', xhr.responseJSON?.message);
+
+                        })
+                        ajaxPost.fail(function(e) {
+                            console.log('e', e);
+                            swal({
+                                icon: 'warning',
+                                title: e.responseJSON.message,
+                                showConfirmButton: false,
+                            });
+                            if (parseInt(e.status) == 422) {
+                                $.each(e.responseJSON.errors, function(elem, messages) {
+                                    findForm.find('#' + elem).after(
+                                        '<p class="text-danger text-sm">' +
+                                        messages.join('') + '</p>');
+                                    //ADD HAS FEEDBACK CLASS
+                                    findForm.find('#' + elem).closest(
+                                        '.form-group').addClass(
+                                        "has-error has-feedback");
+
+                                });
+                            }
+                        })
+                    }
+                })
+
+            })
+
+            $(document).on('click', '#btn-reject', function(e) {
+                let url = $(this).data('url');
+                console.log('url', url);
+                const wrapper = document.createElement('div');
+                let swalContent = `
+                <p>Jika permohonan revisi, maka permohonan tersebut akan dikembalikan kepada petugas yang sebelumnya mengirimkannya</p>
+            <div class="form-group">
+                <textarea id="alasan_penolakan" class="form-control"></textarea>
+            </div>`;
+
+                wrapper.innerHTML = swalContent;
+
+                swal({
+                    title: 'Alasan Penolakan/ Revisi',
+                    content: wrapper,
+                    buttons: {
+                        cancel: 'Cancel',
+                        confirm: 'Submit'
+                    },
+                    focusConfirm: false,
+                }).then(function(result) {
+                    if (result) {
+                        let formData = new FormData();
+                        formData.append('alasan_penolakan', $('#alasan_penolakan').val());
+
+                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
+                            swal({
+                                icon: 'success',
+                                title: res.message,
+                                showConfirmButton: false,
+                            }).then(function() {
+                                window.location.reload();
+                            });
+                        }).fail(function(xhr) {
+                            console.log('xhr', xhr);
+                            swal({
+                                icon: 'warning',
+                                title: xhr.responseJSON?.message,
+                                showConfirmButton: false,
+                            });
+                        });
+                    }
+                });
+            });
 
         });
     </script>
