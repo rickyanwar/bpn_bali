@@ -23,14 +23,14 @@
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
-                                    <input class="form-control" type="text" id="no_berkas"
+                                    <input class="form-control" type="text" id="no_berkas" name="no_berkas"
                                         placeholder="Masukkan no berkas">
                                 </div>
                             </div>
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Surat</label>
-                                    <input class="form-control" type="text" id="no_surat"
+                                    <input class="form-control" type="text" id="no_surat" name="no_surat"
                                         placeholder="Masukkan No Berkas">
                                 </div>
                             </div>

@@ -21,7 +21,7 @@ use App\ApiMessage;
 use App\ApiCode;
 use Spatie\Permission\Models\Role;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PermohonanController extends Controller
 {
@@ -371,29 +371,39 @@ class PermohonanController extends Controller
         return view('permohonan.detail', compact('data'));
     }
 
-
     public function print(Request $request, string $id)
     {
-
+        // Fetch the data
         $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
 
-        // Generate the URL for the permohonan.show route
+        // Generate the URL for the permohonan.detail route
         $url = route('permohonan.detail', ['id' => $id]);
-        $qrCode = QrCode::size(80)->generate($url);
-        $title = $request->type;
+        $qrCode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($url));
 
+        $title = $request->type ." ". $data->no_berkas;
+
+        // Determine which view to render based on the type
         if ($request->type == 'tugas pengukuran') {
-            return view('print.tugas_pengukuran', compact('data', 'qrCode', 'title'));
+            $view = 'print.tugas_pengukuran';
         } elseif ($request->type == 'lampiran tugas pengukuran') {
-            return view('print.lampiran_tugas_pengukuran', compact('data', 'qrCode', 'title'));
+            $view = 'print.lampiran_tugas_pengukuran';
         } elseif ($request->type == 'perintah kerja') {
-            return view('print.perintah_kerja', compact('data', 'qrCode', 'title'));
-        } elseif ($request->type == 'pemberitahuan') {
-            return view('print.pemberitahuan', compact('data', 'qrCode', 'title'));
+            $view = 'print.perintah_kerja';
+        } else {
+            $view = 'print.pemberitahuan';
         }
 
-    }
 
+        //return View("$view", compact('data', 'qrCode', 'title'));
+        $pdf = PDF::loadView($view, compact('data', 'qrCode', 'title'))
+                      ->setPaper('a4', 'portrait');
+
+        $title = strtoupper($request->type) . " " . $data->no_berkas;
+        $title = str_replace(['/', '\\'], '-', $title);
+
+        // Stream the PDF back to the browser or save it
+        return $pdf->stream("$title.pdf");
+    }
 
 
 

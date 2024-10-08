@@ -57,9 +57,6 @@ class Permohonan extends Model
         parent::boot();
         //while creating/inserting item into db
         static::creating(function ($item) {
-
-            $item->no_surat = Utility::generateCode($item, 'no_surat', '⁠630.61-', 5);
-            $item->no_berkas = Utility::generateCode($item, 'no_berkas', null, 10). '/'.date('Y');
             $item->status = "draft";
             $item->created_by = auth()->user()->id;
         });

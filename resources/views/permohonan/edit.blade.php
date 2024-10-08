@@ -64,14 +64,14 @@
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
-                                    <input class="form-control" type="text" id="no_berkas"
+                                    <input class="form-control" type="text" id="no_berkas" name="no_berkas"
                                         placeholder="Masukkan no berkas">
                                 </div>
                             </div>
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">No Surat</label>
-                                    <input class="form-control" type="text" id="no_surat"
+                                    <input class="form-control" type="text" id="no_surat" name="no_surat"
                                         placeholder="Masukkan No Berkas">
                                 </div>
                             </div>
@@ -306,7 +306,8 @@
 
                             @if (
                                 ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
-                                    ($diteruskanKe == $currentUserId && auth()->user()->can('edit permohonan')))
+                                    $diteruskanKe == $currentUserId ||
+                                    auth()->user()->can('edit permohonan'))
                                 <button type="button" class="btn btn-secondary mx-2">Cancel</button>
                                 <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
                             @endif
@@ -362,6 +363,7 @@
 
             $('input[type="date"], input[type="number"], input[type="text"], select:not(#teruskan_ke_role, #user)')
                 .not('select[name^="petugas_ukur"]')
+                .not('#print-option')
                 .prop('disabled', true);
         @endif
 
