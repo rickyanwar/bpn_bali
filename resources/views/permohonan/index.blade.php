@@ -382,6 +382,10 @@
 
             // Only initialize Select2 once when the modal is fully shown
             $('#commonModal').on('shown.bs.modal', function() {
+                // Destroy any existing Select2 instances before initializing a new one
+                if ($('#user').data('select2')) {
+                    $('#user').select2('destroy');
+                }
                 // Initialize Select2
                 $('#teruskan_ke_role').on('change', function() {
                     const selectedRole = $(this).val();

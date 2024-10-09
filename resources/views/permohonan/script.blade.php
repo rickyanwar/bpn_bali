@@ -33,7 +33,6 @@
         });
         // If we have a selected value, set it as the default selected option
         if (selectedValue) {
-            console.log('selectedValue', selectedValue);
             const option = new Option(selectedValue.text, selectedValue.id, true, true);
             // option.dataset.user = JSON.stringify(selectedValue.user); // Assuming user data is available
             $element.append(option).trigger('change'); // Append and trigger change to display the selected option
@@ -55,12 +54,11 @@
                 const $pembantuUkur = $this.closest('[data-repeater-item]').find('.pembantu_ukur');
                 if (selectedPetugas) {
                     // Assuming you want to set the pendamping to the selected petugas
-
-
                     $pembantuUkur.empty(); // Clear previous options
-
+                    $pembantuUkur.val('');
                     if (selectedPetugas?.data?.pembantu_ukur) {
-                        $pembantuUkur.val(selectedPetugas?.data?.pembantu_ukur);
+                        $pembantuUkur.val(selectedPetugas?.data?.pembantu_ukur ?? $pembantuUkur.val(
+                            ''));
                     }
 
                 } else {
@@ -84,7 +82,7 @@
         // Loop through each repeater item and set the selected values for Select2
         value.forEach(function(item, index) {
             var $repeaterItem = $('[data-repeater-item]').eq(index);
-
+            console.log('item', item);
             // Initialize Select2 for petugas_ukur and pendamping
             var petugasUkurSelect = $repeaterItem.find('.petugas_ukur');
             var pembantuUkur = $repeaterItem.find('.pembantu_ukur');

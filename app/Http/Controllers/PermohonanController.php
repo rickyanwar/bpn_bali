@@ -27,39 +27,62 @@ class PermohonanController extends Controller
 {
     protected $modulName = 'Permohonan';
     protected $roleHierarchy = [
-            "Petugas Jadwal" => [
-                "Petugas Cetak Surat Tugas"
-            ],
-            "Petugas Cetak Surat Tugas" => [
-                "Petugas Ukur"
-            ],
-            "Petugas Ukur" => [
-                "Admin Pengukuran"
-            ],
-            "Admin Pengukuran" => [
-                "Koordinator Pengukuran"
-            ],
-            "Admin" => [
-                "Petugas Gambar",
-                "Koordinator Wilayah",
-                "Kasi SP"
-            ],
-            "Petugas Gambar" => [
-                "Koordinator Wilayah",
-                "Petugas Ukur",
-                "Admin Pengukuran"
-            ],
-            "Koordinator Wilayah" => [
-                "Petugas Gambar",
-                "Petugas Ukur",
-                "Koordinator Pengukuran",
-                "Admin"
-            ],
-            "Kepala Seksi" => [
-                "Koordinator Wilayah",
-                "Koordinator Pengukuran",
-                "Admin"
-            ]
+           "Petugas Jadwal" => [
+        "Petugas Cetak Surat Tugas"
+    ],
+    "Petugas Cetak Surat Tugas" => [
+        "Petugas Ukur"
+    ],
+    "Petugas Ukur" => [
+        "Admin Pengukuran"
+    ],
+    "Admin Pengukuran" => [
+        "Koordinator Pengukuran"
+    ],
+    "Koordinator Pengukuran" => [
+        "Admin 1",
+        "Admin 3",
+        "Koordinator Wilayah",
+        "Petugas Jadwal",
+        "Petugas Ukur"
+    ],
+    "Admin 1" => [
+        "Petugas Gambar",
+        "Koordinator Wilayah",
+        "Kasi SP"
+    ],
+    "Petugas Gambar" => [
+        "Koordinator Wilayah",
+        "Petugas Ukur",
+        "Admin Pengukuran"
+    ],
+    "Koordinator Wilayah" => [
+        "Petugas Gambar",
+        "Petugas Ukur",
+        "Koordinator Pengukuran",
+        "Admin 1",
+        "Admin 2",
+        "Admin 3",
+    ],
+    "Admin 2" => [
+        "PHP Berkas Selesai"
+    ],
+    "Admin 3" => [
+        "Koordinator Wilayah",
+        "Admin Spasial",
+        "Koordinator Pengukuran",
+        "Kasi SP",
+        "Admin 1",
+        "Admin 2",
+        "PHP Berkas Selesai",
+    ],
+    "Kepala Seksi SP" => [
+        "Koordinator Wilayah",
+        "Koordinator Pengukuran",
+        "Admin 1",
+        "Admin 2",
+        "Admin 3",
+    ]
         ];
 
     /**
@@ -455,14 +478,13 @@ class PermohonanController extends Controller
         $data->update($request->all());
 
         PermohonanPetugasUkur::where('permohonan_id', $id)->delete();
-        foreach ($request->petugas_ukur as $petugas) {
 
+        foreach ($request->petugas_ukur as $petugas) {
             PermohonanPetugasUkur::create([
                         'permohonan_id' => $data->id,
                         'pembantu_ukur' => $petugas['pembantu_ukur'],
                         'petugas_ukur' => $petugas['petugas_ukur']
             ]);
-
         }
 
         if (!empty($request->teruskan_ke_role)) {

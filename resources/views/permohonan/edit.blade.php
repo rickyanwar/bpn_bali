@@ -194,29 +194,24 @@
                                     @if (auth()->user()->hasRole('Petugas Jadwal') && ($status == 'draft' && $createdBy === $currentUserId))
                                         <div data-repeater-list="petugas_ukur">
                                             <div data-repeater-item>
-                                                <!-- innner repeater -->
-                                                <div data-repeater-list="inner-list">
-                                                    <div data-repeater-item>
-                                                        <div class="row">
-                                                            <div class="col-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label">Petugas Ukur
-                                                                    </label>
-                                                                    <select class="form-control form-control petugas_ukur"
-                                                                        name="petugas_ukur" style="width: 100%">
-                                                                    </select>
-                                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Petugas Ukur
+                                                            </label>
+                                                            <select class="form-control form-control petugas_ukur"
+                                                                name="petugas_ukur" style="width: 100%">
+                                                            </select>
+                                                        </div>
 
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <div class="form-group">
-                                                                    <label class="form-label">Pembantu ukur
-                                                                    </label>
-                                                                    <input class="form-control form-control pembantu_ukur"
-                                                                        name="pembantu_ukur" readonly>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Pembantu ukur
+                                                            </label>
+                                                            <input class="form-control form-control pembantu_ukur"
+                                                                name="pembantu_ukur" readonly>
 
-                                                                </div>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -226,40 +221,35 @@
                                         {{--  if petugas cetak show delete and minus button  --}}
                                         <div data-repeater-list="petugas_ukur">
                                             <div data-repeater-item>
-                                                <!-- innner repeater -->
-                                                <div data-repeater-list="inner-list">
-                                                    <div data-repeater-item>
-                                                        <div class="row">
-                                                            <div class="col-5">
-                                                                <div class="form-group">
-                                                                    <label class="form-label">Petugas Ukur
-                                                                    </label>
-                                                                    <select class="form-control form-control petugas_ukur"
-                                                                        name="petugas_ukur" style="width: 100%">
-                                                                    </select>
-                                                                </div>
-
-                                                            </div>
-                                                            <div class="col-5">
-                                                                <div class="form-group">
-                                                                    <label class="form-label">Pembantu ukur
-                                                                    </label>
-                                                                    <input class="form-control form-control pembantu_ukur"
-                                                                        name="pembantu_ukur" readonly>
-
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-2 mt-4">
-                                                                <button type="button" data-repeater-delete
-                                                                    style="border-radius: 20px"
-                                                                    class="btn btn-outline-secondary btn-sm">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
-                                                            </div>
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Petugas Ukur
+                                                            </label>
+                                                            <select class="form-control form-control petugas_ukur"
+                                                                name="petugas_ukur" style="width: 100%">
+                                                            </select>
                                                         </div>
 
                                                     </div>
+                                                    <div class="col-5">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Pembantu ukur
+                                                            </label>
+                                                            <input class="form-control form-control pembantu_ukur"
+                                                                name="pembantu_ukur" readonly>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-2 mt-4">
+                                                        <button type="button" data-repeater-delete
+                                                            style="border-radius: 20px"
+                                                            class="btn btn-outline-secondary btn-sm">
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                         <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
@@ -298,18 +288,11 @@
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-end">
+
                             @if (
                                 ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
-                                    auth()->user()->can('edit permohonan'))
-                                <button type="button" class="btn btn-secondary mx-2">Cancel</button>
-                                @if (
-                                    $data->status !== 'draft' &&
-                                        $data->status !== 'selesai' &&
-                                        $data->status !== 'revisi' &&
-                                        $data->diteruskan_ke == auth()->user()->id)
-                                    <button type="button" id="btn-reject" data-url="{{ $urlTolak }}"
-                                        class="btn btn-danger  mx-2">Tolak/Revisi</button>
-                                @endif
+                                    auth()->user()->can('edit permohonan') ||
+                                    ($data->diteruskan_ke == auth()->user()->id && auth()->user()->hasRole('Petugas Cetak Surat Tugas')))
                                 <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
                             @endif
                         </div>
@@ -354,12 +337,18 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-end">
-
+                        @if (
+                            $data->status !== 'draft' &&
+                                $data->status !== 'selesai' &&
+                                $data->status !== 'revisi' &&
+                                $data->diteruskan_ke == auth()->user()->id)
+                            <button type="button" id="btn-reject" data-url="{{ $urlTolak }}"
+                                class="btn btn-danger  mx-2">Tolak/Revisi</button>
+                        @endif
                         @if (
                             ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
                                 $diteruskanKe == $currentUserId ||
                                 auth()->user()->can('edit permohonan'))
-                            <button type="button" class="btn btn-secondary mx-2">Cancel</button>
                             <button type="button" class="btn btn-primary " id="btn-teruskan-permohoanan">Teruskan
                                 Permohoan</button>
                         @endif
@@ -422,6 +411,27 @@
 
 
         $(document).ready(function() {
+
+            console.log('data petugas ukur', data.petugas_ukur)
+            $('.petugas_ukur').on('change', function() {
+                const $this = $(this);
+                const selectedPetugas = $this.select2('data')[0]; // Get selected data
+                console.log('selectedPetugas', selectedPetugas);
+                // Find the nearest pendamping select element
+                const $pembantuUkur = $this.closest('[data-repeater-item]').find('.pembantu_ukur');
+
+                if (selectedPetugas) {
+                    // Assuming you want to set the pendamping to the selected petugas
+                    $pembantuUkur.empty(); // Clear previous options
+                    $pembantuUkur.val('');
+                    if (selectedPetugas?.data?.pembantu_ukur) {
+                        $pembantuUkur.val(selectedPetugas?.data?.pembantu_ukur ?? $pembantuUkur.val(''));
+                    }
+
+                } else {
+                    $pembantuUkur.empty().trigger('change'); // Clear if no selection
+                }
+            });
 
             if ((data.kecamatan)) {
                 loadKecamatan("51.01", data.kecamatan).then(function() {
@@ -528,8 +538,8 @@
                                 title: res.message,
                                 showConfirmButton: false,
                             }).then(function() {
-                                window.location.replace(
-                                    "{{ route('permohonan.index') }}");
+                                {{--  window.location.replace(
+                                    "{{ route('permohonan.index') }}");  --}}
                             });
 
                             show_toastr('error', xhr.responseJSON?.message);

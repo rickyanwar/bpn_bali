@@ -198,7 +198,6 @@
             loadKecamatan();
             // Initialize Select2 for the first repeater row on page load
             initializeSelect2($('.petugas_ukur'));
-            initializeSelect2($('.pendamping'), null, false);
             $(document).on('click', '#btn-submit', function(e) {
                 e.preventDefault();
                 $('.text-danger').remove();
