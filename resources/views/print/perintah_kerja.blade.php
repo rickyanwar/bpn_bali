@@ -31,9 +31,9 @@
         </div>
         <div class="text-center">
             <u>
-                <h3 class="mb-0 no-margin">Perintah Kerja</h3>
+                <h3 class="mb-0 no-margin">Surat Perintah Kerja</h3>
             </u>
-            <p class="no-margin">Nomor : {{ $data->no_surat }}</p>
+            <p class="no-margin">Nomor : {{ $data->no_surat_perintah_kerja ?? '' }}</p>
         </div>
         <p>
             Berdasarkan Nota Dinas Kepala Seksi Survei dan Pemetaan No. /ND.51.02.3/ VI/2024 Tanggal 03 Juli 2024.

@@ -17,6 +17,7 @@ return new class () extends Migration {
             $table->date('tanggal_mulai_pengukuran');
             $table->date('tanggal_berakhir_pengukuran');
             $table->string('no_surat');
+            $table->string('no_surat_perintah_kerja');
             $table->string('nama_pemohon');
             $table->string('no_berkas');
             $table->string('kecamatan');

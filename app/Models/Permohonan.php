@@ -19,6 +19,7 @@ class Permohonan extends Model
         'no_surat',
         'nama_pemohon',
         'no_berkas',
+        'no_surat_perintah_kerja',
         'kecamatan',
         'desa',
         'luas',

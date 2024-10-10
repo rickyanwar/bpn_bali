@@ -272,7 +272,6 @@ class PermohonanController extends Controller
         $query = Permohonan::with('createdby', 'diteruskan')->latest();
 
 
-
         //Show all permhonan
         // if (Gate::check('manage all permohonan')) {
         //     $query = Permohonan::with('createdby', 'diteruskan')->latest();

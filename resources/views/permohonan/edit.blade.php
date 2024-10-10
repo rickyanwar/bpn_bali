@@ -84,18 +84,25 @@
                     </div>
                     <div class="card-body">
                         <div class="row justify-content-center">
-                            <div class="col-5">
+                            <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
                                     <input class="form-control" type="text" id="no_berkas" name="no_berkas"
                                         placeholder="Masukkan no berkas">
                                 </div>
                             </div>
-                            <div class="col-5">
+                            <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-label">No Surat</label>
                                     <input class="form-control" type="text" id="no_surat" name="no_surat"
                                         placeholder="Masukkan No Berkas">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label class="form-label">No Surat Perintah Kerja</label>
+                                    <input class="form-control" type="text" id="no_surat_perintah_kerja"
+                                        name="no_surat_perintah_kerja" placeholder="Masukkan No surat perintah kerja">
                                 </div>
                             </div>
                         </div>
@@ -149,8 +156,8 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label">Tanggal Selesai Pengukuran</label>
-                                            <input class="form-control " type="date" name="tanggal_berakhir_pengukuran"
-                                                id="tanggal_berakhir_pengukuran">
+                                            <input class="form-control " type="date"
+                                                name="tanggal_berakhir_pengukuran" id="tanggal_berakhir_pengukuran">
                                         </div>
                                     </div>
                                 </div>
@@ -451,6 +458,7 @@
         $('#tanggal_berakhir_pengukuran').val(data?.tanggal_berakhir_pengukuran);
         $('#luas').val(data?.luas);
         $('#no_surat').val(data?.no_surat);
+        $('#no_surat_perintah_kerja').val(data?.no_surat_perintah_kerja);
         $('#nama_pemohon').val(data?.nama_pemohon);
         $('#jenis_kegiatan').val(data?.jenis_kegiatan).trigger('change')
 

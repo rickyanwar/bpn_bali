@@ -13,9 +13,7 @@ class PermohonanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-
         return Auth::check();
-
     }
 
     /**
@@ -32,7 +30,8 @@ class PermohonanRequest extends FormRequest
                     'di_302' => 'required',
                     'tanggal_mulai_pengukuran' => 'date|required',
                     'tanggal_berakhir_pengukuran' => 'date|required',
-             'jenis_kegiatan' => 'required|in:Penggabungan,Pemecahan,Pengukuran,Penataan Batas,Pengembalian Batas,Permohonan SK,Konversi',
+                    'surat_perintah_kerja' => 'nullable',
+                    'jenis_kegiatan' => 'required|in:Penggabungan,Pemecahan,Pengukuran,Penataan Batas,Pengembalian Batas,Permohonan SK,Konversi',
                     'nama_pemohon' => 'required',
                     'kecamatan' => [ 'required', function ($attr, $value, $fail) use ($request) {
                         $kecamatan = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '8')

@@ -35,10 +35,12 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api,web']], function () {
         // Explicitly named routes for permohonan
+        Route::post('permohonan/selesai/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'selesai']);
+        Route::post('permohonan/pindah_tugas/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'pindahTugas']);
         Route::post('permohonan/tolak/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'tolak']);
         Route::post('permohonan/teruskan/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'teruskan']);
         Route::get('permohonan/print/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'print']);
-
+        Route::get('permohonan/all', [App\Http\Controllers\Api\PermohonanController::class, 'getAll']);
         Route::apiResource('permohonan', App\Http\Controllers\Api\PermohonanController::class, [
             'names' => [
                 'index' => 'permohonan.api.index',
@@ -48,6 +50,10 @@ Route::group(['prefix' => 'v1'], function () {
                 'destroy' => 'permohonan.api.destroy',
             ]
         ]);
+
+
+        Route::get('/profile', [App\Http\Controllers\Api\AuthController::class, 'profile']);
+
     });
 
 });

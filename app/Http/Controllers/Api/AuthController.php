@@ -47,4 +47,17 @@ class AuthController extends Controller
 
         return $this->respond($data);
     }
+
+    public function profile()
+    {
+        $user = User::where('id', auth()->user()->getId())->first();
+
+        $user->permissions =
+        $user->getPermissionsViaRoles()->map(function ($permission) {
+            return $permission['name'];
+        });
+
+        return $this->respond($user);
+    }
+
 }
