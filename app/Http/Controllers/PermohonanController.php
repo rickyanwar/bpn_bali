@@ -27,7 +27,7 @@ class PermohonanController extends Controller
 {
     protected $modulName = 'Permohonan';
     protected $roleHierarchy = [
-           "Petugas Jadwal" => [
+    "Petugas Jadwal" => [
         "Petugas Cetak Surat Tugas"
     ],
     "Petugas Cetak Surat Tugas" => [
@@ -65,7 +65,12 @@ class PermohonanController extends Controller
         "Admin 3",
     ],
     "Admin 2" => [
-        "PHP Berkas Selesai"
+      "Koordinator Wilayah",
+        "Admin Spasial",
+        "Koordinator Pengukuran",
+        "Kasi SP",
+        "Admin 1",
+        "Admin 2",
     ],
     "Admin 3" => [
         "Koordinator Wilayah",
@@ -74,9 +79,8 @@ class PermohonanController extends Controller
         "Kasi SP",
         "Admin 1",
         "Admin 2",
-        "PHP Berkas Selesai",
     ],
-    "Kepala Seksi SP" => [
+    "Kasi SP" => [
         "Koordinator Wilayah",
         "Koordinator Pengukuran",
         "Admin 1",
@@ -461,7 +465,8 @@ class PermohonanController extends Controller
         $url = route('permohonan.update', $id);
         $urlTeruskan = route('permohonan.teruskan', $id);
         $urlTolak = route('permohonan.tolak', $id);
-        return view('permohonan.edit', compact('data', 'url', 'urlTeruskan', 'urlTolak', 'allowedRoles'));
+        $urlSelesai = route('permohonan.selesai', $id);
+        return view('permohonan.edit', compact('data', 'url', 'urlTeruskan', 'urlSelesai', 'urlTolak', 'allowedRoles'));
     }
 
     /**
@@ -588,6 +593,23 @@ class PermohonanController extends Controller
         Utility::auditTrail('revisi', $this->modulName, $data->id, $data->no_surat, auth()->user());
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
+
+    public function selesai($id)
+    {
+
+        $data = Permohonan::find($id);
+        if (!$data) {
+            return $this->respond(null, ApiMessage::NOT_FOUND, 404); // Handle if no Permohonan found
+        }
+        $data->status = 'selesai';
+        $data->update();
+
+        Utility::auditTrail('selesai', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+
+    }
+
+
 
     public function printView($id)
     {

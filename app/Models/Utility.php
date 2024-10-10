@@ -88,7 +88,7 @@ class Utility extends Model
                 break;
             case 'selesai':
                 $data['action'] = 'status';
-                $data['description'] = $creator->nama . ' mengubah status ' . '' . $moduleTarget . ' (' . $moduleNumber . ')'. ' menjadi selesai, permohonan dapat diambil pada tangggal : '  . date('j F Y h:i A', strtotime($dataModule->tgl_pengambilan))  . ', Catatan:' . $dataModule->keterangan_status ;
+                $data['description'] = $creator->nama . ' mengubah status ' . '' . $moduleTarget . ' (' . $moduleNumber . ')'. ' menjadi selesai' ;
                 break;
             case 'diproses' || 'verifikasi' || 'permohonan':
                 $data['action'] = 'status';

@@ -9,9 +9,6 @@
 @push('script-page')
 @endpush
 @section('breadcrumb')
-    <li class="breadcrumb-item">
-        {{--  <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>  --}}
-    </li>
     <li class="breadcrumb-item">{{ __('Semua Permohonan') }}</li>
 @endsection
 
@@ -159,14 +156,18 @@
                     name: 'diteruskan',
                     render: function(data) {
                         return data?.name ?? '-';
-                    }
+                    },
+                    orderable: false,
+                    searchable: false,
                 },
                 {
                     data: 'createdby',
                     name: 'createdby',
                     render: function(data) {
                         return data?.name
-                    }
+                    },
+                    orderable: false,
+                    searchable: false,
                 },
                 {
                     data: 'actions',

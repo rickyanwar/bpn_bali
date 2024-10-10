@@ -41,6 +41,7 @@ Route::middleware(['auth:api','auth:web'])->group(function () {
     Route::get('permohonan/audit-trails/{id}', [PermohonanController::class, 'auditTrails'])->name('permohonan.audit-trails');
     Route::get('permohonan/riwayat-penerusan/{id}', [PermohonanController::class, 'riwayatDiteruskan'])->name('permohonan.riwayat-penerusan');
     Route::post('permohonan/tolak/{id}', [PermohonanController::class, 'tolak'])->name('permohonan.tolak');
+    Route::post('permohonan/selesai/{id}', [PermohonanController::class, 'selesai'])->name('permohonan.selesai');
     Route::post('permohonan/teruskan/{id}', [PermohonanController::class, 'teruskan'])->name('permohonan.teruskan');
     Route::get('permohonan/print/{id}', [PermohonanController::class, 'print'])->name('permohonan.print');
 

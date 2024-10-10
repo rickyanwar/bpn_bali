@@ -286,6 +286,12 @@
                                     @endif
                                 </div>
                             </div>
+                            @if ($data->status == 'revisi')
+                                <div class="col-10 mt-2">
+                                    <h6>Alasan Penolakan/ Revisi</h6>
+                                    <p class="text-danger">{{ $data->alasan_penolakan }}</p>
+                                </div>
+                            @endif
                         </div>
                         <div class="card-footer d-flex justify-content-end">
 
@@ -294,6 +300,13 @@
                                     auth()->user()->can('edit permohonan') ||
                                     ($data->diteruskan_ke == auth()->user()->id && auth()->user()->hasRole('Petugas Cetak Surat Tugas')))
                                 <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
+                            @endif
+
+                            @if (auth()->user()->hasRole('Admin 2') || auth()->user()->hasRole('Admin 3') || auth()->user()->hasRole('Kasi SP'))
+                                @if ($data->status !== 'draft' && $data->status !== 'revisi')
+                                    <button type="button" style="margin-left: 5px" class="btn btn-success"
+                                        data-url="{{ $urlSelesai }}" id="btn-selesai">Selesai</button>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -355,9 +368,52 @@
                     </div>
                 </div>
             </div>
-    </div>
-    @endif
+        @endif
 
+    </div>
+
+    <div class="row">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">Riwayat Penerusan Permohonan
+            </div>
+            <div class="card-body mx-3">
+                <div class="table-responsive">
+                    <table class="table table-sm" id="riwayat-penerusan-table">
+                        <thead>
+                            <tr>
+                                <th> {{ __('Petugas') }}</th>
+                                <th> {{ __('Nama Petugas') }}</th>
+                                {{--  <th>{{ __('No Berkas') }}</th>  --}}
+                                <th>{{ __('Status') }}</th>
+                                <th>{{ __('Tanggal') }}</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">Audit Trail
+            </div>
+            <div class="card-body mx-3">
+                <div class="table-responsive">
+                    <table class="table table-sm" id="audit-trails-table">
+                        <thead>
+                            <tr>
+                                <th> {{ __('Aksi') }}</th>
+                                <th> {{ __('Deskripsi') }}</th>
+                                <th>{{ __('Created On') }}</th>
+                                <th>{{ __('Tanggal') }}</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @push('script-page')
@@ -412,7 +468,71 @@
 
         $(document).ready(function() {
 
-            console.log('data petugas ukur', data.petugas_ukur)
+            $('#riwayat-penerusan-table').DataTable({
+                processing: true,
+                serverSide: true,
+                autoWidth: true,
+                paging: true,
+                searching: false,
+                ajax: {
+                    url: "{{ route('permohonan.riwayat-penerusan', $data->id) }}",
+                },
+                columns: [{
+                        data: "diteruskan_ke_role",
+                        name: "diteruskan_ke_role",
+                    },
+
+                    {
+                        data: 'diteruskan',
+                        name: 'diteruskan',
+                        render: function(data) {
+                            return data?.name ?? '-';
+                        }
+                    },
+                    {
+                        data: "status_badge",
+                        name: "status_badge",
+                    },
+                    {
+                        data: "created_at",
+                        name: "created_at",
+                    },
+
+
+                ]
+            });
+
+
+            $('#audit-trails-table').DataTable({
+                processing: true,
+                serverSide: true,
+                autoWidth: true,
+                paging: true,
+                searching: false,
+                ajax: {
+                    url: "{{ route('permohonan.audit-trails', $data->id) }}",
+                },
+                columns: [{
+                        data: "action",
+                        name: "action",
+                    },
+                    {
+                        data: "description",
+                        name: "description",
+                    },
+                    {
+                        data: "created_on",
+                        name: "created_on",
+                    },
+                    {
+                        data: "created_at",
+                        name: "created_at",
+                    },
+
+
+                ]
+            });
+
             $('.petugas_ukur').on('change', function() {
                 const $this = $(this);
                 const selectedPetugas = $this.select2('data')[0]; // Get selected data
@@ -570,6 +690,49 @@
 
             })
 
+            $(document).on('click', '#btn-selesai', function(e) {
+                e.preventDefault();
+                $('.text-danger').remove();
+                $(".form-group").removeClass('has-error has-feedback');
+                var url = "{{ $urlSelesai }}";
+
+                swal({
+                    title: "Anda Yakin?",
+                    text: "Proses tidak dapat dibatalkan",
+                    icon: "warning",
+                    buttons: [
+                        'Tidak, Batalkan!',
+                        'Ya, Saya yakin!'
+                    ],
+                    dangerMode: true,
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        let ajaxPost = ajaxRequest(url, 'POST', []).done(function(res) {
+                            console.log('res')
+                            swal({
+                                icon: 'success',
+                                title: res.message,
+                                showConfirmButton: false,
+                            }).then(function() {
+                                window.location.replace(
+                                    "{{ route('permohonan.index') }}");
+                            });
+
+                            show_toastr('error', xhr.responseJSON?.message);
+
+                        })
+                        ajaxPost.fail(function(e) {
+                            console.log('e', e);
+                            swal({
+                                icon: 'warning',
+                                title: e.responseJSON.message,
+                                showConfirmButton: false,
+                            });
+
+                        })
+                    }
+                })
+            })
 
             $(document).on('click', '#btn-teruskan-permohoanan', function(e) {
                 e.preventDefault();
