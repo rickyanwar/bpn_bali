@@ -119,7 +119,7 @@
                </div>
                <div class="row mt-5">
                    <div class="col-6">
-                       <p>Mengetahui <br> Nama Pemohon : NI WAYAN SURIANI</p>
+                       <p>Mengetahui <br> Nama Pemohon : {{ $data->nama_pemohon }}</p>
                    </div>
                    <div class="col-6">
                        <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 182736263738272839</p>

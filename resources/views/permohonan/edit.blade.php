@@ -200,7 +200,7 @@
                                 <div class="mt-2 repeater" data-value='{!! json_encode($data->petugasUkur) !!}'>
                                     @if (auth()->user()->hasRole('Petugas Jadwal') && ($status == 'draft' && $createdBy === $currentUserId))
                                         <div data-repeater-list="petugas_ukur">
-                                            <div data-repeater-item>
+                                            <div class="ui-sortable" data-repeater-item>
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <div class="form-group">
@@ -227,37 +227,39 @@
                                     @elseif (auth()->user()->hasRole('Petugas Cetak Surat Tugas') && $data->diteruskan_ke == auth()->user()->id)
                                         {{--  if petugas cetak show delete and minus button  --}}
                                         <div data-repeater-list="petugas_ukur">
-                                            <div data-repeater-item>
-                                                <div class="row">
-                                                    <div class="col-5">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Petugas Ukur
-                                                            </label>
-                                                            <select class="form-control form-control petugas_ukur"
-                                                                name="petugas_ukur" style="width: 100%">
-                                                            </select>
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Pembantu ukur
-                                                            </label>
-                                                            <input class="form-control form-control pembantu_ukur"
-                                                                name="pembantu_ukur" readonly>
+                                            @foreach ($data->petugasUkur as $petugas)
+                                                <div class="ui-sortable" data-repeater-item>
+                                                    <div class="row">
+                                                        <div class="col-5">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Petugas Ukur
+                                                                </label>
+                                                                <select class="form-control form-control petugas_ukur"
+                                                                    name="petugas_ukur" style="width: 100%">
+                                                                </select>
+                                                            </div>
 
                                                         </div>
-                                                    </div>
-                                                    <div class="col-2 mt-4">
-                                                        <button type="button" data-repeater-delete
-                                                            style="border-radius: 20px"
-                                                            class="btn btn-outline-secondary btn-sm">
-                                                            <i class="fas fa-minus"></i>
-                                                        </button>
+                                                        <div class="col-5">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Pembantu ukur
+                                                                </label>
+                                                                <input class="form-control form-control pembantu_ukur"
+                                                                    name="pembantu_ukur" readonly>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-2 mt-4">
+                                                            <button type="button" data-repeater-delete
+                                                                style="border-radius: 20px"
+                                                                class="btn btn-outline-secondary btn-sm">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
-
-                                            </div>
+                                            @endforeach
                                         </div>
                                         <button data-repeater-create type="button" class="btn btn-outline-primary">Tambah
                                             Petugas Ukur</button>
@@ -450,6 +452,8 @@
 
 
         let data = {!! json_encode($data) !!};
+
+        console.log('data petugas', {!! json_encode($data->petugasUkur) !!});
         let url = `{!! !empty($url) ? $url : '' !!}`;
         $('#no_berkas').val(data?.no_berkas);
         $('#di_305').val(data?.di_305);

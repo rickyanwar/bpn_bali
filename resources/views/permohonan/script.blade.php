@@ -80,9 +80,8 @@
         value = JSON.parse(value); // Parse the JSON string
 
         // Loop through each repeater item and set the selected values for Select2
-        value.forEach(function(item, index) {
+        value?.forEach(function(item, index) {
             var $repeaterItem = $('[data-repeater-item]').eq(index);
-            console.log('item', item);
             // Initialize Select2 for petugas_ukur and pendamping
             var petugasUkurSelect = $repeaterItem.find('.petugas_ukur');
             var pembantuUkur = $repeaterItem.find('.pembantu_ukur');
