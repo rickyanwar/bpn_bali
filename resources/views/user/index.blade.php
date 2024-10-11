@@ -121,7 +121,7 @@
         //On change to role Petugas Ukur
         $('#commonModal').on('shown.bs.modal', function() {
             $("#role").on('change', function(ret) {
-                const pendampingInputContainer = $('#pendamping-container');
+                const pendampingInputContainer = $('.pendamping-container');
                 const pendampingInput = $('#pembantu_ukur');
 
                 let selectedOption = $(this).find('option:selected');

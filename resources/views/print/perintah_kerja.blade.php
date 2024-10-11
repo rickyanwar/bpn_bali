@@ -59,7 +59,7 @@
             <tr>
                 <td width="30%">3) <span style="display: inline-block; width: 20px;"></span> No SK NIP</td>
                 <td width="5%">:</td>
-                <td>-</td>
+                <td>{{ $firstPetugas->petugas->jabatan }}</td>
             </tr>
             <tr>
                 <td width="30%">4) <span style="display: inline-block; width: 20px;"></span> Untuk Melaksanakan </td>

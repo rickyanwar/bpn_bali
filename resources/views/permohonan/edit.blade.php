@@ -301,11 +301,11 @@
                             @endif
                         </div>
                         <div class="card-footer d-flex justify-content-end">
-
                             @if (
                                 ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
                                     auth()->user()->can('edit permohonan') ||
-                                    ($data->diteruskan_ke == auth()->user()->id && auth()->user()->hasRole('Petugas Cetak Surat Tugas')))
+                                    ($data->diteruskan_ke == auth()->user()->id &&
+                                        auth()->user()->hasAnyRole(['Petugas Jadwal', 'Petugas Cetak Surat Tugas', 'Kasi SP', 'Super Admin'])))
                                 <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
                             @endif
 
@@ -464,15 +464,18 @@
 
 
         @if (
-            !($diteruskanKe === null && $status == 'draft' && $createdBy === $currentUserId) ||
-                ($diteruskanKe !== $currentUserId && !auth()->user()->can('edit permohonan')))
+            !($status == 'draft' && $createdBy === $currentUserId) &&
+                ($diteruskanKe !== $currentUserId && !auth()->user()->can('edit permohonan')) &&
+                !(
+                    $diteruskanKe == $currentUserId &&
+                    auth()->user()->hasAnyRole(['Petugas Jadwal', 'Petugas Cetak Surat Tugas', 'Kasi SP', 'Super Admin'])
+                ))
 
             $('input[type="date"], input[type="number"], input[type="text"], select:not(#teruskan_ke_role, #user)')
                 .not('select[name^="petugas_ukur"]')
                 .not('#print-option')
                 .prop('disabled', true);
         @endif
-
 
         $(document).ready(function() {
 

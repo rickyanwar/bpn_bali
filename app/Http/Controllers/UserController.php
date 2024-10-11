@@ -154,6 +154,13 @@ class UserController extends Controller
             $user               = new User();
             $user['name']       = $request->name;
             $user['email']      = $request->email;
+
+            $user['nik']      = $request->golongan ?? null;
+            $user['golongan']      = $request->golongan ?? null;
+            $user['jabatan']      = $request->jabatan ?? null;
+            $user['no_hp']      = $request->no_hp ?? null;
+
+
             $psw                = $request->password;
             $user['password']   = Hash::make($request->password);
             $user['lang']       = !empty($default_language) ? $default_language->value : 'en';
@@ -162,6 +169,8 @@ class UserController extends Controller
             $user['pembantu_ukur']   = null;
             if ($role_r->name == "Petugas Ukur") {
                 $user['pembantu_ukur']       = $request->pembantu_ukur;
+                $user['pembantu_ukur_nik']       = $request->pembantu_ukur_nik;
+
             }
 
             $user->save();
@@ -219,6 +228,8 @@ class UserController extends Controller
 
             if ($role->name == "Petugas Ukur") {
                 $user['pembantu_ukur']       = $request->pembantu_ukur;
+                $user['pembantu_ukur_nik']       = $request->pembantu_ukur_nik;
+
             }
             $user->fill($input)->update();
 

@@ -77,7 +77,7 @@
                 </p>
 
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-8">
                         <table style="text-align: left">
                             <tr>
                                 <td width="40%">Hari / Tanggal</td>
@@ -95,12 +95,13 @@
                             <tr>
                                 <td>Petugas Ukur</td>
                                 <td>:</td>
-                                <td>{{ $firstPetugas->petugas->name }}</td>
+                                <td>{{ $firstPetugas->petugas->name }} / {{ $firstPetugas->petugas->no_hp ?? '-' }}
+                                    08593436423421</td>
                             </tr>
                         </table>
 
                     </div>
-                    <div class="col-6">
+                    <div class="col-4">
                         <img src="data:image/png;base64, {!! $qrCode !!}" alt="qr" style="max-width: 70px;" />
                     </div>
                 </div>

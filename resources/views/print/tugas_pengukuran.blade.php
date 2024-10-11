@@ -51,8 +51,8 @@
                        <tr>
                            <td>{{ $loop->iteration }}.</td>
                            <td>{{ $petugas->petugas->name }}</td>
-                           <td>-</td>
-                           <td>-</td>
+                           <td>{{ $petugas->petugas->golongan ?? '' }}</td>
+                           <td>{{ $petugas->petugas->jabatan ?? '' }}</td>
                        </tr>
                    @endforeach
                </table>

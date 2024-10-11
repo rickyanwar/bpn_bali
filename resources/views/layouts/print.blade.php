@@ -55,6 +55,16 @@
             float: left;
         }
 
+        .col-8 {
+            width: 70%;
+            float: left;
+        }
+
+        .col-4 {
+            width: 30%;
+            float: left;
+        }
+
         .text-center {
             text-align: center;
         }
