@@ -134,7 +134,7 @@
             </div>
             <div class="row mt-5">
                 <div class="col-6">
-                    <p>Mengetahui Kepala Desa</p>
+                    <p>Mengetahui Kepala Desa {{ $data->desa }}</p>
                 </div>
                 <div class="col-6">
                     <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 182736263738272839</p>

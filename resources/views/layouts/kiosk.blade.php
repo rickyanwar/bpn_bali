@@ -30,6 +30,36 @@
             font-family: 'Exo', sans-serif;
             text-transform: uppercase
         }
+
+        .marquee-container {
+            overflow: hidden;
+            /* Hide the overflowing cards */
+            white-space: nowrap;
+            /* Keep everything on one line */
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 50s linear infinite;
+            /* Create a continuous sliding effect */
+        }
+
+        @keyframes marquee {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        .user-card {
+            margin: 20px;
+            /* Adds margin around the user card */
+            padding: 15px;
+
+        }
     </style>
 </head>
 

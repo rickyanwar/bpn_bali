@@ -43,10 +43,13 @@ class DashboardController extends Controller
     public function getListdisplay()
     {
 
-        // Get all roles with users and their total pending jobs count
+
+        // Filter roles by 'Petugas Gambar' and 'Petugas Ukur'
         $roles = Role::with(['users' => function ($query) {
             $query->get(); // Get all users; total_pekerjaan will be calculated in the model
-        }])->get();
+        }])
+        ->whereIn('name', ['Petugas Gambar', 'Petugas Ukur']) // Only get these roles
+        ->get();
 
         // Map roles and users to include their total_pekerjaan
         $roles->map(function ($role) {

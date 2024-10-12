@@ -466,12 +466,10 @@
         $('#nama_pemohon').val(data?.nama_pemohon);
         $('#jenis_kegiatan').val(data?.jenis_kegiatan).trigger('change')
 
-
         @if (
-            !($status == 'draft' && $createdBy === $currentUserId) &&
-                ($diteruskanKe !== $currentUserId && !auth()->user()->can('edit permohonan')) &&
+            ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
                 !(
-                    $diteruskanKe == $currentUserId &&
+                    $data->diteruskan_ke == auth()->user()->id &&
                     auth()->user()->hasAnyRole(['Petugas Jadwal', 'Petugas Cetak Surat Tugas', 'Kasi SP', 'Super Admin'])
                 ))
 
