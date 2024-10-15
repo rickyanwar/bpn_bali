@@ -13,33 +13,6 @@
                     </small>
                 @enderror
             </div>
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="pills-staff-tab" data-bs-toggle="pill" href="#staff" role="tab"
-                        aria-controls="pills-home" aria-selected="true">{{ __('Staff') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-crm-tab" data-bs-toggle="pill" href="#crm" role="tab"
-                        aria-controls="pills-profile" aria-selected="false">{{ __('CRM') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-project-tab" data-bs-toggle="pill" href="#project" role="tab"
-                        aria-controls="pills-contact" aria-selected="false">{{ __('Project') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-hrmpermission-tab" data-bs-toggle="pill" href="#hrmpermission"
-                        role="tab" aria-controls="pills-contact" aria-selected="false">{{ __('HRM') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-account-tab" data-bs-toggle="pill" href="#account" role="tab"
-                        aria-controls="pills-contact" aria-selected="false">{{ __('Account') }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-account-tab" data-bs-toggle="pill" href="#pos" role="tab"
-                        aria-controls="pills-contact" aria-selected="false">{{ __('POS') }}</a>
-                </li>
-
-            </ul>
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="staff" role="tabpanel" aria-labelledby="pills-home-tab">
                     @php
@@ -91,20 +64,6 @@
                                                                     {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace(' ', '', str_replace('&', '', $module)))->id('permission' . $key) !!}
                                                                     {{-- Label for the checkbox --}}
                                                                     {!! Html::label('Add')->class('custom-control-label') !!} <br>
-                                                                </div>
-                                                            @endif
-                                                        @endif
-
-                                                        @if (in_array('move ' . $module, (array) $permissions))
-                                                            @if ($key = array_search('move ' . $module, $permissions))
-                                                                <div class="col-md-3 custom-control custom-checkbox">
-
-                                                                    {{-- Checkbox input --}}
-                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace(' ', '', str_replace('&', '', $module)))->id('permission' . $key) !!}
-
-                                                                    {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Move')->class('custom-control-label') !!}
-                                                                    <br>
                                                                 </div>
                                                             @endif
                                                         @endif
@@ -169,52 +128,20 @@
                                                                 </div>
                                                             @endif
                                                         @endif
-
-
-                                                        @if (in_array('send ' . $module, (array) $permissions))
-                                                            @if ($key = array_search('send ' . $module, $permissions))
+                                                        {{--  {!! implode(', ', $permissions) !!}  --}}
+                                                        @if (in_array('ambil ' . $module, (array) $permissions))
+                                                            @if (($key = array_search('ambil ' . $module, $permissions)) !== false)
                                                                 <div class="col-md-3 custom-control custom-checkbox">
                                                                     {{-- Checkbox input --}}
-                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace(' ', '', str_replace('&', '', $module)))->id('permission' . $key) !!}
+                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace([' ', '&'], '', $module))->id('permission' . $key) !!}
 
                                                                     {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Send')->class('custom-control-label') !!} <br>
-
+                                                                    {!! Html::label('Ambil Permohonan ' . $module)->class('custom-control-label') !!}
+                                                                    <br>
                                                                 </div>
                                                             @endif
                                                         @endif
 
-                                                        @if (in_array('create payment ' . $module, (array) $permissions))
-                                                            @if ($key = array_search('create payment ' . $module, $permissions))
-                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                    {{-- Checkbox input --}}
-                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace(' ', '', str_replace('&', '', $module)))->id('permission' . $key) !!}
-                                                                    {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Create Payment')->class('custom-control-label') !!} <br>
-                                                                </div>
-                                                            @endif
-                                                        @endif
-                                                        @if (in_array('delete payment ' . $module, (array) $permissions))
-                                                            @if ($key = array_search('delete payment ' . $module, $permissions))
-                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                    {{-- Checkbox input --}}
-                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace(' ', '', str_replace('&', '', $module)))->id('permission' . $key) !!}
-                                                                    {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Delete Payment')->class('custom-control-label') !!} <br>
-                                                                </div>
-                                                            @endif
-                                                        @endif
-                                                        @if (in_array('income ' . $module, (array) $permissions))
-                                                            @if ($key = array_search('income ' . $module, $permissions))
-                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                    {{-- Checkbox input --}}
-                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace(' ', '', str_replace('&', '', $module)))->id('permission' . $key) !!}
-                                                                    {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Income')->class('custom-control-label') !!} <br>
-
-                                                                </div>
-                                                            @endif
-                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>

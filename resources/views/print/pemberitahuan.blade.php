@@ -114,7 +114,7 @@
                 <!-- Signature Section -->
                 <div class="row">
                     <div class="col-6">
-                        <p class="text-center">Demikian Atas Perhatianya</p>
+                        <p class="text-center">Demikian untuk menjadi perhatianya</p>
                     </div>
                     <div class="col-6 mt-5">
                         <p class="text-center">An. Kepala Kantor Pertanahan Kabupaten Tabanan, Tabanan <br> Kepala Seksi
@@ -128,10 +128,10 @@
                 <div style="width: 100%; clear: both; margin-top: 10px; word-break: break-word;">
                     <p>Tembusan disampaikan kepada YTH:</p>
                     <ol>
-                        <li>Sdr Perbekel</li>
+                        <li>Sdr {{ $data->nama_pemohon }}</li>
                         <li>Sdr</li>
                     </ol>
-                    <p>Tempat Menunggu: Kantor Desa</p>
+                    <p>Tempat Menunggu: Kantor Desa {{ $data->desa }}</p>
                 </div>
             </div>
         </div>

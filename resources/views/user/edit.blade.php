@@ -4,8 +4,8 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                {!! Html::label(__('Name'), 'name')->class('form-label') !!}
-                {!! Html::text('name', $user->name)->class('form-control')->placeholder(__('Masukkan User Name'))->required() !!}
+                {!! Html::label(__('Nama'), 'Nama')->class('form-label') !!}
+                {!! Html::text('name', $user->name)->class('form-control')->placeholder(__('Masukkan User Name')) !!}
                 @error('name')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -16,7 +16,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('NIK'), 'NIK')->class('form-label') !!}
-                {!! Html::text('nik', $user->nik)->class('form-control')->placeholder(__('Masukkan nik'))->required() !!}
+                {!! Html::text('nik', $user->nik)->class('form-control')->placeholder(__('Masukkan nik')) !!}
                 @error('nik')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -27,7 +27,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('Golongan'), 'Golongan')->class('form-label') !!}
-                {!! Html::text('golongan', $user->golongan)->class('form-control')->placeholder(__('Masukkan golongan'))->required() !!}
+                {!! Html::text('golongan', $user->golongan)->class('form-control')->placeholder(__('Masukkan golongan')) !!}
                 @error('golongan')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -38,7 +38,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('Jabatan'), 'Jabatan')->class('form-label') !!}
-                {!! Html::text('jabatan', $user->jabatan)->class('form-control')->placeholder(__('Masukkan jabatan'))->required() !!}
+                {!! Html::text('jabatan', $user->jabatan)->class('form-control')->placeholder(__('Masukkan jabatan')) !!}
                 @error('jabatan')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -49,7 +49,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('No Hp'), 'No Hp')->class('form-label') !!}
-                {!! Html::text('no_hp', $user->no_hp)->class('form-control')->placeholder(__('Masukkan no hp'))->required() !!}
+                {!! Html::text('no_hp', $user->no_hp)->class('form-control')->placeholder(__('Masukkan no hp')) !!}
                 @error('no_hp')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -112,7 +112,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('Password'), 'password')->class('form-label') !!}
-                {!! Html::password('password')->class('form-control')->placeholder(__('Masukkan User Password'))->required()->attribute('minlength', '6') !!}
+                {!! Html::password('password')->class('form-control')->placeholder(__('Masukkan User Password'))->attribute('minlength', '6') !!}
 
                 @error('password')
                     <small class="invalid-password" role="alert">

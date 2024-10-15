@@ -29,7 +29,7 @@ Route::get('/', function () {
 
 
 // Group routes that need authentication
-Route::middleware(['auth:api','auth:web'])->group(function () {
+Route::middleware(['auth:api,web'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
 
@@ -45,6 +45,7 @@ Route::middleware(['auth:api','auth:web'])->group(function () {
     Route::post('permohonan/teruskan/{id}', [PermohonanController::class, 'teruskan'])->name('permohonan.teruskan');
     Route::get('permohonan/print/{id}', [PermohonanController::class, 'print'])->name('permohonan.print');
 
+    Route::post('permohonan/ambil_tugas/{id}', [PermohonanController::class, 'ambilTugas'])->name('permohonan.ambil_tugas');
     Route::get('permohonan/print/pemberitahuan/{id}', [PermohonanController::class, 'printPemberitahuan'])->name('permohonan.print.pemberitahuan');
     Route::get('permohonan/print-view/{id}', [PermohonanController::class, 'printView'])->name('permohonan.print_view');
     Route::post('permohonan/pindah_tugas/{id}', [PermohonanController::class, 'pindahTugas'])->name('permohonan.pindah_tugas');

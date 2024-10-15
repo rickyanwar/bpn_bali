@@ -279,13 +279,13 @@
 
                                                             <input type="hidden"
                                                                 name="petugas_ukur[{{ $loop->index }}][petugas_ukur]"
-                                                                value="{{ $petugas->petugas->id }}">
+                                                                value="{{ $petugas->petugas?->id ?? '' }}">
                                                             <input type="hidden"
                                                                 name="petugas_ukur[{{ $loop->index }}][pembantu_ukur]"
-                                                                value="{{ $petugas->pembantu_ukur }}">
+                                                                value="{{ $petugas->pembantu_ukur ?? '' }}">
                                                         </td>
-                                                        <td>{{ $petugas->petugas->name }}</td>
-                                                        <td>{{ $petugas->pembantu_ukur }}</td>
+                                                        <td>{{ $petugas->petugas?->name ?? '' }}</td>
+                                                        <td>{{ $petugas->pembantu_ukur ?? '' }}</td>
 
 
                                                     </tr>
@@ -305,9 +305,7 @@
                         <div class="card-footer d-flex justify-content-end">
                             @if (
                                 ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
-                                    auth()->user()->can('edit permohonan') ||
-                                    ($data->diteruskan_ke == auth()->user()->id &&
-                                        auth()->user()->hasAnyRole(['Petugas Jadwal', 'Petugas Cetak Surat Tugas', 'Kasi SP', 'Super Admin'])))
+                                    (auth()->user()->can('edit permohonan') && $data->diteruskan_ke == auth()->user()->id))
                                 <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
                             @endif
 
@@ -452,8 +450,6 @@
 
 
         let data = {!! json_encode($data) !!};
-
-        console.log('data petugas', {!! json_encode($data->petugasUkur) !!});
         let url = `{!! !empty($url) ? $url : '' !!}`;
         $('#no_berkas').val(data?.no_berkas);
         $('#di_305').val(data?.di_305);
@@ -467,11 +463,10 @@
         $('#jenis_kegiatan').val(data?.jenis_kegiatan).trigger('change')
 
         @if (
-            ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
-                !(
-                    $data->diteruskan_ke == auth()->user()->id &&
-                    auth()->user()->hasAnyRole(['Petugas Jadwal', 'Petugas Cetak Surat Tugas', 'Kasi SP', 'Super Admin'])
-                ))
+            !(
+                ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
+                (auth()->user()->can('edit permohonan') && $diteruskanKe === $currentUserId)
+            ))
 
             $('input[type="date"], input[type="number"], input[type="text"], select:not(#teruskan_ke_role, #user)')
                 .not('select[name^="petugas_ukur"]')

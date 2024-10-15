@@ -40,12 +40,14 @@
                     <tr>
                         <th>No.</th>
                         <th>Nama </th>
+                        <th>NIK</th>
                         <th>Keterangan</th>
                     </tr>
                     @foreach ($data->petugasUkur as $petugas)
                         <tr>
                             <td>{{ $loop->iteration }}.</td>
-                            <td>{{ $petugas->pembantu_ukur }}</td>
+                            <td>{{ $petugas->pembantu_ukur ?? '' }}</td>
+                            <td>{{ $petugas->pembantu_ukur_nik ?? '' }}</td>
                             <td>Pembantu Ukur</td>
                         </tr>
                     @endforeach
@@ -83,7 +85,7 @@
                     </tr>
 
                 </table>
-                <li class="mt-1">Biaya Di bebankan pada: </li>
+                <li class="mt-1">Biaya dibebankan pada: </li>
                 <table class="table-no-padding" style="margin-top:0px">
 
                     <tr>
@@ -99,9 +101,9 @@
 
                 </table>
                 <li class="mt-1">Hasil Pelaksanaan Tugas supaya dilaporkan: </li>
-                <p style="margin:0px">Demikian Surat Tugas ini dibuat untuk di laksanakan dengan penuh tangung jawab dan di
-                    pergunakan
-                    sebagimana mestinya</p>
+                <p style="margin:0px">Demikian Surat Tugas ini dibuat untuk dilaksanakan dengan penuh tanggung jawab
+                    dandipergunakan
+                    sebagaimana mesti nya.a</p>
             </ol>
             <div class="row">
                 <div class="col-6">

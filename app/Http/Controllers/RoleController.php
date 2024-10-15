@@ -25,20 +25,20 @@ class RoleController extends Controller
     {
         $permissions = new Collection();
         $user = \Auth::user();
-        foreach($user->roles as $role) {
+        foreach ($user->roles as $role) {
             $permissions = $permissions->merge($role->permissions);
         }
         $permissions = $permissions->pluck('name', 'id')->toArray();
         return view('role.create', ['permissions' => $permissions]);
 
 
-        if(\Auth::user()->can('create role')) {
+        if (\Auth::user()->can('create role')) {
             $user = \Auth::user();
-            if($user->type == 'super admin') {
+            if ($user->type == 'super admin') {
                 $permissions = Permission::all()->pluck('name', 'id')->toArray();
             } else {
                 $permissions = new Collection();
-                foreach($user->roles as $role) {
+                foreach ($user->roles as $role) {
                     $permissions = $permissions->merge($role->permissions);
                 }
                 $permissions = $permissions->pluck('name', 'id')->toArray();
@@ -55,7 +55,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
 
-        if(\Auth::user()->can('create role')) {
+        if (\Auth::user()->can('create role')) {
             $validator = \Validator::make(
                 $request->all(),
                 [
@@ -65,7 +65,7 @@ class RoleController extends Controller
             );
 
 
-            if($validator->fails()) {
+            if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
                 return redirect()->back()->with('error', $messages->first());
@@ -78,7 +78,7 @@ class RoleController extends Controller
             $permissions      = $request['permissions'];
             $role->save();
 
-            foreach($permissions as $permission) {
+            foreach ($permissions as $permission) {
                 $p = Permission::where('id', '=', $permission)->firstOrFail();
                 $role->givePermissionTo($p);
             }
@@ -97,14 +97,14 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        if(\Auth::user()->can('edit role')) {
+        if (\Auth::user()->can('edit role')) {
 
             $user = \Auth::user();
-            if($user->type == 'super admin') {
+            if ($user->type == 'super admin') {
                 $permissions = Permission::all()->pluck('name', 'id')->toArray();
             } else {
                 $permissions = new Collection();
-                foreach($user->roles as $role1) {
+                foreach ($user->roles as $role1) {
                     $permissions = $permissions->merge($role1->permissions);
                 }
                 $permissions = $permissions->pluck('name', 'id')->toArray();
@@ -120,7 +120,7 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        if(\Auth::user()->can('edit role')) {
+        if (\Auth::user()->can('edit role')) {
             $validator = \Validator::make(
                 $request->all(),
                 [
@@ -128,7 +128,7 @@ class RoleController extends Controller
                                    'permissions' => 'required',
                                ]
             );
-            if($validator->fails()) {
+            if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
                 return redirect()->back()->with('error', $messages->first());
@@ -140,11 +140,11 @@ class RoleController extends Controller
 
             $p_all = Permission::all();
 
-            foreach($p_all as $p) {
+            foreach ($p_all as $p) {
                 $role->revokePermissionTo($p);
             }
 
-            foreach($permissions as $permission) {
+            foreach ($permissions as $permission) {
 
                 $p = Permission::where('id', '=', $permission)->firstOrFail();
                 $role->givePermissionTo($p);
@@ -166,7 +166,7 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        if(\Auth::user()->can('delete role')) {
+        if (\Auth::user()->can('delete role')) {
             $role->delete();
 
             return redirect()->route('roles.index')->with(

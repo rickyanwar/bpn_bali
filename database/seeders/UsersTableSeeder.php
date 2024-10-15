@@ -31,6 +31,12 @@ class UsersTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+             [
+                'name' => 'ambil permohonan',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
             [
                 'name' => 'show permohonan',
                 'guard_name' => 'web',
@@ -263,8 +269,6 @@ class UsersTableSeeder extends Seeder
             // Assign permissions to the role (to avoid duplicates)
             $role->syncPermissions([
                 'show permohonan',
-                'edit permohonan',
-                'delete permohonan',
             ]);
         }
 
@@ -304,9 +308,9 @@ class UsersTableSeeder extends Seeder
         $adminRole->syncPermissions([
             'manage all permohonan',
             'show permohonan',
-            'edit permohonan',
             'delete permohonan',
             'alihkan permohonan',
+            'ambil permohonan',
             'manage role',
             'show role',
             'edit role',

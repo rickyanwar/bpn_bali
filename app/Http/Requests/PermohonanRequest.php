@@ -30,7 +30,8 @@ class PermohonanRequest extends FormRequest
                     'di_302' => 'required',
                     'tanggal_mulai_pengukuran' => 'date|required',
                     'tanggal_berakhir_pengukuran' => 'date|required',
-                    'surat_perintah_kerja' => 'nullable',
+                    'no_surat_perintah_kerja' => 'nullable',
+                    'no_berkas' => 'required',
                     'jenis_kegiatan' => 'required|in:Penggabungan,Pemecahan,Pengukuran,Penataan Batas,Pengembalian Batas,Permohonan SK,Konversi',
                     'nama_pemohon' => 'required',
                     'kecamatan' => [ 'required', function ($attr, $value, $fail) use ($request) {

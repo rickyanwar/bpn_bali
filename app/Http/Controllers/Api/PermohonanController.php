@@ -49,7 +49,8 @@ class PermohonanController extends Controller
                 if ($column == 'keyword') {
                     $query->where('no_surat', 'like', '%' . $value . '%')
                     ->orWhere('no_berkas', 'like', '%' . $value . '%')
-                     ->orWhere('surat_perintah kerja', 'like', '%' . $value . '%');
+                     ->orWhere('surat_perintah_kerja', 'like', '%' . $value . '%')
+                          ->orWhere('nama_pemohon', 'like', '%' . $value . '%');
                 }
                 // $query->where($column, 'like', '%' . $value . '%');
             }
@@ -70,7 +71,8 @@ class PermohonanController extends Controller
                 if ($column == 'keyword') {
                     $query->where('no_surat', 'like', '%' . $value . '%')
                     ->orWhere('no_berkas', 'like', '%' . $value . '%')
-                     ->orWhere('surat_perintah kerja', 'like', '%' . $value . '%');
+                     ->orWhere('surat_perintah_kerja', 'like', '%' . $value . '%')
+                       ->orWhere('nama_pemohon', 'like', '%' . $value . '%');
                 }
                 // $query->where($column, 'like', '%' . $value . '%');
             }
@@ -88,6 +90,17 @@ class PermohonanController extends Controller
         DB::beginTransaction();
 
         try {
+            $currentMonth = date('n');
+            $currentYear = date('Y');
+            $romanMonth = Utility::convertMonthToRoman($currentMonth);
+            $request->merge([
+                'no_berkas' =>  $request->no_berkas  . '/' . $currentYear,
+                'no_surat' => $request->no_surat . '/St-22.02/' . $romanMonth . '/' . $currentYear,
+                'no_surat_perintah_kerja' => $request->no_surat_perintah_kerja . '/St-22.02/' . $romanMonth . '/' . $currentYear,
+                'di_305' =>  $request->di_305  . '/' . $currentYear,
+                'di_302' =>  $request->di_302  . '/' . $currentYear,
+                'updated_by' => auth()->user()->getId()
+            ]);
 
             $data = Permohonan::create($request->all());
 
@@ -267,5 +280,23 @@ class PermohonanController extends Controller
 
     }
 
+
+    public function ambilTugas($id)
+    {
+
+        $data = Permohonan::find($id);
+
+        $user = auth()->user();
+        // dd(\Auth::user()->can('delete role'));
+        //dd($user->getAllPermissions()->pluck('name'));
+        if (!$data || !auth()->user()->can("ambil permohonan")) {
+            return $this->respondNotHaveAccessData();
+        }
+
+        $data->diteruskan_ke = auth()->id();
+        $data->update();
+        Utility::auditTrail('ambil alih', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        return $this->respond($data, "Berhasil! Anda telah berhasil mengambil alih penugasan ini");
+    }
 
 }

@@ -24,6 +24,27 @@ class Utility extends Model
         return $carbonDate->diffForHumans(null, true) . ' Lalu';
     }
 
+
+    public static function convertMonthToRoman($month)
+    {
+        $romans = [
+            1 => 'I',
+            2 => 'II',
+            3 => 'III',
+            4 => 'IV',
+            5 => 'V',
+            6 => 'VI',
+            7 => 'VII',
+            8 => 'VIII',
+            9 => 'IX',
+            10 => 'X',
+            11 => 'XI',
+            12 => 'XII'
+        ];
+        return $romans[$month];
+    }
+
+
     public static function generateCode($model, $field, $prefix, $length = 5)
     {
         // Get the last record of the model (with soft deletes if applicable)
@@ -89,6 +110,10 @@ class Utility extends Model
             case 'selesai':
                 $data['action'] = 'status';
                 $data['description'] = $creator->nama . ' mengubah status ' . '' . $moduleTarget . ' (' . $moduleNumber . ')'. ' menjadi selesai' ;
+                break;
+            case 'ambil alih':
+                $data['action'] = 'status';
+                $data['description'] = $creator->nama . ' mengambil alih penugasan ' . '' . $moduleTarget . ' (' . $moduleNumber . ')' ;
                 break;
             case 'diproses' || 'verifikasi' || 'permohonan':
                 $data['action'] = 'status';

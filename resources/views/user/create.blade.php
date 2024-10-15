@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                {!! Html::label(__('Name'), 'Name')->class('form-label') !!}
+                {!! Html::label(__('Nama'), 'Nama')->class('form-label') !!}
                 {!! Html::text('name')->class('form-control')->placeholder(__('Masukkan User Name'))->required() !!}
                 @error('name')
                     <small class="invalid-name" role="alert">
@@ -16,7 +16,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('NIK'), 'NIK')->class('form-label') !!}
-                {!! Html::text('nik')->class('form-control')->placeholder(__('Masukkan nik'))->required() !!}
+                {!! Html::text('nik')->class('form-control')->placeholder(__('Masukkan nik')) !!}
                 @error('nik')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -27,7 +27,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('Golongan'), 'Golongan')->class('form-label') !!}
-                {!! Html::text('golongan')->class('form-control')->placeholder(__('Masukkan golongan'))->required() !!}
+                {!! Html::text('golongan')->class('form-control')->placeholder(__('Masukkan golongan')) !!}
                 @error('golongan')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -38,7 +38,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('Jabatan'), 'Jabatan')->class('form-label') !!}
-                {!! Html::text('jabatan')->class('form-control')->placeholder(__('Masukkan jabatan'))->required() !!}
+                {!! Html::text('jabatan')->class('form-control')->placeholder(__('Masukkan jabatan')) !!}
                 @error('jabatan')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -60,7 +60,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Html::label(__('Email'), 'email')->class('form-label') !!}
-                {!! Html::text('email')->class('form-control')->placeholder(__('Masukkan User Email'))->required() !!}
+                {!! Html::text('email')->class('form-control')->placeholder(__('Masukkan User Email')) !!}
 
                 @error('email')
                     <small class="invalid-email" role="alert">

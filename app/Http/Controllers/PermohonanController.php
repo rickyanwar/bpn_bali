@@ -65,7 +65,7 @@ class PermohonanController extends Controller
         "Admin 3",
     ],
     "Admin 2" => [
-      "Koordinator Wilayah",
+    "Koordinator Wilayah",
         "Admin Spasial",
         "Koordinator Pengukuran",
         "Kasi SP",
@@ -122,19 +122,19 @@ class PermohonanController extends Controller
 
 
         $query = Permohonan::with('createdby', 'diteruskan')
-                 ->where(function ($q) {
-                     $currentUserId = auth()->id();
-                     $q->where(function ($subQuery) use ($currentUserId) {
-                         // If diteruskan_ke is not null, it must match the current user
-                         $subQuery->whereNotNull('diteruskan_ke')
-                                  ->where('diteruskan_ke', $currentUserId);
-                     })
-                     ->orWhere(function ($subQuery) use ($currentUserId) {
-                         // If diteruskan_ke is null, show records where created_by is the current user
-                         $subQuery->whereNull('diteruskan_ke')
-                                  ->where('created_by', $currentUserId);
-                     });
-                 })->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
+                ->where(function ($q) {
+                    $currentUserId = auth()->id();
+                    $q->where(function ($subQuery) use ($currentUserId) {
+                        // If diteruskan_ke is not null, it must match the current user
+                        $subQuery->whereNotNull('diteruskan_ke')
+                                ->where('diteruskan_ke', $currentUserId);
+                    })
+                    ->orWhere(function ($subQuery) use ($currentUserId) {
+                        // If diteruskan_ke is null, show records where created_by is the current user
+                        $subQuery->whereNull('diteruskan_ke')
+                                ->where('created_by', $currentUserId);
+                    });
+                })->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
 
         if (!empty($request->status)) {
             $query->where('status', '=', (int) $request->status);
@@ -142,77 +142,77 @@ class PermohonanController extends Controller
 
         if ($request->ajax()) {
             return DataTables::of($query)
-               ->addColumn('status_badge', function ($data) {
-                   $status = '';
-                   switch ($data->status) {
-                       case 'draft':
-                           $status = 'bg-danger';
-                           break;
-                       case 'proses':
-                           $status = 'bg-warning';
-                           break;
-                       case 'selesai':
-                           $status = 'bg-success';
-                           break;
-                       default:
-                           $status = 'bg-secondary'; // Default class if none of the above statuses match
-                           break;
-                   }
-                   return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
-                       . __($data->status) . '</span>';
-               })
+            ->addColumn('status_badge', function ($data) {
+                $status = '';
+                switch ($data->status) {
+                    case 'draft':
+                        $status = 'bg-danger';
+                        break;
+                    case 'proses':
+                        $status = 'bg-warning';
+                        break;
+                    case 'selesai':
+                        $status = 'bg-success';
+                        break;
+                    default:
+                        $status = 'bg-secondary'; // Default class if none of the above statuses match
+                        break;
+                }
+                return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                    . __($data->status) . '</span>';
+            })
             ->addColumn('actions', function ($data) {
                 $actions = '';
                 // Edit
                 if (($data->status == 'draft') || $data->diteruskan_ke == auth()->user()->id) {
                     $actions .= '<div class="action-btn bg-primary ms-2">
-                                        <a href="' . route('permohonan.edit', $data->id) . '"
-                                            class="mx-3 btn btn-sm align-items-center"
-                                            data-bs-toggle="tooltip" title="' . __('Edit') . '"
-                                            data-original-title="' . __('Edit') . '">
-                                            <i class="ti ti-pencil text-white"></i>
-                                        </a>
-                                    </div>';
+                                            <a href="' . route('permohonan.edit', $data->id) . '"
+                                                class="mx-3 btn btn-sm align-items-center"
+                                                data-bs-toggle="tooltip" title="' . __('Edit') . '"
+                                                data-original-title="' . __('Edit') . '">
+                                                <i class="ti ti-pencil text-white"></i>
+                                            </a>
+                                        </div>';
                 }
 
 
 
                 $actions .= '<div class="action-btn bg-success ms-2 btn_print" data-id="'. $data->id .'" >
-                                        <a  href="#" data-url="' . route('permohonan.print_view', $data->id) . '"
-                                            class="mx-3 btn btn-sm align-items-center"
-                                            data-size="md"
-                                            data-ajax-popup="true"
-                                            data-bs-toggle="tooltip" title="' . __('Print') . '"
-                                            data-original-title="' . __('Print') . '">
-                                            <i class="ti ti-printer text-white"></i>
-                                        </a>
-                                    </div>';
+                                            <a  href="#" data-url="' . route('permohonan.print_view', $data->id) . '"
+                                                class="mx-3 btn btn-sm align-items-center"
+                                                data-size="md"
+                                                data-ajax-popup="true"
+                                                data-bs-toggle="tooltip" title="' . __('Print') . '"
+                                                data-original-title="' . __('Print') . '">
+                                                <i class="ti ti-printer text-white"></i>
+                                            </a>
+                                        </div>';
 
 
                 if (Gate::check('alihkan permohonan') && $data->status !== 'draft') {
                     $actions .= '<div class="action-btn bg-warning ms-2 paksa_dialihkan_ke" data-id="'. $data->id .'" >
-                                        <a  href="#" data-url="' . route('permohonan.pindah_tugas', $data->id) . '"
-                                            class="mx-3 btn btn-sm align-items-center"
-                                            data-size="md"
-                                            data-ajax-popup="true"
-                                            data-bs-toggle="tooltip" title="' . __('Alihkan Penugasan') . '"
-                                            data-original-title="' . __('Alihkan Penugasan') . '">
-                                            <i class="ti ti-report text-white"></i>
-                                        </a>
-                                    </div>';
+                                            <a  href="#" data-url="' . route('permohonan.pindah_tugas', $data->id) . '"
+                                                class="mx-3 btn btn-sm align-items-center"
+                                                data-size="md"
+                                                data-ajax-popup="true"
+                                                data-bs-toggle="tooltip" title="' . __('Alihkan Penugasan') . '"
+                                                data-original-title="' . __('Alihkan Penugasan') . '">
+                                                <i class="ti ti-report text-white"></i>
+                                            </a>
+                                        </div>';
                 }
 
                 if (Auth::user()->id == $data->diteruskan_ke || (Auth::user()->id == $data->created_by && $data->status == 'draft')) {
                     $actions .= '<div class="action-btn bg-primary ms-2 btn_teruskan" data-id="'. $data->id .'" >
-                                        <a  href="#" data-url="' . route('permohonan.teruskan_view', $data->id) . '"
-                                            class="mx-3 btn btn-sm align-items-center"
-                                            data-size="md"
-                                            data-ajax-popup="true"
-                                            data-bs-toggle="tooltip" title="' . __('Teruskan Penugasan') . '"
-                                            data-original-title="' . __('Teruskan Penugasan') . '">
-                                            <i class="ti ti-send text-white"></i>
-                                        </a>
-                                    </div>';
+                                            <a  href="#" data-url="' . route('permohonan.teruskan_view', $data->id) . '"
+                                                class="mx-3 btn btn-sm align-items-center"
+                                                data-size="md"
+                                                data-ajax-popup="true"
+                                                data-bs-toggle="tooltip" title="' . __('Teruskan Penugasan') . '"
+                                                data-original-title="' . __('Teruskan Penugasan') . '">
+                                                <i class="ti ti-send text-white"></i>
+                                            </a>
+                                        </div>';
                 }
 
 
@@ -222,12 +222,12 @@ class PermohonanController extends Controller
                                 $data->diteruskan_ke == auth()->user()->id) {
 
                     $actions .= '<div class="action-btn bg-warning ms-2 btn-reject" data-id="'. $data->id .'" data-url="' . route('permohonan.tolak', $data->id) . '">
-                                        <a  href="#"
-                                            data-original-title="' . __('Revisi/Tolak') . '"
-                                            class="mx-3 btn btn-sm align-items-center">
-                                                 <i class="ti ti-ban text-white"></i>
-                                        </a>
-                                    </div>';
+                                            <a  href="#"
+                                                data-original-title="' . __('Revisi/Tolak') . '"
+                                                class="mx-3 btn btn-sm align-items-center">
+                                                    <i class="ti ti-ban text-white"></i>
+                                            </a>
+                                        </div>';
                 }
 
 
@@ -238,21 +238,13 @@ class PermohonanController extends Controller
 
                 // Delete
                 if (Auth::user()->can('delete permohonan') && $data->status == 'draft') {
-                    $actions .= '<div class="action-btn bg-danger ms-2">
-                                        <form method="POST" action="' . route('permohonan.destroy', $data->id) . '" id="delete-form-' . $data->id . '">
-                                            ' . csrf_field() . '
-                                            ' . method_field('DELETE') . '
-                                            <a href="#"
-                                                class="mx-3 btn btn-sm align-items-center bs-pass-para"
-                                                data-bs-toggle="tooltip"
-                                                title="' . __('Delete') . '"
-                                                data-original-title="' . __('Delete') . '"
-                                                data-confirm="' . __('Are You Sure?') . '|' . __('This action can not be undone. Do you want to continue?') . '"
-                                                data-confirm-yes="document.getElementById(\'delete-form-' . $data->id . '\').submit();">
-                                                <i class="ti ti-trash text-white"></i>
+                    $actions .= '<div class="action-btn bg-danger ms-2 btn-delete" data-url="'.route('permohonan.destroy', $data->id) .'">
+                                            <a  href="#"
+                                                data-original-title="' . __('Hapus') . '"
+                                                class="mx-3 btn btn-sm align-items-center">
+                                                    <i class="ti ti-trash text-white"></i>
                                             </a>
-                                        </form>
-                                    </div>';
+                                        </div>';
                 }
                 return $actions;
             })
@@ -284,48 +276,61 @@ class PermohonanController extends Controller
 
         if ($request->ajax()) {
             return DataTables::of($query)
-               ->addColumn('status_badge', function ($data) {
-                   $status = '';
-                   switch ($data->status) {
-                       case 'draft':
-                           $status = 'bg-danger';
-                           break;
-                       case 'proses':
-                           $status = 'bg-warning';
-                           break;
-                       case 'selesai':
-                           $status = 'bg-success';
-                           break;
-                       default:
-                           $status = 'bg-secondary'; // Default class if none of the above statuses match
-                           break;
-                   }
-                   return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
-                       . __($data->status) . '</span>';
-               })
+            ->addColumn('status_badge', function ($data) {
+                $status = '';
+                switch ($data->status) {
+                    case 'draft':
+                        $status = 'bg-danger';
+                        break;
+                    case 'proses':
+                        $status = 'bg-warning';
+                        break;
+                    case 'selesai':
+                        $status = 'bg-success';
+                        break;
+                    default:
+                        $status = 'bg-secondary'; // Default class if none of the above statuses match
+                        break;
+                }
+                return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                    . __($data->status) . '</span>';
+            })
             ->addColumn('actions', function ($data) {
                 $actions = '';
                 if (Auth::user()->id == $data->diteruskan_ke || (Auth::user()->id == $data->created_by && $data->status == 'draft')) {
                     $actions .= '<div class="action-btn bg-primary ms-2 btn_teruskan" data-id="'. $data->id .'" >
-                                        <a  href="#" data-url="' . route('permohonan.teruskan_view', $data->id) . '"
-                                            class="mx-3 btn btn-sm align-items-center"
-                                            data-size="md"
-                                            data-ajax-popup="true"
-                                            data-bs-toggle="tooltip" title="' . __('Teruskan Penugasan') . '"
-                                            data-original-title="' . __('Teruskan Penugasan') . '">
-                                            <i class="ti ti-send text-white"></i>
-                                        </a>
-                                    </div>';
+                                            <a  href="#" data-url="' . route('permohonan.teruskan_view', $data->id) . '"
+                                                class="mx-3 btn btn-sm align-items-center"
+                                                data-size="md"
+                                                data-ajax-popup="true"
+                                                data-bs-toggle="tooltip" title="' . __('Teruskan Penugasan') . '"
+                                                data-original-title="' . __('Teruskan Penugasan') . '">
+                                                <i class="ti ti-send text-white"></i>
+                                            </a>
+                                        </div>';
                 }
 
                 $actions .= '<div class="action-btn bg-primary ms-2">
-                                        <a href="' . route('permohonan.edit', $data->id) . '"
-                                            class="mx-3 btn btn-sm align-items-center"
-                                            data-bs-toggle="tooltip" title="' . __('Edit') . '"
-                                            data-original-title="' . __('Edit') . '">
-                                            <i class="ti ti-pencil text-white"></i>
-                                        </a>
-                                    </div>';
+                                            <a href="' . route('permohonan.edit', $data->id) . '"
+                                                class="mx-3 btn btn-sm align-items-center"
+                                                data-bs-toggle="tooltip" title="' . __('Edit') . '"
+                                                data-original-title="' . __('Edit') . '">
+                                                <i class="ti ti-pencil text-white"></i>
+                                            </a>
+                                        </div>';
+
+
+
+                if (auth()->user()->can('ambil permohonan') && ($data->status !== 'draft')) {
+                    $actions .= '<div class="action-btn bg-info ms-2 btn-ambil-tugas" data-id="'. $data->id .'" data-url="' . route('permohonan.ambil_tugas', $data->id) . '">
+                                            <a  href="#"
+                                                data-original-title="' . __('Ambil Alih Tugas') . '"
+                                                class="mx-3 btn btn-sm align-items-center">
+                                                    <i class="ti ti-users text-white"></i>
+                                            </a>
+                                        </div>';
+                }
+
 
                 return $actions;
             })
@@ -358,6 +363,19 @@ class PermohonanController extends Controller
      */
     public function store(PermohonanRequest $request)
     {
+
+        $currentMonth = date('n');
+        $currentYear = date('Y');
+        $romanMonth = Utility::convertMonthToRoman($currentMonth);
+
+        $request->merge([
+             'no_berkas' =>  $request->no_berkas  . '/' . $currentYear,
+            'no_surat' => $request->no_surat . '/St-22.02/' . $romanMonth . '/' . $currentYear,
+            'no_surat_perintah_kerja' => $request->no_surat_perintah_kerja . '/St-22.02/' . $romanMonth . '/' . $currentYear,
+            'di_305' =>  $request->di_305  . '/' . $currentYear,
+            'di_302' =>  $request->di_302  . '/' . $currentYear,
+            'updated_by' => auth()->user()->getId()
+        ]);
 
         $data = Permohonan::create($request->all());
 
@@ -422,7 +440,7 @@ class PermohonanController extends Controller
 
         //return View("$view", compact('data', 'qrCode', 'title'));
         $pdf = PDF::loadView($view, compact('data', 'qrCode', 'title'))
-                      ->setPaper('a4', 'portrait');
+                    ->setPaper('a4', 'portrait');
 
         $title = strtoupper($request->type) . " " . $data->no_berkas;
         $title = str_replace(['/', '\\'], '-', $title);
@@ -645,6 +663,20 @@ class PermohonanController extends Controller
 
     }
 
+    public function ambilTugas($id)
+    {
+        $data = Permohonan::find($id);
+
+        if (!$data || !auth()->user()->can('ambil permohonan')) {
+            return $this->respondNotHaveAccessData();
+        }
+
+        $data->diteruskan_ke = auth()->id();
+        $data->update();
+        Utility::auditTrail('ambil alih', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        return $this->respond($data, "Berhasil! Anda telah berhasil mengambil alih penugasan ini");
+    }
+
     public function teruskanView($id)
     {
 
@@ -672,25 +704,25 @@ class PermohonanController extends Controller
         $query = RiwayatPermohonanDiTeruskan::with('diteruskan')->latest();
         if ($request->ajax()) {
             return DataTables::of($query)
-               ->addColumn('status_badge', function ($data) {
-                   $status = '';
-                   switch ($data->status) {
-                       case 'draft':
-                           $status = 'bg-danger';
-                           break;
-                       case 'proses':
-                           $status = 'bg-warning';
-                           break;
-                       case 'selesai':
-                           $status = 'bg-success';
-                           break;
-                       default:
-                           $status = 'bg-secondary'; // Default class if none of the above statuses match
-                           break;
-                   }
-                   return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
-                       . __($data->status) . '</span>';
-               })
+            ->addColumn('status_badge', function ($data) {
+                $status = '';
+                switch ($data->status) {
+                    case 'draft':
+                        $status = 'bg-danger';
+                        break;
+                    case 'proses':
+                        $status = 'bg-warning';
+                        break;
+                    case 'selesai':
+                        $status = 'bg-success';
+                        break;
+                    default:
+                        $status = 'bg-secondary'; // Default class if none of the above statuses match
+                        break;
+                }
+                return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                    . __($data->status) . '</span>';
+            })
             ->rawColumns([ 'status_badge'])
             ->make(true);
         }

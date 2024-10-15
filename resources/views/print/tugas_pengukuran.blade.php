@@ -39,7 +39,9 @@
            <div class="content mt-1">
                <p>Dengan ini Kepala Kantor menugaskan kepada:</p>
 
-               <p class="no-margin">1. a. Petugas Ukur</p>
+               <div class="row">
+                   <p class="no-margin">1. a. Petugas Ukur</p>
+               </div>
                <table border="1" style="margin-bottom: 20px">
                    <tr>
                        <th>No.</th>
@@ -58,7 +60,10 @@
                </table>
                <div class="row">
                    <div class="col-6">
-                       <p class="no-margin">b. Dengan tugas ini untuk melaksanakan Pemecahan Bidang Lokasi dan Volume
+                       <p class="no-margin">&nbsp;&nbsp;&nbsp; b. Dengan tugas ini untuk melaksanakan Pemecahan
+                           &nbsp;&nbsp;&nbsp;&nbsp;Bidang
+                           Lokasi dan
+                           Volume
                            Kegiatan:</p>
                        <ol class="no-margin" type="a">
                            <li>Kelurahan: <span class="highlight">{{ $data->desa }}</span></li>
@@ -68,8 +73,12 @@
 
                        <p class="no-margin">2. Waktu:</p>
                        <ol class="no-margin" type="a">
-                           <li>Mulai Tanggal: <span class="highlight">03 Juli 2024</span></li>
-                           <li>Sampai Tanggal: <span class="highlight">03 Juli 2024</span></li>
+                           <li>Mulai Tanggal: <span
+                                   class="highlight">{{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</span>
+                           </li>
+                           <li>Sampai Tanggal: <span
+                                   class="highlight">{{ \Carbon\Carbon::parse($data->tanggal_berkahir_pengukuran)->translatedFormat('d F Y') }}</span>
+                           </li>
                        </ol>
 
                        <p class="no-margin">3. Biaya dibebankan pada:</p>

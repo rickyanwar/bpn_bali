@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
+use Laravel\Sanctum\Http\Middleware\CheckAbilities;
+use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -18,6 +20,12 @@ return Application::configure(basePath: dirname(__DIR__))
         RedirectIfAuthenticated::redirectUsing(function ($request) {
             return route('users.index');
         });
+
+
+        $middleware->alias([
+               'abilities' => CheckAbilities::class,
+               'ability' => CheckForAnyAbility::class,
+           ]);
 
 
         $middleware->use([

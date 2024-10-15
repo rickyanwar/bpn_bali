@@ -343,6 +343,48 @@
         });
 
 
+        $(document).on('click', '.btn-ambil-tugas', function(e) {
+            e.preventDefault();
+            let url = $(this).data('url');
+            swal({
+                title: "Anda Yakin ingin mengambil tugas?",
+                text: "Proses tidak dapat dibatalkan",
+                icon: "warning",
+                buttons: [
+                    'Tidak, Batalkan!',
+                    'Ya, Saya yakin!'
+                ],
+                dangerMode: true,
+            }).then(function(isConfirm) {
+                if (isConfirm) {
+                    let ajaxPost = ajaxRequest(url, 'POST', []).done(function(res) {
+                        console.log('res')
+                        swal({
+                            icon: 'success',
+                            title: res.message,
+                            showConfirmButton: false,
+                        }).then(function() {
+                            window.location.replace(
+                                "{{ route('permohonan.index') }}");
+                        });
+
+                        show_toastr('error', xhr.responseJSON?.message);
+
+                    })
+                    ajaxPost.fail(function(e) {
+                        console.log('e', e);
+                        swal({
+                            icon: 'warning',
+                            title: e.responseJSON.message,
+                            showConfirmButton: false,
+                        });
+
+                    })
+                }
+            })
+
+        })
+
         //Code for teruskans
         $(document).on('click', '.btn_teruskan', function(e) {
             let id = $(this).data('id');

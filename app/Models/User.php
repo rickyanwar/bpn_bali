@@ -78,4 +78,9 @@ class User extends Authenticatable
     {
         return $this->permohonansAssigned()->where('status', '!=', 'selesai')->count();
     }
+
+    protected function getDefaultGuardName(): string
+    {
+        return 'api';
+    }
 }
