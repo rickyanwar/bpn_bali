@@ -120,7 +120,7 @@
                         <p class="text-center">An. Kepala Kantor Pertanahan Kabupaten Tabanan, Tabanan <br> Kepala Seksi
                             Survei dan Pemetaan</p>
                         <br><br><br>
-                        <p class="text-center"><u>DARMANSYAH, S.ST., M.H</u> <br> NIP. 182736263738272839</p>
+                        <p class="text-center"><u>DARMANSYAH, S.ST., M.H</u> <br> NIP. 197704241999031002</p>
                     </div>
                 </div>
 

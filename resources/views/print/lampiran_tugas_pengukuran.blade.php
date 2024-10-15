@@ -102,8 +102,7 @@
                 </table>
                 <li class="mt-1">Hasil Pelaksanaan Tugas supaya dilaporkan: </li>
                 <p style="margin:0px">Demikian Surat Tugas ini dibuat untuk dilaksanakan dengan penuh tanggung jawab
-                    dandipergunakan
-                    sebagaimana mesti nya.a</p>
+                    dan dipergunakan sebagaimana mesti nya.</p>
             </ol>
             <div class="row">
                 <div class="col-6">
@@ -116,7 +115,7 @@
                             <td>{{ $data->desa }}</td>
                         </tr>
                         <tr>
-                            <td width="40%">Pada Tanggal</td>
+                            <td width="40%">Pada Tanggal :</td>
                             <td width="5%">:</td>
                             <td> {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
                             </td>
@@ -130,7 +129,7 @@
                     </p>
                 </div>
                 <div class="col-6">
-                    <p class="text-center">Atas kepala kantor pertahanan <br> Kantor Pertanahan Kabupaten Tabanan <br>
+                    <p class="text-center">Atas Kepala Kantor Pertanahan <br> Kantor Pertanahan Kabupaten Tabanan <br>
                         Kepala Seksi Survei dan Pemetaan</p>
                 </div>
             </div>

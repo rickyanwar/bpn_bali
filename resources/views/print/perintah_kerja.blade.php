@@ -31,7 +31,7 @@
         </div>
         <div class="text-center">
             <u>
-                <h3 class="mb-0 no-margin">Surat Perintah Kerja</h3>
+                <h3 class="mb-0 no-margin">SURAT PERINTAH KERJA</h3>
             </u>
             <p class="no-margin">Nomor : {{ $data->no_surat_perintah_kerja ?? '' }}</p>
         </div>
@@ -54,12 +54,12 @@
             <tr>
                 <td width="30%">2) <span style="display: inline-block; width: 20px;"></span> Pekerjaan</td>
                 <td width="5%">:</td>
-                <td></td>
+                <td>{{ $firstPetugas->petugas->jabatan }}</td>
             </tr>
             <tr>
                 <td width="30%">3) <span style="display: inline-block; width: 20px;"></span> No SK NIP</td>
                 <td width="5%">:</td>
-                <td>{{ $firstPetugas->petugas->jabatan }}</td>
+                <td></td>
             </tr>
             <tr>
                 <td width="30%">4) <span style="display: inline-block; width: 20px;"></span> Untuk Melaksanakan </td>
@@ -90,21 +90,22 @@
         </table>
 
         <ol type="a" class="no-margin" style="margin-left: 60px">
-            <li>Gambar Ukur</li>
-            <li>Pengolahan data dan penggambaran</li>
-            <li>Berita Acara Penyelesian Pekerjaan</li>
-            <li>Berita Acara Serah Terima Pekerjaan</li>
+            <li>Gambar Ukur :</li>
+            <li>Pengolahan data dan penggambaran :</li>
+            <li>Berita Acara Penyelesian Pekerjaan :</li>
+            <li>Berita Acara Serah Terima Pekerjaan :</li>
         </ol>
-        <p>Demikian untuk di laksanakan sesuai ketentuan yang berlaku</p>
+        <p>Demikian untuk dilaksanakan sesuai ketentuan yang berlaku</p>
         <div class="mt-5">
             <p class="text-center">Tabanan,
-                {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</p>
-            <p class="text-center">Atas Nama kepala kantor pertahanan <br> Kantor Pertanahan Kabupaten Tabanan <br>
+                {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->subDay()->translatedFormat('d F Y') }}
+            </p>
+            <p class="text-center">Atas Nama Kepala Kantor Pertanahan <br> Kantor Pertanahan Kabupaten Tabanan <br>
                 Kepala Seksi Survei dan Pemetaan</p>
             <br>
             <br>
 
-            <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 182736263738272839</p </div>
+            <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 197704241999031002</p </div>
         </div>
     </div>
 @endsection

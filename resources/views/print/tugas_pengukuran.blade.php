@@ -120,7 +120,7 @@
                            {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</p>
                    </div>
                    <div class="col-6">
-                       <p class="text-center">Atas Nama Kepala Kantor Pertahanan <br> Kantor Pertanahan Kabupaten Tabanan
+                       <p class="text-center">Atas Nama Kepala Kantor Pertanahan <br> Kantor Pertanahan Kabupaten Tabanan
                            <br>
                            Kepala Seksi Survei dan Pemetaan
                        </p>
