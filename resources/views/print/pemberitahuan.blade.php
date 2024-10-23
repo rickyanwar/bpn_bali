@@ -52,7 +52,7 @@
                                 <tr>
                                     <td>Tabanan</td>
                                     <td>:</td>
-                                    <td>{{ $data->no_berkas }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y') }}</td>
                                 </tr>
                                 <tr>
                                     <td>Kepada</td>
@@ -70,7 +70,8 @@
                     <span style="display: inline-block; width: 20px;"></span>
                     Sehubungan dengan Permohonan Pendaftaran Hak Atas Tanah Sdr {{ $data->nama_pemohon }}
                     Kec {{ $data->kecamatan }}<br>
-                    Tanggal {{ $data->created_at }} dengan Daftar Isian 302: {{ $data->di_302 }},
+                    Tanggal {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d-m-Y') }} dengan
+                    Daftar Isian 302: {{ $data->di_302 }},
                     Desa {{ $data->desa }} Kab Tabanan,
                     Dengan ini kami beritahukan bahwa pelaksanaan pengukuran batas bidang tanah akan dilaksanakan nanti
                     pada:
@@ -114,10 +115,11 @@
                 <!-- Signature Section -->
                 <div class="row">
                     <div class="col-6">
-                        <p class="text-center">Demikian untuk menjadi perhatianya</p>
+                        <p class="text-center">Demikian untuk menjadi perhatiannya</p>
                     </div>
                     <div class="col-6 mt-5">
-                        <p class="text-center">An. Kepala Kantor Pertanahan Kabupaten Tabanan, Tabanan <br> Kepala Seksi
+                        <p class="text-center">An. Kepala Kantor Pertanahan <br> Kabupaten Tabanan <br>
+                            Kepala Seksi
                             Survei dan Pemetaan</p>
                         <br><br><br>
                         <p class="text-center"><u>DARMANSYAH, S.ST., M.H</u> <br> NIP. 197704241999031002</p>
@@ -128,8 +130,8 @@
                 <div style="width: 100%; clear: both; margin-top: 10px; word-break: break-word;">
                     <p>Tembusan disampaikan kepada YTH:</p>
                     <ol>
+                        <li>Sdr Perbekel {{ $data->desa }} </li>
                         <li>Sdr {{ $data->nama_pemohon }}</li>
-                        <li>Sdr</li>
                     </ol>
                     <p>Tempat Menunggu: Kantor Desa {{ $data->desa }}</p>
                 </div>

@@ -32,10 +32,11 @@ class Permohonan extends Model
     protected $casts = [
         'created_at' => 'date:d-m-Y h:i A',
         'updated_at' => 'date:d-m-Y h:i A',
+        // 'tanggal_mulai_pengukuran' => 'date:d-m-Y',
         'dokumen_terlampir' => 'json'
     ];
 
-    protected $appends = ['perlu_diteruskan'];
+    protected $appends = ['perlu_diteruskan','petugas_ukur_utama', 'tahun'];
 
     public function createdby()
     {
@@ -95,5 +96,26 @@ class Permohonan extends Model
         }
 
         return false;
+    }
+
+
+    public function getPetugasUkurUtamaAttribute()
+    {
+
+        $petugas = $this->petugasUkur()->first()->petugas ?? null;
+
+        if ($petugas) {
+            $fullName = $petugas->name ?? '-';
+            $firstName = explode(' ', $fullName)[0];
+            return $firstName;
+        }
+
+        return '-';
+
+    }
+
+    public function getTahunAttribute()
+    {
+        return $this->created_at ? $this->created_at->format('Y') : '-';
     }
 }

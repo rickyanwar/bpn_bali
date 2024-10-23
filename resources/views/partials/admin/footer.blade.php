@@ -41,7 +41,28 @@
 <script src="{{ asset('assets/js/plugins/main.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="{{ asset('assets/js/plugins/datatables-button/jszip.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/datatables-button/pdfmake.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/datatables-button/vfs_fonts.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/datatables-button/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/datatables-button/buttons.print.min.js') }}"></script>
+<script type="text/javascript" language="javascript"
+    src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript"
+    src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" language="javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" language="javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" language="javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" language="javascript"
+    src="https://cdn.datatables.net/buttons/2.1.0/js/buttons.html5.min.js"></script>
+<script type="text/javascript" language="javascript"
+    src="https://cdn.datatables.net/buttons/2.1.0/js/buttons.print.min.js">
+    < /script <
+    script src = "https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" >
+</script>
 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @stack('scripts')

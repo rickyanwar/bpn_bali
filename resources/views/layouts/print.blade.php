@@ -43,6 +43,10 @@
             font-size: 12px;
         }
 
+        .no-padding {
+            padding: 0;
+        }
+
         .row {
             display: block;
             width: 100%;

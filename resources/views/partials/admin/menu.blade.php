@@ -93,9 +93,21 @@
                         class="dash-mtext">{{ __('Audit Trail') }}</span><span class="dash-arrow"><i
                             data-feather="chevron-right"></i></span></a>
             </li>
+            <li class="dash-item  {{ Request::segment(1) == 'report' ? ' active dash-trigger' : '' }}">
+                <a href="#" class="dash-link "><span class="dash-micon"><i class="ti ti-print"></i></span><span
+                        class="dash-mtext">{{ __('Report') }}</span><span class="dash-arrow"><i
+                            data-feather="chevron-right"></i></span></a>
+                <ul class="dash-submenu">
+
+                    <li class="dash-item {{ Request::route()->getName() == 'permohonan/get-all' ? ' active' : '' }} ">
+                        <a class="dash-link" href="{{ route('report.jadwal_pengukuran') }}">Jadwal Pengukuran</a>
+                    </li>
+                    <li class="dash-item {{ Request::route()->getName() == 'permohonan/get-all' ? ' active' : '' }} ">
+                        <a class="dash-link" href="{{ route('report.setor_berkas') }}">Setor Berkas</a>
+                    </li>
+                </ul>
+            </li>
         </ul>
-
-
     </div>
 </div>
 </nav>

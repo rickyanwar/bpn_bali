@@ -9,6 +9,7 @@ use App\Http\Controllers\PengukuranController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuditTrailController;
+use App\Http\Controllers\ReportController;
 
 // Route::get('/', function () {
 //     return redirect('/login');
@@ -20,6 +21,8 @@ Auth::routes();
 
 Route::get('display/', [DashboardController::class, 'display'])->name('dashboard.display');
 Route::get('display/get-list', [DashboardController::class, 'getListdisplay'])->name('dashboard.get.list');
+Route::get('display/pemohon_hari_ini', [DashboardController::class, 'getPemohonToday'])->name('dashboard.pemohon_today');
+
 
 
 
@@ -53,6 +56,9 @@ Route::middleware(['auth:api,web'])->group(function () {
     Route::get('permohonan/get-all', [PermohonanController::class, 'getAll'])->name('permohonan.all');
     Route::resource('permohonan', PermohonanController::class);
 
+    //Report
+    Route::get('report/jadwal_pengukuran', [ReportController::class, 'jadwalPengukuran'])->name('report.jadwal_pengukuran');
+    Route::get('report/setor_berkas', [ReportController::class, 'jadwalSetorBerkas'])->name('report.setor_berkas');
 
     // User password reset routes
     Route::any('user-reset-password/{id}', [UserController::class, 'userPassword'])->name('users.reset');

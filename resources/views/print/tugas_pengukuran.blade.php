@@ -31,9 +31,8 @@
            </div>
 
            <div class="text-center">
-               <u>
-                   <h3 class="mb-0 no-margin">SURAT TUGAS PENGUKURAN</h3>
-               </u>
+               <h3 class="mb-0 no-margin" style="font-family: Arial, sans-serif;">SURAT TUGAS PENGUKURAN</h3>
+
                <p class="no-margin">Nomor : {{ $data->no_surat }}</p>
            </div>
            <div class="content mt-1">
@@ -108,10 +107,19 @@
                <div class="row">
                    <div class="col-6"></div>
                    <div class="col-6">
-                       <p class="no-margin">Dikeluarkan di: TABANAN</p>
-                       <p class="no-margin">Pada Tanggal:
-                           {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
-                       </p>
+                       <table>
+                           <tr>
+                               <td class="no-padding">Dikeluarkan</td>
+                               <td class="no-padding">: TABANAN</td>
+                           </tr>
+                           <tr>
+                               <td class="no-padding">Pada Tanggal</td>
+                               <td class="no-padding">:
+                                   {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
+                               </td>
+                           </tr>
+                       </table>
+                       <hr>
                    </div>
                </div>
                <div class="row">

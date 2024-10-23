@@ -42,9 +42,16 @@
     // Initialize repeater
     var $repeater = $(".repeater").repeater({
         show: function() {
-            $(this).slideDown();
-            const $petugasUkurSelect = $(this).find('.petugas_ukur');
+            // Check the current number of repeater items
+            var currentRepeaterCount = $("[data-repeater-item]").length;
+            if (currentRepeaterCount >= 5) {
+                alert("Petugas Ukur Maximal 4.");
+                return; // Prevent adding new element
+            }
 
+            $(this).slideDown();
+
+            const $petugasUkurSelect = $(this).find('.petugas_ukur');
             initializeSelect2($petugasUkurSelect); // Initialize petugas_ukur with AJAX search
 
             $petugasUkurSelect.on('change', function() {
@@ -60,7 +67,6 @@
                         $pembantuUkur.val(selectedPetugas?.data?.pembantu_ukur ?? $pembantuUkur.val(
                             ''));
                     }
-
                 } else {
                     $pembantuUkur.empty().trigger('change'); // Clear if no selection
                 }

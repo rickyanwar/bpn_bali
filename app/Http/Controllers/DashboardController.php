@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Auth;
 use App\Models\Permohonan;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -42,8 +43,6 @@ class DashboardController extends Controller
 
     public function getListdisplay()
     {
-
-
         // Filter roles by 'Petugas Gambar' and 'Petugas Ukur'
         $roles = Role::with(['users' => function ($query) {
             $query->get(); // Get all users; total_pekerjaan will be calculated in the model
@@ -64,8 +63,18 @@ class DashboardController extends Controller
 
         return response()->json($roles);
 
-
     }
+
+
+    public function getPemohonToday()
+    {
+        $today = Carbon::today();
+
+        $namaPemohonToday = Permohonan::whereDate('created_at', $today)
+                                         ->pluck('nama_pemohon');
+        return response()->json($namaPemohonToday);
+    }
+
 
     public function display()
     {

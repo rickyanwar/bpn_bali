@@ -31,7 +31,8 @@
         </div>
         <div class="text-center">
             <u>
-                <h3 class="mb-0 no-margin">SURAT PERINTAH KERJA</h3>
+                <h3 class="mb-0 no-margin" style="font-family: Arial, sans-serif; font-weight:normal">SURAT PERINTAH KERJA
+                </h3>
             </u>
             <p class="no-margin">Nomor : {{ $data->no_surat_perintah_kerja ?? '' }}</p>
         </div>
@@ -48,37 +49,37 @@
         <table class="table-no-padding">
             <tr>
                 <td width="30%">1) <span style="display: inline-block; width: 20px;"></span> Nama</td>
-                <td width="5%">:</td>
+                <td width="1%">:</td>
                 <td>{{ $firstPetugas->petugas->name }}</td>
             </tr>
             <tr>
                 <td width="30%">2) <span style="display: inline-block; width: 20px;"></span> Pekerjaan</td>
-                <td width="5%">:</td>
+                <td width="1%">:</td>
                 <td>{{ $firstPetugas->petugas->jabatan }}</td>
             </tr>
             <tr>
                 <td width="30%">3) <span style="display: inline-block; width: 20px;"></span> No SK NIP</td>
-                <td width="5%">:</td>
+                <td width="1%">:</td>
                 <td></td>
             </tr>
             <tr>
                 <td width="30%">4) <span style="display: inline-block; width: 20px;"></span> Untuk Melaksanakan </td>
-                <td width="5%">:</td>
+                <td width="1%">:</td>
                 <td>Pengukuran dan Pemetaan</td>
             </tr>
             <tr>
                 <td width="30%">5) <span style="display: inline-block; width: 23px;"></span>Beban Biaya </td>
-                <td width="5%">:</td>
+                <td width="1%">:</td>
                 <td>Rp.</td>
             </tr>
             <tr>
                 <td width="30%">6) <span style="display: inline-block; width: 20px;"></span> Besar Biaya </td>
-                <td width="5%">:</td>
+                <td width="1%">:</td>
                 <td>Rp.</td>
             </tr>
             <tr>
                 <td width="30%">7) <span style="display: inline-block; width: 20px;"></span> Waktu Pelaksanaan </td>
-                <td width="5%">:</td>
+                <td width="1%">:</td>
                 <td width>{{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</td>
             </tr>
             <tr>
@@ -96,7 +97,7 @@
             <li>Berita Acara Serah Terima Pekerjaan :</li>
         </ol>
         <p>Demikian untuk dilaksanakan sesuai ketentuan yang berlaku</p>
-        <div class="mt-5">
+        <div style="margin-top: 4rem !important;">
             <p class="text-center">Tabanan,
                 {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->subDay()->translatedFormat('d F Y') }}
             </p>

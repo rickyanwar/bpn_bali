@@ -11,13 +11,15 @@
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
         name='viewport' />
 
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    {{--  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
 
     <link rel="stylesheet" href="{{ asset('assets/css/customizer.css') }}">
 
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/kiosk.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/kiosk.css') }}">  --}}
     <link rel="stylesheet" href="{{ asset('assets/css/exo-fonts.css') }}">
     @stack('css-page')
 
@@ -33,9 +35,9 @@
 
         .marquee-container {
             overflow: hidden;
-            /* Hide the overflowing cards */
             white-space: nowrap;
-            /* Keep everything on one line */
+            display: flex;
+            align-items: center;
         }
 
         .marquee-content {
@@ -65,13 +67,9 @@
 
 <body>
 
-    <div class="wrapper overlay-sidebar">
-        <div class="main-panel  ">
-            <div class="content ">
-                <div class="page-inner">
-                    @yield('content')
-                </div>
-            </div>
+    <div class="content ">
+        <div class="page-inner">
+            @yield('content')
         </div>
     </div>
     <script src="{{ asset('js/jquery.min.js') }}"></script>

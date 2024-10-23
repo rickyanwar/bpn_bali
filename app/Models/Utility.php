@@ -77,7 +77,7 @@ class Utility extends Model
         return $prefix . $zeros . $last_number;
     }
 
-    public static function auditTrail(string $action, string $moduleTarget, int $moduleId, string $moduleNumber, object $creator, $createdOn = 'web', $dataModule = null)
+    public static function auditTrail(string $action, string $moduleTarget, int $moduleId, string $moduleNumber, object $creator, $createdOn = 'web', $dataModule = null, $description = null)
     {
         $data['module_name'] = $moduleTarget;
         $data['module_id'] = $moduleId;
@@ -118,6 +118,10 @@ class Utility extends Model
             case 'diproses' || 'verifikasi' || 'permohonan':
                 $data['action'] = 'status';
                 $data['description'] = $creator->nama . ' mengubah status '. $moduleTarget . ' (' . $moduleNumber . ')' .' menjadi '.$action ;
+                break;
+            case 'diteruskan':
+                $data['action'] = 'diteruskan';
+                $data['description'] = $description;
                 break;
             default:
                 $data['action'] = 'default';

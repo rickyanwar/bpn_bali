@@ -96,19 +96,18 @@ class PermohonanController extends Controller
     {
         // Get the logged-in user
         $user = Auth::user();
-        // Query the total number of permohonan (requests) for this user
-        $totalPermohonan = Permohonan::where('diteruskan_ke', $user->id)->count();
-        // Query the number of 'Diproses' status requests for this user
+        $totalPermohonan = Permohonan::where('diteruskan_ke', $user->id)
+        ->where('status', '!=', 'draft')
+        ->count();
+
         $totalDiproses = Permohonan::where('diteruskan_ke', $user->id)
             ->where('status', 'proses')
             ->count();
 
-        // Query the number of 'revisi' status requests for this user
         $totalrevisi = Permohonan::where('diteruskan_ke', $user->id)
             ->where('status', 'revisi')
             ->count();
 
-        // Query the number of 'Selesai' status requests for this user
         $totalSelesai = Permohonan::where('diteruskan_ke', $user->id)
             ->where('status', 'selesai')
             ->count();
@@ -560,8 +559,7 @@ class PermohonanController extends Controller
             'status' => 'peroses'
         ]);
 
-
-        Utility::auditTrail('diteruskan', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        Utility::auditTrail('diteruskan', $this->modulName, $data->id, $data->no_surat, auth()->user(), );
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
 
@@ -701,7 +699,7 @@ class PermohonanController extends Controller
 
     public function riwayatDiteruskan($id, Request $request)
     {
-        $query = RiwayatPermohonanDiTeruskan::with('diteruskan')->latest();
+        $query = RiwayatPermohonanDiTeruskan::with('diteruskan')->where('permohonan_id', $id)->latest();
         if ($request->ajax()) {
             return DataTables::of($query)
             ->addColumn('status_badge', function ($data) {
@@ -735,8 +733,7 @@ class PermohonanController extends Controller
         $query = AuditTrail::where([
                 ['module_name', '=', 'Permohonan'],
                 ['module_id', '=', $id]
-            ])
-            ->latest();
+            ])->latest();
         if ($request->ajax()) {
             return DataTables::of($query)
             ->make(true);

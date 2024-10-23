@@ -55,18 +55,18 @@
                 <li class="mt-1">Lokasi Kegiatan: </li>
                 <table class="table-no-padding" style="margin-top:0px">
                     <tr>
-                        <td width="25%">a. Kelurahan</td>
-                        <td width="5%">:</td>
+                        <td width="21%">a. Kelurahan</td>
+                        <td width="1%">:</td>
                         <td>{{ $data->desa }}</td>
                     </tr>
                     <tr>
-                        <td width="25%">b. Kecamatan</td>
-                        <td width="5%">:</td>
+                        <td width="21%">b. Kecamatan</td>
+                        <td width="1%">:</td>
                         <td>{{ $data->kecamatan }}</td>
                     </tr>
                     <tr>
-                        <td width="25%">c. Volume</td>
-                        <td width="5%">:</td>
+                        <td width="21%">c. Volume</td>
+                        <td width="1%">:</td>
                         <td>{{ $data->luas }} m2</td>
                     </tr>
                 </table>
@@ -74,13 +74,13 @@
                 <table class="table-no-padding" style="margin-top:0px">
 
                     <tr>
-                        <td width="25%">a. Mulai Tanggal</td>
-                        <td width="5%">:</td>
+                        <td width="21%">a. Mulai Tanggal</td>
+                        <td width="1%">:</td>
                         <td>{{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</td>
                     </tr>
                     <tr>
-                        <td width="25%">b. Tanggal Selesai</td>
-                        <td width="5%">:</td>
+                        <td width="21%">b. Tanggal Selesai</td>
+                        <td width="1%">:</td>
                         <td>{{ \Carbon\Carbon::parse($data->tanggal_berakhir_pengukuran)->translatedFormat('d F Y') }}</td>
                     </tr>
 
@@ -89,13 +89,13 @@
                 <table class="table-no-padding" style="margin-top:0px">
 
                     <tr>
-                        <td width="25%">a. DI 304</td>
-                        <td width="5%">:</td>
+                        <td width="21%">a. DI 304</td>
+                        <td width="1%">:</td>
                         <td>{{ $data->di_305 }}</td>
                     </tr>
                     <tr>
-                        <td width="25%">b. DI 302</td>
-                        <td width="5%">:</td>
+                        <td width="21%">b. DI 302</td>
+                        <td width="1%">:</td>
                         <td>{{ $data->di_302 }}</td>
                     </tr>
 
@@ -110,17 +110,17 @@
                 <div class="col-6">
                     <table>
                         <tr>
-                            <td width="30%">Di Keluarkan di</td>
-                            <td width="5%">:</td>
-                            <td>{{ $data->desa }}</td>
+                            <td class="no-padding">Dikeluarkan</td>
+                            <td class="no-padding">: TABANAN</td>
                         </tr>
                         <tr>
-                            <td width="40%">Pada Tanggal :</td>
-                            <td width="5%">:</td>
-                            <td> {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
+                            <td class="no-padding">Pada Tanggal</td>
+                            <td class="no-padding">:
+                                {{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d F Y') }}
                             </td>
                         </tr>
                     </table>
+                    <hr>
                 </div>
             </div>
             <div class="row">
@@ -129,7 +129,7 @@
                     </p>
                 </div>
                 <div class="col-6">
-                    <p class="text-center">Atas Kepala Kantor Pertanahan <br> Kantor Pertanahan Kabupaten Tabanan <br>
+                    <p class="text-center">Atas Nama Kepala Kantor Pertanahan <br> Kantor Pertanahan Kabupaten Tabanan <br>
                         Kepala Seksi Survei dan Pemetaan</p>
                 </div>
             </div>
