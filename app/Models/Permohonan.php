@@ -84,6 +84,10 @@ class Permohonan extends Model
     }
 
 
+    public function riwayatPanggilanDinas()
+    {
+        return $this->hasMany(RiwayatPanggilanDinas::class, 'permohonan_id');
+    }
     public function auditTrails()
     {
 

@@ -304,17 +304,26 @@
                             @endif
                         </div>
                         <div class="card-footer d-flex justify-content-end">
+                            @if (auth()->user()->hasRole('Admin 2') ||
+                                    auth()->user()->hasRole('Admin 3') ||
+                                    auth()->user()->hasRole('Kasi SP') ||
+                                    auth()->user()->hasRole('Super Admin'))
+                                @if ($data->status !== 'draft' && $data->status !== 'revisi')
+                                    <button type="button" style="margin-left: 5px" class="btn btn-success"
+                                        data-url="{{ $urlSelesai }}" id="btn-selesai">Selesaikan Permohonan</button>
+                                @endif
+                            @endif
+
+                            @if (auth()->user()->can('ambil permohonan') && $data->status !== 'draft')
+                                <button type="button" style="margin-left: 5px" class="btn btn-info"
+                                    data-url="{{ $urlAmbilAlih }}" id="btn-ambil-alih">Ambil Alih Permhonan</button>
+                            @endif
+
                             @if (
                                 ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||
                                     (auth()->user()->can('edit permohonan') && $data->diteruskan_ke == auth()->user()->id))
-                                <button type="button" class="btn btn-primary " id="btn-submit">Simpan Perubahan</button>
-                            @endif
-
-                            @if (auth()->user()->hasRole('Admin 2') || auth()->user()->hasRole('Admin 3') || auth()->user()->hasRole('Kasi SP'))
-                                @if ($data->status !== 'draft' && $data->status !== 'revisi')
-                                    <button type="button" style="margin-left: 5px" class="btn btn-success"
-                                        data-url="{{ $urlSelesai }}" id="btn-selesai">Selesai</button>
-                                @endif
+                                <button type="button" style="margin-left: 5px" class="btn btn-primary "
+                                    id="btn-submit">Simpan Perubahan</button>
                             @endif
                         </div>
                     </div>
@@ -384,25 +393,59 @@
             </div>
         @endif
 
-    </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0">Riwayat Panggilan Dinas </h5>
+                    @if (auth()->user()->can('panggil_dinas permohonan'))
+                        <button type="button" style="margin-left: 5px" data-url="{{ $urlPanggilDinas }}"
+                            class="btn btn-primary " id="btn-tambah-panggilan-dinas">
+                            Panggil Dinas</button>
+                    @endif
 
-    <div class="row">
-        <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="mb-0">Riwayat Penerusan Permohonan
-            </div>
-            <div class="card-body mx-3">
-                <ol class="activity-feed">
-                    @foreach (array_reverse($data->audit_trails->toArray()) as $item)
-                        <li class="feed-item feed-item-info">
-                            <time class="date">{{ date('j F Y h:i A', strtotime($item['created_at'])) }}</time>
-                            <span class="text">{{ $item['description'] }}</span>
-                        </li>
-                    @endforeach
-                </ol>
+                </div>
+                <div class="card-body">
+                    <ol class="activity-feed">
+
+                        @if ($data->riwayatPanggilanDinas)
+                            @foreach (array_reverse($data->riwayatPanggilanDinas->toArray()) as $panggilan)
+                                <li class="feed-item feed-item-info">
+                                    <time class="date">Tanggal Panggil :
+                                        {{ \Carbon\Carbon::parse($panggilan['tanggal_panggil'])->locale('id')->translatedFormat('j F Y h:i A') }}</time>
+                                    <span class="text">Catatan : {{ $panggilan['catatan'] }}</span>
+                                </li>
+                            @endforeach
+                        @endif
+                    </ol>
+                </div>
             </div>
         </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0">Riwayat Permohonan
+                </div>
+                <div class="card-body mx-3">
+                    <ol class="activity-feed">
+                        @if ($data->auditTrails)
+                            @foreach (array_reverse($data->auditTrails->toArray()) as $item)
+                                <li class="feed-item feed-item-info">
+                                    <span class="text font-bold text-capitalize">{{ $item['action'] }}</span>
+                                    <time
+                                        class="date">{{ \Carbon\Carbon::parse($item['created_at'])->locale('id')->translatedFormat('j F Y h:i A') }}</time>
+                                    <span class="text">{{ $item['description'] }}</span>
+                                </li>
+                            @endforeach
+                        @endif
+                    </ol>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
 
 @endsection
 @push('script-page')
@@ -684,10 +727,58 @@
                 e.preventDefault();
                 $('.text-danger').remove();
                 $(".form-group").removeClass('has-error has-feedback');
-                var url = "{{ $urlSelesai }}";
+                let url = $(this).data('url');
+                const wrapper = document.createElement('div');
+                let swalContent = `
+                <div class="form-group">
+                    <textarea id="catatan_selesai" class="form-control"></textarea>
+                </div>`;
+
+                wrapper.innerHTML = swalContent;
 
                 swal({
-                    title: "Anda Yakin?",
+                    title: 'Catatan Selesai',
+                    content: wrapper,
+                    buttons: {
+                        cancel: 'Cancel',
+                        confirm: 'Submit'
+                    },
+                    focusConfirm: false,
+                }).then(function(result) {
+                    if (result) {
+                        let formData = new FormData();
+                        formData.append('catatan_selesai', $('#catatan_selesai')
+                            .val());
+
+                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(
+                            res) {
+                            swal({
+                                icon: 'success',
+                                title: res.message,
+                                showConfirmButton: false,
+                            }).then(function() {
+                                window.location.reload();
+                            });
+                        }).fail(function(xhr) {
+                            console.log('xhr', xhr);
+                            swal({
+                                icon: 'warning',
+                                title: xhr.responseJSON?.message,
+                                showConfirmButton: false,
+                            });
+                        });
+                    }
+                });
+            })
+
+            $(document).on('click', '#btn-ambil-alih', function(e) {
+                e.preventDefault();
+                $('.text-danger').remove();
+                $(".form-group").removeClass('has-error has-feedback');
+                var url = $(this).data('url');
+
+                swal({
+                    title: "Anda Yakin ?",
                     text: "Proses tidak dapat dibatalkan",
                     icon: "warning",
                     buttons: [
@@ -698,7 +789,6 @@
                 }).then(function(isConfirm) {
                     if (isConfirm) {
                         let ajaxPost = ajaxRequest(url, 'POST', []).done(function(res) {
-                            console.log('res')
                             swal({
                                 icon: 'success',
                                 title: res.message,
@@ -794,13 +884,12 @@
 
             $(document).on('click', '#btn-reject', function(e) {
                 let url = $(this).data('url');
-                console.log('url', url);
                 const wrapper = document.createElement('div');
                 let swalContent = `
-                <p>Jika permohonan revisi, maka permohonan tersebut akan dikembalikan kepada petugas yang sebelumnya mengirimkannya</p>
-            <div class="form-group">
-                <textarea id="alasan_penolakan" class="form-control"></textarea>
-            </div>`;
+                    <p>Jika permohonan revisi, maka permohonan tersebut akan dikembalikan kepada petugas yang sebelumnya mengirimkannya</p>
+                <div class="form-group">
+                    <textarea id="alasan_penolakan" class="form-control"></textarea>
+                </div>`;
 
                 wrapper.innerHTML = swalContent;
 
@@ -816,6 +905,56 @@
                     if (result) {
                         let formData = new FormData();
                         formData.append('alasan_penolakan', $('#alasan_penolakan').val());
+
+                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
+                            swal({
+                                icon: 'success',
+                                title: res.message,
+                                showConfirmButton: false,
+                            }).then(function() {
+                                window.location.reload();
+                            });
+                        }).fail(function(xhr) {
+                            console.log('xhr', xhr);
+                            swal({
+                                icon: 'warning',
+                                title: xhr.responseJSON?.message,
+                                showConfirmButton: false,
+                            });
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '#btn-tambah-panggilan-dinas', function(e) {
+                let url = $(this).data('url');
+                const wrapper = document.createElement('div');
+                let swalContent = `
+                <div class="form-group">
+                    <label class="form-label text-left">Tanggal Panggil</label>
+                    <input type="date" name="tanggal_panggil" id="tanggal_panggil" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Catatan</label>
+                    <textarea id="catatan" class="form-control"></textarea>
+                </div>
+                `;
+
+                wrapper.innerHTML = swalContent;
+
+                swal({
+                    title: 'Panggil Dinas',
+                    content: wrapper,
+                    buttons: {
+                        cancel: 'Cancel',
+                        confirm: 'Submit'
+                    },
+                    focusConfirm: false,
+                }).then(function(result) {
+                    if (result) {
+                        let formData = new FormData();
+                        formData.append('catatan', $('#catatan').val());
+                        formData.append('tanggal_panggil', $('#tanggal_panggil').val());
 
                         let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
                             swal({

@@ -22,6 +22,13 @@
             font-size: 21px;
         }
 
+        .panggilan-dinas-container {
+            font-family: 'Exo', sans-serif;
+            font-weight: bold;
+            font-size: 25px;
+            color: #A05E03;
+        }
+
 
         .btn-success-dark {
             color: #fff;
@@ -124,11 +131,33 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8 ">
             <div class="card bg-yellow full-height" style="height: 100%; border-radius:15px">
                 <div class="card-body">
                     <div class="btn-yellow-dark btn-block p-2">PEMOHON HARI INI</div>
-                    <div class="marquee-container" id="pemohon-today-marquee">
+                    <div class="row panggilan-dinas-container">
+                        <div class="col-6 ">
+                            <ol type="1">
+                                <li class="m-1 "> Arian <br>
+                                    No berkas/Desa/Kecamatan
+                                </li>
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                            </ol>
+                        </div>
+                        <div class="col-6 ">
+                            <ol type="1">
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                                <li class="m-1 "> Arian</li>
+                            </ol>
+                        </div>
 
                     </div>
                 </div>
@@ -225,6 +254,7 @@
                 }
             });
         }
+
 
         // every 3 minutes
         setInterval(fetchPemohonToday, 200000);

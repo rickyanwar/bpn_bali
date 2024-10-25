@@ -103,11 +103,15 @@ class Utility extends Model
                 break;
             case 'selesai':
                 $data['action'] = 'selesai';
-                $data['description'] = $creator->name . ' selesaikan ' . '' . $moduleTarget . ' (' . $moduleNumber . ')' ;
+                $data['description'] = $description;
+                break;
+            case 'panggil dinas':
+                $data['action'] = 'panggil dinas';
+                $data['description'] = $description;
                 break;
             case 'ambil alih':
                 $data['action'] = 'ambil alih';
-                $data['description'] = $creator->nama . ' telah mengambil alih penugasan ' . '' . $moduleTarget . ' (' . $moduleNumber . ')' ;
+            $data['description'] = $creator->name . ' telah mengambil alih penugasan ' . '' . $moduleTarget . ' (' . $moduleNumber . ')' ;
                 break;
             case 'diteruskan' || 'tolak':
                 $data['action'] = 'diteruskan';

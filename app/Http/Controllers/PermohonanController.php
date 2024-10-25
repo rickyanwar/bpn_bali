@@ -10,6 +10,7 @@ use App\Models\Utility;
 use App\Models\User;
 use App\Models\Documents;
 use App\Models\AuditTrail;
+use App\Models\RiwayatPanggilanDinas;
 use App\Models\PermohonanPetugasUkur;
 use App\Models\RiwayatPermohonanDiTeruskan;
 use DataTables;
@@ -65,7 +66,7 @@ class PermohonanController extends Controller
         "Admin 3",
     ],
     "Admin 2" => [
-    "Koordinator Wilayah",
+        "Koordinator Wilayah",
         "Admin Spasial",
         "Koordinator Pengukuran",
         "Kasi SP",
@@ -79,6 +80,7 @@ class PermohonanController extends Controller
         "Kasi SP",
         "Admin 1",
         "Admin 2",
+        "PHP"
     ],
     "Kasi SP" => [
         "Koordinator Wilayah",
@@ -86,7 +88,10 @@ class PermohonanController extends Controller
         "Admin 1",
         "Admin 2",
         "Admin 3",
-    ]
+    ],
+    "PHP" => []
+
+
         ];
 
     /**
@@ -100,6 +105,9 @@ class PermohonanController extends Controller
         $user = Auth::user();
         $totalPermohonan = Permohonan::where('diteruskan_ke', $user->id)
         // ->where('status', '!=', 'draft')
+        ->count();
+
+        $totalPermohonan += Permohonan::where('created_by', $user->id)->whereNull('diteruskan_ke')
         ->count();
 
         $totalDiproses = Permohonan::where('diteruskan_ke', $user->id)
@@ -282,7 +290,10 @@ class PermohonanController extends Controller
             ->addColumn('status_badge', function ($data) {
                 $status = '';
                 switch ($data->status) {
-                    case 'draft':
+                    case 'draft' :
+                        $status = 'bg-danger';
+                        break;
+                    case 'tolak' :
                         $status = 'bg-danger';
                         break;
                     case 'proses':
@@ -295,7 +306,7 @@ class PermohonanController extends Controller
                         $status = 'bg-secondary'; // Default class if none of the above statuses match
                         break;
                 }
-                return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                return '<span class="status_badge badge p-2 px-3 rounded text-capitalize ' . $status . '">'
                     . __($data->status) . '</span>';
             })
             ->addColumn('actions', function ($data) {
@@ -487,7 +498,10 @@ class PermohonanController extends Controller
         $urlTeruskan = route('permohonan.teruskan', $id);
         $urlTolak = route('permohonan.tolak', $id);
         $urlSelesai = route('permohonan.selesai', $id);
-        return view('permohonan.edit', compact('data', 'url', 'urlTeruskan', 'urlSelesai', 'urlTolak', 'allowedRoles'));
+        $urlAmbilAlih = route('permohonan.ambil_tugas', $id);
+        $urlPanggilDinas = route('permohonan.panggil_dinas', $id);
+
+        return view('permohonan.edit', compact('data', 'url', 'urlTeruskan', 'urlSelesai', 'urlTolak', 'urlAmbilAlih', 'urlPanggilDinas', 'allowedRoles'));
     }
 
     /**
@@ -628,17 +642,43 @@ class PermohonanController extends Controller
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
 
-    public function selesai($id)
+    public function selesai($id, Request $request)
+    {
+
+        $firstUserWithRole = User::role('PHP')->first();
+        $data = Permohonan::find($id);
+        if (!$data) {
+            return $this->respond(null, ApiMessage::NOT_FOUND, 404);
+        }
+        $data->status = 'selesai';
+        $data->catatan_selesai = $request->catatan_selesai;
+        $data->diteruskan_ke = $firstUserWithRole->id ?? 0;
+        $data->update();
+
+        $user = auth()->user();
+        $description = "Permohonan dengan nomor berkas {$data->no_berkas} telah diselesian oleh  {$user->name} . catatan penyelesian : {$data->catatan_selesai}" ;
+        Utility::auditTrail('selesai', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+
+        return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+    }
+
+
+    public function panggilDinas($id, Request $request)
     {
 
         $data = Permohonan::find($id);
-        if (!$data) {
-            return $this->respond(null, ApiMessage::NOT_FOUND, 404); // Handle if no Permohonan found
-        }
-        $data->status = 'selesai';
-        $data->update();
+        $panggilanDinas = RiwayatPanggilanDinas::create([
+            'status' => 'selesai',
+            'catatan' => $request->catatan,
+            'permohonan_id' => $data->id,
+            'tanggal_panggil' => $request->tanggal_panggil,
+            'created_by' => auth()->user()->id,
+        ]);
 
-        Utility::auditTrail('selesai', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        $user = auth()->user();
+        $description = "{$user->name} . memangil permohonan dengan no berkas $data->no_berkas, catatan : {$request->catatan}" ;
+        Utility::auditTrail('panggil dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
 

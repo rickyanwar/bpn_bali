@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('permohonan/riwayat-penerusan/{id}', [PermohonanController::class, 'riwayatDiteruskan'])->name('permohonan.riwayat-penerusan');
     Route::post('permohonan/tolak/{id}', [PermohonanController::class, 'tolak'])->name('permohonan.tolak');
     Route::post('permohonan/selesai/{id}', [PermohonanController::class, 'selesai'])->name('permohonan.selesai');
+    Route::post('permohonan/panggil_dinas/{id}', [PermohonanController::class, 'panggilDinas'])->name('permohonan.panggil_dinas');
     Route::post('permohonan/teruskan/{id}', [PermohonanController::class, 'teruskan'])->name('permohonan.teruskan');
     Route::get('permohonan/print/{id}', [PermohonanController::class, 'print'])->name('permohonan.print');
 

@@ -17,6 +17,19 @@
                margin-right: 10px;
                /* Adjust space between label and value */
            }
+
+           .label-space {
+               display: inline-block;
+               width: 110px;
+               /* Adjust the width as needed for all labels */
+               margin-right: 10px;
+               vertical-align: ;
+               /* Space between label and value */
+           }
+
+           .label-value {
+               margin-left: 20px;
+           }
        </style>
        <div class="container">
            <div class="header">
@@ -77,12 +90,11 @@
                            Volume
                            Kegiatan:</p>
                        <ol class="no-margin" type="a">
-                           <li>Kelurahan: <span class="highlight">{{ $data->desa }}</span>
-                           </li>
-                           <li>Kecamatan: <span class="highlight">{{ $data->kecamatan }}</span>
-                           </li>
-                           <li>Volume: <span class="highlight">{{ $data->luas }} m²</span>
-                           </li>
+                           <li><span class="label-space">Kelurahan</span> {{ $data->desa }}</li>
+                           <li><span class="label-space">Kecamatan</span> <span class="highlight">:
+                                   {{ $data->kecamatan }}</span></li>
+                           <li><span class="label-space">Volume:</span> <span class="highlight">: {{ $data->luas }}
+                                   m²</span></li>
                        </ol>
 
                        <p class="no-margin">2. Waktu:</p>

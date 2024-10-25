@@ -136,7 +136,20 @@
                                                                     {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace([' ', '&'], '', $module))->id('permission' . $key) !!}
 
                                                                     {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Ambil Permohonan ' . $module)->class('custom-control-label') !!}
+                                                                    {!! Html::label('Ambil Alih ' . $module)->class('custom-control-label') !!}
+                                                                    <br>
+                                                                </div>
+                                                            @endif
+                                                        @endif
+
+                                                        @if (in_array('selesaikan ' . $module, (array) $permissions))
+                                                            @if (($key = array_search('selesaikan ' . $module, $permissions)) !== false)
+                                                                <div class="col-md-3 custom-control custom-checkbox">
+                                                                    {{-- Checkbox input --}}
+                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace([' ', '&'], '', $module))->id('permission' . $key) !!}
+
+                                                                    {{-- Label for the checkbox --}}
+                                                                    {!! Html::label('Selesaikan ' . $module)->class('custom-control-label') !!}
                                                                     <br>
                                                                 </div>
                                                             @endif

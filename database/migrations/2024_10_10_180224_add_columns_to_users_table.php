@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->string('golongan')->nullable();
             $table->string('jabatan')->nullable();
             $table->string('no_hp')->nullable();
+            $table->string('nik')->nullable();
             $table->string('pembantu_ukur_nik')->nullable();
 
         });
