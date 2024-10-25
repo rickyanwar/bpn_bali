@@ -22,6 +22,12 @@
                     </select>
                 </div>
             </div>
+            <div class="col-10 mt-2">
+                <div class="form-group">
+                    <h6>Catatan Penerusan</h6>
+                    <textarea class="form-control" name="catatan_penerusan" id="catatan_penerusan" rows="2"></textarea>
+                </div>
+            </div>
         </div>
     </form>
 </div>

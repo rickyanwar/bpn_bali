@@ -83,6 +83,15 @@ class Permohonan extends Model
         return $this->hasMany(RiwayatPermohonanDiTeruskan::class, 'permohonan_id');
     }
 
+
+    public function auditTrails()
+    {
+
+        return $this->hasMany(\App\Models\AuditTrail::class, 'module_id')->where('module_name', 'Permohonan');
+
+    }
+
+
     public function getPerluDiteruskanAttribute()
     {
         // Get the latest RiwayatPermohonanDiTeruskan record

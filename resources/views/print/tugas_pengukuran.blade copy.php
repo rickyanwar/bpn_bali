@@ -14,8 +14,18 @@
                display: inline-block;
                width: 100px;
                /* Adjust this width to fit your labels */
-               margin-right: 10px;
-               /* Adjust space between label and value */
+               margin-right: 20px;
+               /* Space between label and value */
+               vertical-align: middle;
+               /* Align label vertically */
+           }
+
+           .highlight {
+               display: inline-block;
+               vertical-align: middle;
+               /* Align highlight text vertically */
+               line-height: 1.5;
+               /* Adjust as needed */
            }
        </style>
        <div class="container">
@@ -77,28 +87,28 @@
                            Volume
                            Kegiatan:</p>
                        <ol class="no-margin" type="a">
-                           <li>Kelurahan: <span class="highlight">{{ $data->desa }}</span>
+                           <li><span class="label">Kelurahan</span> <span class="highlight">: {{ $data->desa }}</span>
                            </li>
-                           <li>Kecamatan: <span class="highlight">{{ $data->kecamatan }}</span>
+                           <li><span class="label">Kecamatan</span> <span class="highlight">: {{ $data->kecamatan }}</span>
                            </li>
-                           <li>Volume: <span class="highlight">{{ $data->luas }} m²</span>
+                           <li><span class="label">Volume</span> <span class="highlight">: {{ $data->luas }} m²</span>
                            </li>
                        </ol>
 
                        <p class="no-margin">2. Waktu:</p>
                        <ol class="no-margin" type="a">
-                           <li>Mulai Tanggal: <span
-                                   class="highlight">{{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</span>
+                           <li><span class="label">Tanggal Mulai</span> <span class="highlight">:
+                                   {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</span>
                            </li>
-                           <li>Sampai Tanggal: <span
-                                   class="highlight">{{ \Carbon\Carbon::parse($data->tanggal_berkahir_pengukuran)->translatedFormat('d F Y') }}</span>
+                           <li><span class="label">Sampai Tanggal</span> <span class="highlight">:
+                                   {{ \Carbon\Carbon::parse($data->tanggal_berkahir_pengukuran)->translatedFormat('d F Y') }}</span>
                            </li>
                        </ol>
 
                        <p class="no-margin">3. Biaya dibebankan pada:</p>
                        <ol class="no-margin" type="a">
-                           <li>DI 305: <span class="highlight">{{ $data->di_305 }}</span></li>
-                           <li>DI 302: <span class="highlight">{{ $data->di_302 }}</span></li>
+                           <li><span class="label">DI 305 </span><span class="highlight">: {{ $data->di_305 }}</span></li>
+                           <li><span class="label">DI 302 </span><span class="highlight">: {{ $data->di_302 }}</span></li>
                        </ol>
                        <p class="no-margin">4. Hasil Pelaksanaan Tugas supaya dilaporkan.</p>
 

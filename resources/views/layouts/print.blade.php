@@ -41,6 +41,7 @@
             padding-right: 5%;
             font-family: Arial, sans-serif;
             font-size: 12px;
+            line-height: 1.5;
         }
 
         .no-padding {
@@ -64,10 +65,21 @@
             float: left;
         }
 
+        .col-10 {
+            width: 90%;
+            float: left;
+        }
+
         .col-4 {
             width: 30%;
             float: left;
         }
+
+        .col-2 {
+            width: 30%;
+            float: left;
+        }
+
 
         .text-center {
             text-align: center;

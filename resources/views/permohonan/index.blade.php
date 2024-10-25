@@ -80,9 +80,10 @@
                                     <label class="form-label">Status </label>
                                     <select class="custom-select" id="inputGroupSelect01">
                                         <option selected>Pilih...</option>
+                                        <option value="draft">Proses</option>
                                         <option value="proses">Proses</option>
-                                        <option value="revisi">Two</option>
-                                        <option value="Selesai">Three</option>
+                                        <option value="revisi">Revisi</option>
+                                        <option value="Selesai">Selesai</option>
                                     </select>
                                 </div>
                             </div>

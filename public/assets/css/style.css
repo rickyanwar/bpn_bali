@@ -16952,6 +16952,16 @@ body.theme-6 .progress-bar:not([class*="bg-"]),
     --bs-btn-disabled-border-color: #008ECC;
 }
 
+.activity-feed{padding:15px;list-style:none;}
+.activity-feed .feed-item{position:relative;padding-bottom:20px;padding-left:30px;border-left:2px solid #e4e8eb;}
+.activity-feed .feed-item:last-child{border-color:transparent;}
+.activity-feed .feed-item::after{content:"";display:block;position:absolute;top:0;left:-7px;width:12px;height:12px;border-radius:50%;background:#177dff;}
+.feed-item-info::after{background:#48ABF7!important;}
+.activity-feed .feed-item .date{display:block;position:relative;top:-5px;color:#8c96a3;text-transform:uppercase;font-size:13px;}
+.activity-feed .feed-item .text{position:relative;top:-3px;}
+
+/*! CSS Used from: Embedded */
+.activity-feed .feed-item .text{font-size:12px;}
 body.theme-6 .btn-outline-primary {
     --bs-btn-color: #008ECC;
     --bs-btn-border-color: #008ECC;

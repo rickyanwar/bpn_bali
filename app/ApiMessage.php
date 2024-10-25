@@ -10,6 +10,7 @@ class ApiMessage
     public const NOT_FOUND            = 'NOT_FOUND';
     public const FAILED_DEPENDENCY    = 'FAILED_DEPENDENCY';
     public const BAD_REQUEST          = 'BAD_REQUEST';
+    public const SUCCESFULL_CREATE    = 'Data berhasil dibuat dengan sukses';
     public const SUCCESFULL_UPDATE    = 'Data berhasil diperbarui dengan sukses';
     public const SUCCESFULL_DELETE    = 'Data telah berhasil dihapus dengan sukses.';
     public const CAN_T_DELETE         = 'Maaf, saat ini data Anda tidak dapat dihapus karena sedang dalam proses';

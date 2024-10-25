@@ -86,43 +86,34 @@ class Utility extends Model
         $data['created_on'] = $createdOn;
         $vocals = array('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U');
         $articles = '';
+
+
         switch ($action) {
             case 'create':
                 $data['action'] = 'create';
-                $data['description'] = $creator->nama . ' membuat baru ' . $moduleTarget . ' (' . $moduleNumber . ')';
+                $data['description'] = $creator->name . ' membuat baru ' . $moduleTarget . ' (' . $moduleNumber . ')';
                 break;
             case 'update':
                 $data['action'] = 'update';
-                $data['description'] = $creator->nama . ' update ' . $articles . '' . $moduleTarget . ' (' . $moduleNumber . ')';
+                $data['description'] = $creator->name . ' update ' . $moduleTarget . ' (' . $moduleNumber . ')';
                 break;
             case 'delete':
                 $data['action'] = 'delete';
-                $data['description'] = $creator->nama . ' delete ' . $articles . '' . $moduleTarget . ' (' . $moduleNumber . ')';
-                break;
-            case 'mohon diperbaiki':
-                $data['action'] = 'status';
-                $data['description'] = $creator->nama . ' mengubah status '  .$moduleTarget . ' (' . $moduleNumber . ')'. ' menjadi mohon diperbaiki, harap lakukan perbaikan data ('.$dataModule->keterangan_status. ')' ;
-                break;
-            case 'ditolak':
-                $data['action'] = 'status';
-                $data['description'] = $creator->nama . ' mengubah status ' . $moduleTarget . ' (' . $moduleNumber . ')'. ' menjadi ditolak alasan ditolak karena : '.$dataModule->keterangan_status  ;
+                $data['description'] = $creator->name . ' delete ' . $moduleTarget . ' (' . $moduleNumber . ')';
                 break;
             case 'selesai':
-                $data['action'] = 'status';
-                $data['description'] = $creator->nama . ' mengubah status ' . '' . $moduleTarget . ' (' . $moduleNumber . ')'. ' menjadi selesai' ;
+                $data['action'] = 'selesai';
+                $data['description'] = $creator->name . ' selesaikan ' . '' . $moduleTarget . ' (' . $moduleNumber . ')' ;
                 break;
             case 'ambil alih':
-                $data['action'] = 'status';
-                $data['description'] = $creator->nama . ' mengambil alih penugasan ' . '' . $moduleTarget . ' (' . $moduleNumber . ')' ;
+                $data['action'] = 'ambil alih';
+                $data['description'] = $creator->nama . ' telah mengambil alih penugasan ' . '' . $moduleTarget . ' (' . $moduleNumber . ')' ;
                 break;
-            case 'diproses' || 'verifikasi' || 'permohonan':
-                $data['action'] = 'status';
-                $data['description'] = $creator->nama . ' mengubah status '. $moduleTarget . ' (' . $moduleNumber . ')' .' menjadi '.$action ;
-                break;
-            case 'diteruskan':
+            case 'diteruskan' || 'tolak':
                 $data['action'] = 'diteruskan';
                 $data['description'] = $description;
                 break;
+
             default:
                 $data['action'] = 'default';
                 $data['description'] = $creator->nama . ' melakukan sesuatu pada ' . $moduleTarget . ' (' . $moduleNumber . ')';

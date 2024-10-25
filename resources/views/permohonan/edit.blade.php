@@ -22,7 +22,7 @@
     <div class="row">
         <form id="form-data">
             <input type="hidden" name="_method" value="put">
-            <div class="col-12">
+            <div class="col-md-12 col-8">
                 <div class="card">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
@@ -278,7 +278,8 @@
                                                         <td>{{ $loop->iteration }}.
 
                                                             <input type="hidden"
-                                                                name="petugas_ukur[{{ $loop->index }}][petugas_ukur]"
+                                                                name="
+                                                                [{{ $loop->index }}][petugas_ukur]"
                                                                 value="{{ $petugas->petugas?->id ?? '' }}">
                                                             <input type="hidden"
                                                                 name="petugas_ukur[{{ $loop->index }}][pembantu_ukur]"
@@ -354,7 +355,13 @@
 
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <h6>Catatan Penerusan</h6>
+                                <textarea class="form-control" rows="2" id="catatan_penerusan" name="catatan_penerusan"></textarea>
+                            </div>
                         </div>
+
+
                     </div>
                     <div class="card-footer d-flex justify-content-end">
                         @if (
@@ -385,43 +392,18 @@
                 <h5 class="mb-0">Riwayat Penerusan Permohonan
             </div>
             <div class="card-body mx-3">
-                <div class="table-responsive">
-                    <table class="table table-sm" id="riwayat-penerusan-table">
-                        <thead>
-                            <tr>
-                                <th> {{ __('Petugas') }}</th>
-                                <th> {{ __('Nama Petugas') }}</th>
-                                {{--  <th>{{ __('No Berkas') }}</th>  --}}
-                                <th>{{ __('Status') }}</th>
-                                <th>{{ __('Tanggal') }}</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                <ol class="activity-feed">
+                    @foreach (array_reverse($data->audit_trails->toArray()) as $item)
+                        <li class="feed-item feed-item-info">
+                            <time class="date">{{ date('j F Y h:i A', strtotime($item['created_at'])) }}</time>
+                            <span class="text">{{ $item['description'] }}</span>
+                        </li>
+                    @endforeach
+                </ol>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="mb-0">Audit Trail
-            </div>
-            <div class="card-body mx-3">
-                <div class="table-responsive">
-                    <table class="table table-sm" id="audit-trails-table">
-                        <thead>
-                            <tr>
-                                <th> {{ __('Aksi') }}</th>
-                                <th> {{ __('Deskripsi') }}</th>
-                                <th>{{ __('Created On') }}</th>
-                                <th>{{ __('Tanggal') }}</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+
 @endsection
 @push('script-page')
     @include('permohonan.script')
