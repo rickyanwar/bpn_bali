@@ -101,6 +101,9 @@ class PermohonanController extends Controller
     //Tugas
     public function index(Request $request)
     {
+
+
+
         // Get the logged-in user
         $user = Auth::user();
         $totalPermohonan = Permohonan::where('diteruskan_ke', $user->id)
@@ -147,9 +150,30 @@ class PermohonanController extends Controller
                 ->where('status', '!=', 'selesai')
                 ->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
 
+
+        // Filter by status if provided
         if (!empty($request->status)) {
-            $query->where('status', '=', (int) $request->status);
+            $query->where('status', '=', $request->status);
         }
+
+        // Filter by tanggal if provided
+        if (!empty($request->tanggal)) {
+
+            $tanggal = $request->tanggal;
+            if (strpos($tanggal, 'to') !== false) {
+                // Split the range into two dates
+                list($startDate, $endDate) = explode('to', $tanggal);
+                $startDate = trim($startDate);
+                $endDate = trim($endDate);
+
+                // Apply the date range filter
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereDate('created_at', $tanggal);
+            }
+
+        }
+
 
         if ($request->ajax()) {
             return DataTables::of($query)
@@ -275,15 +299,31 @@ class PermohonanController extends Controller
         $query = Permohonan::with('createdby', 'diteruskan')->latest();
 
 
-        //Show all permhonan
-        // if (Gate::check('manage all permohonan')) {
-        //     $query = Permohonan::with('createdby', 'diteruskan')->latest();
-        // }
-
-
+        // Filter by status if provided
         if (!empty($request->status)) {
-            $query->where('status', '=', (int) $request->status);
+            dd($request->status);
+            $query->where('status', '=', $request->status);
         }
+
+        // Filter by tanggal if provided
+        if (!empty($request->tanggal)) {
+
+            $tanggal = $request->tanggal;
+            if (strpos($tanggal, 'to') !== false) {
+                // Split the range into two dates
+                list($startDate, $endDate) = explode('to', $tanggal);
+                $startDate = trim($startDate);
+                $endDate = trim($endDate);
+
+                // Apply the date range filter
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            } else {
+                $query->whereDate('created_at', $tanggal);
+            }
+
+        }
+
+
 
         if ($request->ajax()) {
             return DataTables::of($query)

@@ -44,11 +44,11 @@
                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     <label class="form-label">Status </label>
-                                    <select class="custom-select" id="inputGroupSelect01">
-                                        <option selected>Pilih...</option>
+                                    <select class="custom-select" id="status">
+                                        <option value="">Pilih...</option>
                                         <option value="proses">Proses</option>
-                                        <option value="revisi">Two</option>
-                                        <option value="Selesai">Three</option>
+                                        <option value="tolak">Tolak</option>
+                                        <option value="selesai">Selesai</option>
                                     </select>
                                 </div>
                             </div>
@@ -232,8 +232,15 @@
         });
 
         $(document).on('click', '#submit-filter', function(e) {
-            table.draw();
-        })
+            e.preventDefault(); // Prevent default anchor behavior
+
+            var selectedDate = $('#pc-daterangepicker-1').val();
+            var status = $('#status').val();
+
+            // Update DataTable's AJAX URL with selected date (tanggal) and status
+            table.ajax.url("{{ route('permohonan.index') }}?tanggal=" + selectedDate + "&status=" + status).load();
+        });
+
 
         //Code for pindah tugas
         $(document).on('click', '.paksa_dialihkan_ke', function(e) {

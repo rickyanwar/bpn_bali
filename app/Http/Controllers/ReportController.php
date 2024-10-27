@@ -28,34 +28,53 @@ class ReportController extends Controller
 {
     public function jadwalPengukuran(Request $request)
     {
+        // Get the 'tanggal' parameter from the request
+        $tanggal = $request->input('tanggal', Carbon::today()->toDateString());
 
-        $query = Permohonan::with('createdby', 'diteruskan')
-            ->whereDate('created_at', Carbon::today()) // Adjust 'created_at' to your actual date field
-            ->orderByRaw("FIELD(status, 'draft', 'revisi', 'proses', 'selesai')");
+        // Initialize the query
+        $query = Permohonan::with('createdby', 'diteruskan');
+
+        // Check if 'tanggal' contains a range or a single date
+        if (strpos($tanggal, 'to') !== false) {
+            // Split the range into two dates
+            list($startDate, $endDate) = explode('to', $tanggal);
+            // Trim any whitespace
+            $startDate = trim($startDate);
+            $endDate = trim($endDate);
+
+            // Apply the date range filter
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        } else {
+            // Filter by a single date
+            $query->whereDate('created_at', $tanggal);
+        }
+
+        // Add any additional sorting if necessary
+        $query->orderByRaw("FIELD(status, 'draft', 'revisi', 'proses', 'selesai')");
 
         if ($request->ajax()) {
             return DataTables::of($query)
-            ->addColumn('status_badge', function ($data) {
-                $status = '';
-                switch ($data->status) {
-                    case 'draft':
-                        $status = 'bg-danger';
-                        break;
-                    case 'proses':
-                        $status = 'bg-warning';
-                        break;
-                    case 'selesai':
-                        $status = 'bg-success';
-                        break;
-                    default:
-                        $status = 'bg-secondary'; // Default class if none of the above statuses match
-                        break;
-                }
-                return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
-                    . __($data->status) . '</span>';
-            })
-            ->rawColumns([ 'status_badge', 'actions'])
-            ->make(true);
+                ->addColumn('status_badge', function ($data) {
+                    $status = '';
+                    switch ($data->status) {
+                        case 'draft':
+                            $status = 'bg-danger';
+                            break;
+                        case 'proses':
+                            $status = 'bg-warning';
+                            break;
+                        case 'selesai':
+                            $status = 'bg-success';
+                            break;
+                        default:
+                            $status = 'bg-secondary'; // Default class if none of the above statuses match
+                            break;
+                    }
+                    return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                        . __($data->status) . '</span>';
+                })
+                ->rawColumns(['status_badge', 'actions'])
+                ->make(true);
         }
 
         return view('report.jadwal_pengukuran');
@@ -65,8 +84,28 @@ class ReportController extends Controller
     {
 
 
-        $query = Permohonan::with('createdby', 'diteruskan')
-                   ->orderByRaw("FIELD(status, 'draft', 'revisi', 'proses', 'selesai')");
+
+        // Get the 'tanggal' parameter from the request
+        $tanggal = $request->input('tanggal', Carbon::today()->toDateString());
+
+        // Initialize the query
+        $query = Permohonan::with('createdby', 'diteruskan');
+
+        // Check if 'tanggal' contains a range or a single date
+        if (strpos($tanggal, 'to') !== false) {
+            // Split the range into two dates
+            list($startDate, $endDate) = explode('to', $tanggal);
+            // Trim any whitespace
+            $startDate = trim($startDate);
+            $endDate = trim($endDate);
+
+            // Apply the date range filter
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        } else {
+            // Filter by a single date
+            $query->whereDate('created_at', $tanggal);
+        }
+
 
         if ($request->ajax()) {
             return DataTables::of($query)

@@ -12,11 +12,44 @@
     <li class="breadcrumb-item">
         {{--  <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>  --}}
     </li>
-    <li class="breadcrumb-item">{{ __('Report Jadwal Pengukuran') }}</li>
+    <li class="breadcrumb-item">{{ __('Setor Berkas') }}</li>
 @endsection
 
 @section('content')
     <div class="row">
+        <div class="col-sm-12">
+            <div class="mt-2 " id="multiCollapseExample1">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex align-items-center ">
+
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mr-2">
+                                <div class="btn-box">
+                                    {{--  {{ Form::label('issue_date', __('Issue Date'), ['class' => 'form-label']) }}
+                                    {{ Form::date('issue_date', isset($_GET['issue_date']) ? $_GET['issue_date'] : '', ['class' => 'form-control month-btn', 'id' => 'pc-daterangepicker-1']) }}  --}}
+                                    <label class="form-label">Tanggal </label>
+                                    <input class="form-control month-btn" type="date" name="tanggal"
+                                        id="pc-daterangepicker-1" value="{{ date('Y-m-d') }}">
+
+                                </div>
+                            </div>
+
+                            <div class="col-auto
+                                            float-end ms-2 mt-4">
+                                <a href="#" class="btn btn-sm btn-primary" id="submit-filter" data-toggle="tooltip"
+                                    data-original-title="{{ __('apply') }}">
+                                    <span class="btn-inner--icon"><i class="ti ti-search"></i></span>
+                                </a>
+                                <a href="{{ route('permohonan.index') }}" class="btn btn-sm btn-danger"
+                                    data-toggle="tooltip" data-original-title="{{ __('Reset') }}">
+                                    <span class="btn-inner--icon"><i class="ti ti-trash-off text-white-off"></i></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-xxl-12">
             <div class="row">
                 <div class="col-md-12">
@@ -58,8 +91,24 @@
                 [10, 25, 50, 'All']
             ],
             dom: 'Blfrtip',
-            buttons: [
-                'copy', 'excel', 'pdf'
+            buttons: [{
+                    extend: 'copy',
+                    title: function() {
+                        return 'Setor Berkas ' + $('#pc-daterangepicker-1').val();
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: function() {
+                        return 'Setor Berkas ' + $('#pc-daterangepicker-1').val();
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: function() {
+                        return 'Setor Berkas ' + $('#pc-daterangepicker-1').val();
+                    }
+                }
             ],
             processing: true,
             serverSide: true,
@@ -121,8 +170,11 @@
 
         });
 
+
         $(document).on('click', '#submit-filter', function(e) {
-            table.draw();
+            e.preventDefault(); // Prevent default anchor behavior
+            var selectedDate = $('#pc-daterangepicker-1').val();
+            table.ajax.url("{{ route('report.setor_berkas') }}?tanggal=" + selectedDate).load();
         })
     </script>
 @endpush
