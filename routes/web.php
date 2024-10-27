@@ -22,6 +22,9 @@ Auth::routes();
 Route::get('display/', [DashboardController::class, 'display'])->name('dashboard.display');
 Route::get('display/get-list', [DashboardController::class, 'getListdisplay'])->name('dashboard.get.list');
 Route::get('display/pemohon_hari_ini', [DashboardController::class, 'getPemohonToday'])->name('dashboard.pemohon_today');
+Route::get('display/panggilan_dinas_hari_ini', [DashboardController::class, 'getPemohonPanggilanDinasToday'])->name('dashboard.panggilan_dinas_today');
+
+Route::get('display/berkas_count', [DashboardController::class, 'berkasCount'])->name('dashboard.berkas_count');
 
 
 

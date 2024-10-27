@@ -155,6 +155,20 @@
                                                             @endif
                                                         @endif
 
+
+                                                        @if (in_array('panggil_dinas ' . $module, (array) $permissions))
+                                                            @if (($key = array_search('panggil_dinas ' . $module, $permissions)) !== false)
+                                                                <div class="col-md-3 custom-control custom-checkbox">
+                                                                    {{-- Checkbox input --}}
+                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace([' ', '&'], '', $module))->id('permission' . $key) !!}
+
+                                                                    {{-- Label for the checkbox --}}
+                                                                    {!! Html::label('Panggil Dinas ' . $module)->class('custom-control-label') !!}
+                                                                    <br>
+                                                                </div>
+                                                            @endif
+                                                        @endif
+
                                                     </div>
                                                 </td>
                                             </tr>

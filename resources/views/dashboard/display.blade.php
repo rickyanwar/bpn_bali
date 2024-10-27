@@ -90,6 +90,53 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+
+        .panggilan-dinas-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            /* Space between items */
+            transition: opacity 0.5s ease;
+            /* Smooth fade transition */
+        }
+
+        .panggilan-item {
+            display: inline-block;
+            margin-right: 10px;
+            opacity: 1;
+        }
+
+        .fade-container {
+            position: absolute;
+            width: 100%;
+            top: 0;
+        }
+
+        .nama-pemohon {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            max-width: 100%;
+            margin: 0;
+            line-height: 0.8;
+            /* Remove any default margins */
+            padding: 0;
+            /* Ensures it will fit within the column */
+        }
+
+        .pemohon-detail {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            margin: 0;
+            line-height: 0.9;
+            /* Remove any default margins */
+            padding: 0 max-width: 100%;
+            font-size: 17px;
+        }
+
         .pemohon-today-item {
             display: inline-block;
             padding: 0 30px;
@@ -117,7 +164,7 @@
                     <div class="card text-center bg-yellow-light" style="border-radius: 15px;">
                         <div class="card-body ">
                             <div class="btn-yellow-dark btn-block p-2">BERKAS MASUK</div>
-                            <h1 class="font-number p-3 m-0">34</h1>
+                            <h1 class="font-number p-3 m-0" id="berkas-masuk"></h1>
                         </div>
                     </div>
                 </div>
@@ -125,7 +172,7 @@
                     <div class="card text-center bg-green-light " style="border-radius: 15px;">
                         <div class="card-body">
                             <div class="btn-block btn-success-dark p-2">BERKAS SELESAI</div>
-                            <h1 class="font-number p-3 m-0">23</h1>
+                            <h1 class="font-number p-3 m-0 " id="berkas-selesai"></h1>
                         </div>
                     </div>
                 </div>
@@ -134,32 +181,8 @@
         <div class="col-md-8 ">
             <div class="card bg-yellow full-height" style="height: 100%; border-radius:15px">
                 <div class="card-body">
-                    <div class="btn-yellow-dark btn-block p-2">PEMOHON HARI INI</div>
-                    <div class="row panggilan-dinas-container">
-                        <div class="col-6 ">
-                            <ol type="1">
-                                <li class="m-1 "> Arian <br>
-                                    No berkas/Desa/Kecamatan
-                                </li>
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                            </ol>
-                        </div>
-                        <div class="col-6 ">
-                            <ol type="1">
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                                <li class="m-1 "> Arian</li>
-                            </ol>
-                        </div>
-
-                    </div>
+                    <div class="btn-yellow-dark btn-block p-2">PANGGILAN DINAS HARI INI {{ date('d-m-Y') }}</div>
+                    <div class="row panggilan-dinas-container ml-2"></div>
                 </div>
             </div>
         </div>
@@ -264,5 +287,106 @@
         setInterval(fetchPendingJobsByRole, 180000);
         // Initial fetch
         fetchPendingJobsByRole();
+
+
+        $(document).ready(function() {
+            const $container = $('.panggilan-dinas-container');
+            const batchSize = 6; // Show 6 items at a time
+            let currentIndex = 0;
+            let data = [];
+
+            function fetchDataPanggilanDinas() {
+                // Simulate AJAX call with a timeout
+                $.ajax({
+                    url: "{{ route('dashboard.panggilan_dinas_today') }}", // Your API endpoint
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        // Assuming response is an array of objects
+                        data = response;
+                        // Reset the index to start from the beginning
+                        currentIndex = 0;
+                        // Update the display with new data
+                        updateMarqueePanggilanDinas();
+                    },
+                    error: function() {
+                        console.error('Failed to fetch data');
+                    }
+                });
+            }
+
+            function updateMarqueePanggilanDinas() {
+                // Clear the container
+                $container.empty();
+
+                // Check if there's data available
+                if (data.length === 0) {
+                    $container.append('<div class="col-6"><p>No data available</p></div>');
+                    return;
+                }
+
+                // Create a single col-6 div to hold the items
+                let colHtml = '<div class="col-6">';
+
+                // Determine how many items to display based on data length
+                const itemsToShow = Math.min(batchSize, data.length);
+
+                for (let i = 0; i < itemsToShow; i++) {
+                    const itemIndex = (currentIndex + i) % data.length;
+                    const item = data[itemIndex];
+
+                    // Create new HTML structure for each item with numbering
+                    colHtml += `
+                <div class="panggilan-item">
+                    <div class="nama-pemohon">${(currentIndex + i + 1)}. ${item?.nama_pemohon}</div>
+                    <div class="pemohon-detail">${item?.no_berkas} ${item?.desa} ${item?.kecamatan}</div>
+                </div>
+            `;
+                }
+
+                colHtml += '</div>'; // Close the col-6 div
+
+                // Append the column to the container
+                $container.append(colHtml);
+
+                // Update currentIndex to the start of the next batch
+                currentIndex = (currentIndex + batchSize) % data.length;
+            }
+
+            // Initial data fetch
+            fetchDataPanggilanDinas();
+
+            // Fetch new data every 5 minutes (300000 milliseconds)
+            setInterval(fetchDataPanggilanDinas, 300000);
+
+            // Update the marquee every 10 seconds
+            setInterval(updateMarqueePanggilanDinas, 10000);
+
+
+
+
+            function updateBerkasCounts() {
+                // Replace this URL with your actual API endpoint
+                $.ajax({
+                    url: "{{ route('dashboard.berkas_count') }}", // Your API endpoint for fetching counts
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        // Assuming the response has berkas_masuk and berkas_selesai properties
+                        $('#berkas-masuk').text(response.berkas_masuk);
+                        $('#berkas-selesai').text(response.berkas_selesai);
+                    },
+                    error: function() {
+                        console.error('Failed to fetch data');
+                    }
+                });
+            }
+
+            // Initial data fetch
+            updateBerkasCounts();
+
+            // Fetch new data every 10 minutes (600000 milliseconds)
+            setInterval(updateBerkasCounts, 600000);
+        });
     </script>
 @endpush

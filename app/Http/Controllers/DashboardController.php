@@ -76,10 +76,31 @@ class DashboardController extends Controller
     }
 
 
-    public function display()
+    public function getPemohonPanggilanDinasToday()
     {
 
-        return view('dashboard.display');
+        $today = Carbon::today();
+        $namaPemohonToday = Permohonan::whereHas('riwayatPanggilanDinas', function ($query) use ($today) {
+            $query->whereDate('tanggal_panggil', $today);
+        })->get();
 
+        return response()->json($namaPemohonToday);
+    }
+
+
+    public function berkasCount()
+    {
+        $berkasSelesaiCount = Permohonan::where('status', 'selesai')->count();
+        $berkasMasukCount = Permohonan::where('status', '!=', 'selesai')->count();
+
+        return response()->json([
+            'berkas_selesai' => $berkasSelesaiCount,
+            'berkas_masuk' => $berkasMasukCount,
+        ]);
+    }
+
+    public function display()
+    {
+        return view('dashboard.display');
     }
 }
