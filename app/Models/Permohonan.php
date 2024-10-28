@@ -119,8 +119,7 @@ class Permohonan extends Model
 
         if ($petugas) {
             $fullName = $petugas->name ?? '-';
-            $firstName = explode(' ', $fullName)[0];
-            return $firstName;
+            return $fullName;
         }
 
         return '-';
