@@ -55,7 +55,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
 
-        if (\Auth::user()->can('create role')) {
+        if (\Auth::user()->can('manage role')) {
             $validator = \Validator::make(
                 $request->all(),
                 [
