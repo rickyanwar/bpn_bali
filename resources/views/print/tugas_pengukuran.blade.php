@@ -90,11 +90,21 @@
                            Volume
                            Kegiatan:</p>
                        <ol class="no-margin" type="a">
-                           <li><span class="label-space">Kelurahan</span> {{ $data->desa }}</li>
+                           {{--  <li><span class="label-space">Kelurahan</span> <span class="highlight">:
+                                   {{ $data->desa }}</span>
+                           </li>
                            <li><span class="label-space">Kecamatan</span> <span class="highlight">:
                                    {{ $data->kecamatan }}</span></li>
                            <li><span class="label-space">Volume:</span> <span class="highlight">: {{ $data->luas }}
-                                   m²</span></li>
+                                   m²</span></li>  --}}
+
+                           <li>
+                               Kelurahan: {{ $data->desa }}
+                           </li>
+                           <li>Kecamatan:
+                               {{ $data->kecamatan }}</li>
+                           <li>Volume: {{ $data->luas }}
+                               m² =</li>
                        </ol>
 
                        <p class="no-margin">2. Waktu:</p>
