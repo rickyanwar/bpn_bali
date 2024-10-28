@@ -104,13 +104,13 @@
             buttons: [{
                     extend: 'copy',
                     title: function() {
-                        return 'Setor Berkas ' + $('#pc-daterangepicker-1').val();
+                        return 'Setor Berkas Pengukuran' + $('#pc-daterangepicker-1').val();
                     }
                 },
                 {
                     extend: 'excel',
                     title: function() {
-                        return 'Setor Berkas ' + $('#pc-daterangepicker-1').val();
+                        return 'Setor Berkas Pengukuran' + $('#pc-daterangepicker-1').val();
                     }
                 },
             ],
