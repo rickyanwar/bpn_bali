@@ -49,10 +49,10 @@ class ReportController extends Controller
             $endDate = trim($endDate);
 
             // Apply the date range filter
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('tanggal_mulai_pengukuran', [$startDate, $endDate]);
         } else {
             // Filter by a single date
-            $query->whereDate('created_at', $tanggal);
+            $query->whereDate('tanggal_mulai_pengukuran', $tanggal);
         }
 
 
@@ -120,10 +120,10 @@ class ReportController extends Controller
             $endDate = trim($endDate);
 
             // Apply the date range filter
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('tanggal_mulai_pengukuran', [$startDate, $endDate]);
         } else {
             // Filter by a single date
-            $query->whereDate('created_at', $tanggal);
+            $query->whereDate('tanggal_mulai_pengukuran', $tanggal);
         }
 
 

@@ -118,7 +118,7 @@ class PermohonanController extends Controller
             ->count();
 
         $totalrevisi = Permohonan::where('diteruskan_ke', $user->id)
-            ->where('status', 'revisi')
+            ->where('status', 'tolak')
             ->count();
 
         $totalSelesai = Permohonan::where('diteruskan_ke', $user->id)
@@ -167,9 +167,10 @@ class PermohonanController extends Controller
                 $endDate = trim($endDate);
 
                 // Apply the date range filter
-                $query->whereBetween('created_at', [$startDate, $endDate]);
+                $query->whereBetween('tanggal_mulai_pengukuran', [$startDate, $endDate]);
             } else {
-                $query->whereDate('created_at', $tanggal);
+
+                $query->whereDate('tanggal_mulai_pengukuran', $tanggal);
             }
 
         }

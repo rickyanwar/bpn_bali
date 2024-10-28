@@ -35,15 +35,18 @@
 
         .marquee-container {
             overflow: hidden;
-            white-space: nowrap;
-            display: flex;
             align-items: center;
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         .marquee-content {
             display: inline-block;
+            /* Keep content inline */
             animation: marquee 50s linear infinite;
-            /* Create a continuous sliding effect */
+            /* Continuous scrolling */
         }
 
         @keyframes marquee {
