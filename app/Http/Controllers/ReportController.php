@@ -28,8 +28,13 @@ class ReportController extends Controller
 {
     public function jadwalPengukuran(Request $request)
     {
+
+
+        $petugasUkur = User::role('Petugas Ukur')->get();
+
         // Get the 'tanggal' parameter from the request
         $tanggal = $request->input('tanggal', Carbon::today()->toDateString());
+        $petugasId = $request->input('petugas_id'); // Get the selected user ID
 
         // Initialize the query
         $query = Permohonan::with('createdby', 'diteruskan');
@@ -49,11 +54,23 @@ class ReportController extends Controller
             $query->whereDate('created_at', $tanggal);
         }
 
+
+        // Filter by user if selected
+        if ($petugasId) {
+            $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
+                $q->where('id', $petugasId);
+            });
+        }
+
+
         // Add any additional sorting if necessary
         $query->orderByRaw("FIELD(status, 'draft', 'revisi', 'proses', 'selesai')");
 
         if ($request->ajax()) {
             return DataTables::of($query)
+               ->addColumn('petugas_ukur_utama', function ($data) {
+                   return $data->petugas_ukur_utama;
+               })
                 ->addColumn('status_badge', function ($data) {
                     $status = '';
                     switch ($data->status) {
@@ -77,15 +94,15 @@ class ReportController extends Controller
                 ->make(true);
         }
 
-        return view('report.jadwal_pengukuran');
+        return view('report.jadwal_pengukuran', compact('petugasUkur'));
     }
 
     public function jadwalSetorBerkas(Request $request)
     {
 
 
-
-        // Get the 'tanggal' parameter from the request
+        $petugasUkur = User::role('Petugas Ukur')->get();
+        $petugasId = $request->input('petugas_id');
         $tanggal = $request->input('tanggal', Carbon::today()->toDateString());
 
         // Initialize the query
@@ -107,30 +124,14 @@ class ReportController extends Controller
         }
 
 
-        if ($request->ajax()) {
-            return DataTables::of($query)
-            ->addColumn('status_badge', function ($data) {
-                $status = '';
-                switch ($data->status) {
-                    case 'draft':
-                        $status = 'bg-danger';
-                        break;
-                    case 'proses':
-                        $status = 'bg-warning';
-                        break;
-                    case 'selesai':
-                        $status = 'bg-success';
-                        break;
-                    default:
-                        $status = 'bg-secondary'; // Default class if none of the above statuses match
-                        break;
-                }
-                return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
-                    . __($data->status) . '</span>';
-            })
-            ->rawColumns([ 'status_badge', 'actions'])
-            ->make(true);
+
+        // Filter by user if selected
+        if ($petugasId) {
+            $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
+                $q->where('id', $petugasId);
+            });
         }
+
 
         if ($request->ajax()) {
             return DataTables::of($query)
@@ -157,7 +158,32 @@ class ReportController extends Controller
             ->make(true);
         }
 
-        return view('report.setor_berkas');
+        if ($request->ajax()) {
+            return DataTables::of($query)
+            ->addColumn('status_badge', function ($data) {
+                $status = '';
+                switch ($data->status) {
+                    case 'draft':
+                        $status = 'bg-danger';
+                        break;
+                    case 'proses':
+                        $status = 'bg-warning';
+                        break;
+                    case 'selesai':
+                        $status = 'bg-success';
+                        break;
+                    default:
+                        $status = 'bg-secondary'; // Default class if none of the above statuses match
+                        break;
+                }
+                return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                    . __($data->status) . '</span>';
+            })
+            ->rawColumns([ 'status_badge', 'actions'])
+            ->make(true);
+        }
+
+        return view('report.setor_berkas', compact('petugasUkur'));
     }
 
 

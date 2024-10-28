@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <div class="row d-flex align-items-center ">
 
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mr-2">
+                            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     {{--  {{ Form::label('issue_date', __('Issue Date'), ['class' => 'form-label']) }}
                                     {{ Form::date('issue_date', isset($_GET['issue_date']) ? $_GET['issue_date'] : '', ['class' => 'form-control month-btn', 'id' => 'pc-daterangepicker-1']) }}  --}}
@@ -33,6 +33,16 @@
 
                                 </div>
                             </div>
+                            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 mr-2">
+                                <label class="form-label">Petugas Ukur</label>
+                                <select class="form-control" id="petugas-ukur-filter" name="petugas_ukur">
+                                    <option value="">Semua</option>
+                                    @foreach ($petugasUkur as $petugas)
+                                        <option value="{{ $petugas->name }}">{{ $petugas->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
 
                             <div class="col-auto
                                             float-end ms-2 mt-4">
@@ -99,12 +109,6 @@
                         return 'Report Jadwal Pengukuran ' + $('#pc-daterangepicker-1').val();
                     }
                 },
-                {
-                    extend: 'pdf',
-                    title: function() {
-                        return 'Report Jadwal Pengukuran ' + $('#pc-daterangepicker-1').val();
-                    }
-                }
             ],
             processing: true,
             serverSide: true,
@@ -136,6 +140,8 @@
                 {
                     data: "tahun",
                     name: "tahun",
+                    orderable: false,
+                    searchable: false,
                 },
 
                 {
@@ -167,9 +173,11 @@
         });
 
         $(document).on('click', '#submit-filter', function(e) {
-            e.preventDefault(); // Prevent default anchor behavior
+            e.preventDefault();
             var selectedDate = $('#pc-daterangepicker-1').val();
-            table.ajax.url("{{ route('report.jadwal_pengukuran') }}?tanggal=" + selectedDate).load();
+            var selectedPetugas = $('#petugas-filter').val();
+            table.ajax.url("{{ route('report.jadwal_pengukuran') }}?tanggal=" + selectedDate + "&petugas_id=" +
+                selectedPetugas).load();
         })
     </script>
 @endpush

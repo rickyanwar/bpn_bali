@@ -22,8 +22,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row d-flex align-items-center ">
-
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mr-2">
+                            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     {{--  {{ Form::label('issue_date', __('Issue Date'), ['class' => 'form-label']) }}
                                     {{ Form::date('issue_date', isset($_GET['issue_date']) ? $_GET['issue_date'] : '', ['class' => 'form-control month-btn', 'id' => 'pc-daterangepicker-1']) }}  --}}
@@ -33,6 +32,16 @@
 
                                 </div>
                             </div>
+                            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 mr-2">
+                                <label class="form-label">Petugas Ukur</label>
+                                <select class="form-control" id="petugas-ukur-filter" name="petugas_ukur">
+                                    <option value="">Semua</option>
+                                    @foreach ($petugasUkur as $petugas)
+                                        <option value="{{ $petugas->name }}">{{ $petugas->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
 
                             <div class="col-auto
                                             float-end ms-2 mt-4">
@@ -50,37 +59,38 @@
                 </div>
             </div>
         </div>
-        <div class="col-xxl-12">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card p-4">
-                        <div class="card-body table-border-style">
-                            <h5></h5>
-                            <div class="table-responsive">
-                                <table class="table table-sm" id="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Nama Pemohon</th>
-                                            <th>Desa</th>
-                                            <th>Kecamatan</th>
-                                            <th>No Berkas</th>
-                                            <th>DI 302</th>
-                                            <th>Tahun</th>
-                                            <th>Luas</th>
-                                            <th>Jenis</th>
-                                            <th>Petugas Ukur</th>
-                                            <th>Tanggal Jadwal</th>
-                                            <th>Tanggal Setor</th>
-                                            <th>Koordinator</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
+    </div>
+    <div class="col-xxl-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card p-4">
+                    <div class="card-body table-border-style">
+                        <h5></h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm" id="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Pemohon</th>
+                                        <th>Desa</th>
+                                        <th>Kecamatan</th>
+                                        <th>No Berkas</th>
+                                        <th>DI 302</th>
+                                        <th>Tahun</th>
+                                        <th>Luas</th>
+                                        <th>Jenis</th>
+                                        <th>Petugas Ukur</th>
+                                        <th>Tanggal Jadwal</th>
+                                        <th>Tanggal Setor</th>
+                                        <th>Koordinator</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection
 @push('script-page')
@@ -103,12 +113,6 @@
                         return 'Setor Berkas ' + $('#pc-daterangepicker-1').val();
                     }
                 },
-                {
-                    extend: 'pdf',
-                    title: function() {
-                        return 'Setor Berkas ' + $('#pc-daterangepicker-1').val();
-                    }
-                }
             ],
             processing: true,
             serverSide: true,
@@ -140,6 +144,8 @@
                 {
                     data: "tahun",
                     name: "tahun",
+                    orderable: false,
+                    searchable: false,
                 },
 
                 {
@@ -174,7 +180,9 @@
         $(document).on('click', '#submit-filter', function(e) {
             e.preventDefault(); // Prevent default anchor behavior
             var selectedDate = $('#pc-daterangepicker-1').val();
-            table.ajax.url("{{ route('report.setor_berkas') }}?tanggal=" + selectedDate).load();
+            var selectedPetugas = $('#petugas-filter').val();
+            table.ajax.url("{{ route('report.setor_berkas') }}?tanggal=" + selectedDate + "&petugas_id=" +
+                selectedPetugas).load();
         })
     </script>
 @endpush
