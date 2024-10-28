@@ -36,6 +36,7 @@ class ReportController extends Controller
         $tanggal = $request->input('tanggal', Carbon::today()->toDateString());
         $petugasId = $request->input('petugas_id'); // Get the selected user ID
 
+
         // Initialize the query
         $query = Permohonan::with('createdby', 'diteruskan');
 

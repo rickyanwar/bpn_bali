@@ -38,7 +38,7 @@
                                 <select class="form-control" id="petugas-ukur-filter" name="petugas_ukur">
                                     <option value="">Semua</option>
                                     @foreach ($petugasUkur as $petugas)
-                                        <option value="{{ $petugas->name }}">{{ $petugas->name }}</option>
+                                        <option value="{{ $petugas->id }}">{{ $petugas->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -175,8 +175,9 @@
         $(document).on('click', '#submit-filter', function(e) {
             e.preventDefault();
             var selectedDate = $('#pc-daterangepicker-1').val();
-            var selectedPetugas = $('#petugas-filter').val();
-            table.ajax.url("{{ route('report.jadwal_pengukuran') }}?tanggal=" + selectedDate).load();
+            var selectedPetugas = $('#petugas-ukur-filter').val();
+            table.ajax.url("{{ route('report.jadwal_pengukuran') }}?tanggal=" + selectedDate + "&petugas_id=" +
+                selectedPetugas).load();
         })
     </script>
 @endpush
