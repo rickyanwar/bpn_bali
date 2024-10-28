@@ -74,6 +74,7 @@ class RoleController extends Controller
             $name             = $request['name'];
             $role             = new Role();
             $role->name       = $name;
+            $role->guard_name = "api";
             $role->created_by = \Auth::user()->id;
             $permissions      = $request['permissions'];
             $role->save();

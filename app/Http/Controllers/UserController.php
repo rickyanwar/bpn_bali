@@ -150,7 +150,8 @@ class UserController extends Controller
                 return redirect()->back()->with('error', $messages->first());
             }
 
-            $role_r = Role::findById($request->role);
+
+            $role_r = Role::where('guard_name', 'api')->find($request->role);
             $user               = new User();
             $user['name']       = $request->name;
             $user['email']      = $request->email;
@@ -174,7 +175,9 @@ class UserController extends Controller
             }
 
             $user->save();
-            $role_r = Role::findById($request->role);
+
+            $role_r = Role::where('guard_name', 'api')->find($request->role);
+
             $user->assignRole($role_r);
 
             return redirect()->route('users.index')->with('success', __('User successfully created.'));
@@ -222,7 +225,7 @@ class UserController extends Controller
                 return redirect()->back()->with('error', $messages->first());
             }
 
-            $role = Role::findById($request->role);
+            $role = Role::find($request->role);
             $input = $request->all();
 
 
