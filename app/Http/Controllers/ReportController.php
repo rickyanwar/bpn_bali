@@ -58,7 +58,7 @@ class ReportController extends Controller
 
         // Filter by user if selected
         if (!empty($petugasId)) {
-            $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
+            $query->whereHas('petugas_ukur', function ($q) use ($petugasId) {
                 $q->where('id', $petugasId);
             });
         }
@@ -129,7 +129,7 @@ class ReportController extends Controller
         // // Filter by user if selected
         if (!empty($petugasId)) {
             $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
-                $q->where('id', $petugasId);
+                $q->where('petugas_ukur', $petugasId);
             });
         }
 
