@@ -100,13 +100,13 @@
             buttons: [{
                     extend: 'copy',
                     title: function() {
-                        return 'Report Jadwal Pengukuran ' + $('#pc-daterangepicker-1').val();
+                        return 'Jadwal Pengukuran ' + $('#pc-daterangepicker-1').val();
                     }
                 },
                 {
                     extend: 'excel',
                     title: function() {
-                        return 'Report Jadwal Pengukuran ' + $('#pc-daterangepicker-1').val();
+                        return 'Jadwal Pengukuran ' + $('#pc-daterangepicker-1').val();
                     }
                 },
             ],
