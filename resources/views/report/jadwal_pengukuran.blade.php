@@ -176,8 +176,7 @@
             e.preventDefault();
             var selectedDate = $('#pc-daterangepicker-1').val();
             var selectedPetugas = $('#petugas-filter').val();
-            table.ajax.url("{{ route('report.jadwal_pengukuran') }}?tanggal=" + selectedDate + "&petugas_id=" +
-                selectedPetugas).load();
+            table.ajax.url("{{ route('report.jadwal_pengukuran') }}?tanggal=" + selectedDate).load();
         })
     </script>
 @endpush
