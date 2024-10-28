@@ -120,7 +120,7 @@
                                             <th> {{ __('No Berkas') }}</th>
                                             <th> {{ __('Nama Pemohon') }}</th>
                                             {{--  <th>{{ __('No Berkas') }}</th>  --}}
-                                            <th>{{ __('Tanggal Di buat') }}</th>
+                                            <th>{{ __('Tanggal Pengukuran') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Di Teruskan Ke ') }}</th>
                                             <th>{{ __('Di Buat') }}</th>
@@ -180,8 +180,8 @@
                 },
 
                 {
-                    data: "created_at",
-                    name: "created_at",
+                    data: "tanggal_mulai_pengukuran",
+                    name: "tanggal_mulai_pengukuran",
                 },
                 {
                     data: "status_badge",
