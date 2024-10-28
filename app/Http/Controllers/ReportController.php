@@ -56,11 +56,11 @@ class ReportController extends Controller
 
 
         // Filter by user if selected
-        if (!empty($petugasId)) {
-            $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
-                $q->where('id', $petugasId);
-            });
-        }
+        // if (!empty($petugasId)) {
+        //     $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
+        //         $q->where('id', $petugasId);
+        //     });
+        // }
 
 
         // Add any additional sorting if necessary
@@ -125,12 +125,12 @@ class ReportController extends Controller
 
 
 
-        // Filter by user if selected
-        if (!empty($petugasId)) {
-            $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
-                $q->where('id', $petugasId);
-            });
-        }
+        // // Filter by user if selected
+        // if (!empty($petugasId)) {
+        //     $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
+        //         $q->where('id', $petugasId);
+        //     });
+        // }
 
 
         if ($request->ajax()) {
