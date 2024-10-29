@@ -28,7 +28,8 @@
            }
 
            .label-value {
-               margin-left: 20px;
+               margin-left: 15px;
+               margin-top: 3px;
            }
        </style>
        <div class="container">
@@ -67,7 +68,7 @@
                    <table class="no-margin" border="1" style="margin-bottom: 20px;margin-left:27px">
                        <tr>
                            <td width="5%" class="text-center">No.</td>
-                           <td width="40%" class="text-center">Nama / NIP</td>
+                           <td width="50%" class="text-center">Nama / NIP</td>
                            <td width="27.5%" class="text-center">Pangkat / Golongan</td>
                            <td width="27.5%" class="text-center">Jabatan</td>
                        </tr>
@@ -89,14 +90,14 @@
                            Lokasi dan
                            Volume
                            Kegiatan:</p>
-                       <ol class="no-margin" type="a">
-                           {{--  <li><span class="label-space">Kelurahan</span> <span class="highlight">:
+                       {{--  <ol class="no-margin" type="a">
+                           <li><span class="label-space">Kelurahan</span> <span class="highlight">:
                                    {{ $data->desa }}</span>
                            </li>
                            <li><span class="label-space">Kecamatan</span> <span class="highlight">:
                                    {{ $data->kecamatan }}</span></li>
                            <li><span class="label-space">Volume:</span> <span class="highlight">: {{ $data->luas }}
-                                   m²</span></li>  --}}
+                                   m²</span></li>
 
                            <li>
                                Kelurahan: {{ $data->desa }}
@@ -105,23 +106,54 @@
                                {{ $data->kecamatan }}</li>
                            <li>Volume: {{ $data->luas }}
                                m² =</li>
-                       </ol>
+                       </ol>  --}}
+
+                       <table style="margin-left: 15px; margin-top:3px " class="no-margin table-no-padding ">
+                           <tr>
+                               <td width="50%">a. Kelurahan</td>
+                               <td>: {{ $data->desa }} </td>
+                           </tr>
+                           <tr>
+                               <td width="50%">b. Kecamatan</td>
+                               <td>: {{ $data->kecamatan }} </td>
+                           </tr>
+                           <tr>
+                               <td width="50%">c. Luas</td>
+                               <td>: {{ $data->luas }} m²</td>
+                           </tr>
+                       </table>
 
                        <p class="no-margin">2. Waktu:</p>
-                       <ol class="no-margin" type="a">
-                           <li>Mulai Tanggal: <span
-                                   class="highlight">{{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</span>
-                           </li>
-                           <li>Sampai Tanggal: <span
-                                   class="highlight">{{ \Carbon\Carbon::parse($data->tanggal_berkahir_pengukuran)->translatedFormat('d F Y') }}</span>
-                           </li>
-                       </ol>
+
+
+                       <table style="margin-left: 15px; margin-top:3px  " class="no-margin table-no-padding ">
+                           <tr>
+                               <td width="50%">a. Mulai Tanggal</td>
+                               <td>: {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
+                               </td>
+                           </tr>
+                           <tr>
+                               <td width="50%">b. Sampai Tanggal</td>
+                               <td>:
+                                   {{ \Carbon\Carbon::parse($data->tanggal_berkahir_pengukuran)->translatedFormat('d F Y') }}
+                               </td>
+                           </tr>
+                       </table>
 
                        <p class="no-margin">3. Biaya dibebankan pada:</p>
-                       <ol class="no-margin" type="a">
-                           <li>DI 305: <span class="highlight">{{ $data->di_305 }}</span></li>
-                           <li>DI 302: <span class="highlight">{{ $data->di_302 }}</span></li>
-                       </ol>
+                       <table style="margin-left: 15px; margin-top:3px  " class="no-margin table-no-padding ">
+                           <tr>
+                               <td width="50%">a. DI 305</td>
+                               <td>: {{ $data->di_305 }}
+                               </td>
+                           </tr>
+                           <tr>
+                               <td width="50%">b. DI 302</td>
+                               <td>:
+                                   {{ $data->di_302 }}
+                               </td>
+                           </tr>
+                       </table>
                        <p class="no-margin">4. Hasil Pelaksanaan Tugas supaya dilaporkan.</p>
 
                    </div>

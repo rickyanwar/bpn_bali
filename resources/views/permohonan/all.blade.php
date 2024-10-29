@@ -58,8 +58,8 @@
                                     data-original-title="{{ __('apply') }}">
                                     <span class="btn-inner--icon"><i class="ti ti-search"></i></span>
                                 </a>
-                                <a href="{{ route('permohonan.index') }}" class="btn btn-sm btn-danger"
-                                    data-toggle="tooltip" data-original-title="{{ __('Reset') }}">
+                                <a href="{{ route('permohonan.all') }}" class="btn btn-sm btn-danger" data-toggle="tooltip"
+                                    data-original-title="{{ __('Reset') }}">
                                     <span class="btn-inner--icon"><i class="ti ti-trash-off text-white-off"></i></span>
                                 </a>
                             </div>
@@ -232,12 +232,9 @@
         });
 
         $(document).on('click', '#submit-filter', function(e) {
-            e.preventDefault(); // Prevent default anchor behavior
-
+            e.preventDefault();
             var selectedDate = $('#pc-daterangepicker-1').val();
             var status = $('#status').val();
-
-            // Update DataTable's AJAX URL with selected date (tanggal) and status
             table.ajax.url("{{ route('permohonan.index') }}?tanggal=" + selectedDate + "&status=" + status).load();
         });
 

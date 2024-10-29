@@ -152,9 +152,13 @@ class PermohonanController extends Controller
 
 
         // Filter by status if provided
+
+
         if (!empty($request->status)) {
-            $query->where('status', '=', $request->status);
+            $query->where('status', $request->status);
         }
+
+
 
         // Filter by tanggal if provided
         if (!empty($request->tanggal)) {

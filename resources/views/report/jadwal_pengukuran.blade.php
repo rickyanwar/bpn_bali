@@ -100,13 +100,15 @@
             buttons: [{
                     extend: 'copy',
                     title: function() {
-                        return 'Jadwal Pengukuran ' + $('#pc-daterangepicker-1').val();
+                        return 'Jadwal Tanggal Pengukuran :' + formatDateRange($('#pc-daterangepicker-1')
+                            .val());
                     }
                 },
                 {
                     extend: 'excel',
                     title: function() {
-                        return 'Jadwal Pengukuran ' + $('#pc-daterangepicker-1').val();
+                        return 'Jadwal Tanggal Pengukuran :' + formatDateRange($('#pc-daterangepicker-1')
+                            .val());
                     }
                 },
             ],
@@ -163,8 +165,20 @@
                 {
                     data: 'created_by',
                     name: 'created_by',
+                    orderable: false,
+                    searchable: false,
                     render: function(data) {
-                        return data?.name ?? '-'
+                        return data?.name ?? ''
+                    }
+                },
+
+                {
+                    data: 'created_by',
+                    name: 'created_by',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data) {
+                        return data?.name ?? ''
                     }
                 },
 
@@ -179,5 +193,21 @@
             table.ajax.url("{{ route('report.jadwal_pengukuran') }}?tanggal=" + selectedDate + "&petugas_id=" +
                 selectedPetugas).load();
         })
+
+        function formatDateRange(dateRange) {
+            const dates = dateRange.split(" to ");
+            const formattedDates = dates.map(date => {
+                const parsedDate = new Date(date.trim());
+                return parsedDate.toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            });
+
+
+            return formattedDates.join(' - ');
+        }
     </script>
 @endpush

@@ -146,7 +146,7 @@ class UsersTableSeeder extends Seeder
             [
                 'role_name' => "Petugas Ukur",
                 'user_name' => 'Ali Nur Chamid',
-                'user_email' => '1',
+                'user_email' => 'ali@example.com',
                 'user_password' => 'password',
             ],
 

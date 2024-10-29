@@ -104,13 +104,15 @@
             buttons: [{
                     extend: 'copy',
                     title: function() {
-                        return 'Setor Berkas Pengukuran' + $('#pc-daterangepicker-1').val();
+                        return 'Setor Berkas Pengukuran ' + formatDateRange($('#pc-daterangepicker-1')
+                            .val());
                     }
                 },
                 {
                     extend: 'excel',
                     title: function() {
-                        return 'Setor Berkas Pengukuran' + $('#pc-daterangepicker-1').val();
+                        return 'Setor Berkas Pengukuran ' + formatDateRange($('#pc-daterangepicker-1')
+                            .val());
                     }
                 },
             ],
@@ -184,5 +186,21 @@
             table.ajax.url("{{ route('report.setor_berkas') }}?tanggal=" + selectedDate + "&petugas_id=" +
                 selectedPetugas).load();
         })
+
+        function formatDateRange(dateRange) {
+            const dates = dateRange.split(" to ");
+            const formattedDates = dates.map(date => {
+                const parsedDate = new Date(date.trim());
+                return parsedDate.toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            });
+
+
+            return formattedDates.join(' - ');
+        }
     </script>
 @endpush

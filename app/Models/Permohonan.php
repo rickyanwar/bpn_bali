@@ -98,19 +98,24 @@ class Permohonan extends Model
 
     public function getPerluDiteruskanAttribute()
     {
-        // Get the latest RiwayatPermohonanDiTeruskan record
         $latestRiwayat = $this->riwayat()->latest()->first();
-        // Check if there's a day of penerusan more than > 2 day
+
         if ($latestRiwayat) {
-            $isMoreThanTwoDaysOld = $latestRiwayat->created_at->lt(Carbon::now()->subDays(2));
+            $isPetugasUkur = $latestRiwayat->diteruskan_ke_role == "Petugas Ukur";
+            $dateField = $isPetugasUkur ? Carbon::parse($this->tanggal_mulai_pengukuran) : Carbon::parse($latestRiwayat->created_at);
+
+            $daysThreshold = $isPetugasUkur ? 3 : 2;
+
+            $dateField = $isPetugasUkur ? Carbon::parse($this->tanggal_mulai_pengukuran) : Carbon::parse($latestRiwayat->created_at);
+            $isMoreThanThresholdDaysOld = $dateField->lt(Carbon::now()->subDays($daysThreshold));
             $statusIsNotSelesai = $latestRiwayat->status !== 'selesai';
 
-            return $isMoreThanTwoDaysOld && $statusIsNotSelesai;
+            return $isMoreThanThresholdDaysOld && $statusIsNotSelesai;
         }
+
 
         return false;
     }
-
 
     public function getPetugasUkurUtamaAttribute()
     {

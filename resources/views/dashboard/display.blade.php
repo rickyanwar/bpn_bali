@@ -213,7 +213,7 @@
                                 <div class="row mt-2 ">
                                     <div class="col-md-12">
                                         <div class="card text-center">
-                                            <div class="btn-blue btn-block p-2">${role.name}</div>
+                                            <div class="btn-blue btn-block p-2">Tunggakan ${role.name}</div>
                                             <div class="card-body p-0">
                                                 <div class="row marquee-container" id="role-${role.id}">
                                                 </div>
@@ -321,7 +321,7 @@
 
                 // Check if there's data available
                 if (data.length === 0) {
-                    $container.append('<div class="col-6"><p>No data available</p></div>');
+                    $container.append('<div class="col-6"><p>Tidak Ada Panggilan</p></div>');
                     return;
                 }
 
@@ -339,7 +339,7 @@
                     colHtml += `
                 <div class="panggilan-item">
                     <div class="nama-pemohon">${(currentIndex + i + 1)}. ${item?.nama_pemohon}</div>
-                    <div class="pemohon-detail">${item?.no_berkas} ${item?.desa} ${item?.kecamatan}</div>
+                    <div class="pemohon-detail">${item?.no_berkas} | ${item?.desa} | ${item?.kecamatan} </div>
                 </div>
             `;
                 }
