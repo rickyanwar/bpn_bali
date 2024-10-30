@@ -364,10 +364,18 @@
 
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <h6>Catatan Penerusan</h6>
-                                <textarea class="form-control" rows="2" id="catatan_penerusan" name="catatan_penerusan"></textarea>
-                            </div>
+                            @if (auth()->user()->hasRole('Koordinator Pengukuran') ||
+                                    auth()->user()->hasRole('Petugas Gambar') ||
+                                    auth()->user()->hasRole('Koordinator Wilayah') ||
+                                    auth()->user()->hasRole('Admin 2') ||
+                                    auth()->user()->hasRole('Admin 3') ||
+                                    auth()->user()->hasRole('Super Admin') ||
+                                    auth()->user()->hasRole('Kasi SP'))
+                                <div class="form-group">
+                                    <h6>Catatan Penerusan</h6>
+                                    <textarea class="form-control" rows="2" id="catatan_penerusan" name="catatan_penerusan"></textarea>
+                                </div>
+                            @endif
                         </div>
 
 

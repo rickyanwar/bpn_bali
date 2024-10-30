@@ -67,19 +67,18 @@ class PermohonanController extends Controller
     ],
     "Admin 2" => [
         "Koordinator Wilayah",
-        "Admin Spasial",
         "Koordinator Pengukuran",
         "Kasi SP",
         "Admin 1",
-        "Admin 2",
+        "Admin 3",
     ],
     "Admin 3" => [
         "Koordinator Wilayah",
-        "Admin Spasial",
         "Koordinator Pengukuran",
         "Kasi SP",
         "Admin 1",
         "Admin 2",
+        "Petugas Jadwal",
         "PHP"
     ],
     "Kasi SP" => [

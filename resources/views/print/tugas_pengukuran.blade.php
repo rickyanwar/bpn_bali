@@ -67,10 +67,10 @@
                    <p class="no-margin">1. a. Petugas Ukur:</p>
                    <table class="no-margin" border="1" style="margin-bottom: 20px;margin-left:27px">
                        <tr>
-                           <td width="5%" class="text-center">No.</td>
-                           <td width="50%" class="text-center">Nama / NIP</td>
-                           <td width="27.5%" class="text-center">Pangkat / Golongan</td>
-                           <td width="27.5%" class="text-center">Jabatan</td>
+                           <td width="1%" class="text-center">No.</td>
+                           <td width="35%" class="text-center">Nama / NIP</td>
+                           <td width="25%" class="text-center">Pangkat / Golongan</td>
+                           <td width="39%" class="text-center">Jabatan</td>
                        </tr>
                        @foreach ($data->petugasUkur as $petugas)
                            <tr>
@@ -184,7 +184,7 @@
                            <tr>
                                <td class="no-padding">Pada Tanggal</td>
                                <td class="no-padding">:
-                                   {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
+                                   {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
                                </td>
                            </tr>
                        </table>
@@ -208,6 +208,9 @@
                        <p>Mengetahui <br> Nama Pemohon : {{ $data->nama_pemohon }}</p>
                    </div>
                    <div class="col-6">
+                       <p class="text-center" style="opacity: 0.5;margin:0">Ditandatangani Secara
+                           Elektronik
+                       </p>
                        <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 182736263738272839</p>
                    </div>
                </div>

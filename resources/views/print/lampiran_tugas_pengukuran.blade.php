@@ -126,7 +126,7 @@
                         <tr>
                             <td class="no-padding">Pada tanggal</td>
                             <td class="no-padding">:
-                                {{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d F Y') }}
+                                {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
                             </td>
                         </tr>
                     </table>

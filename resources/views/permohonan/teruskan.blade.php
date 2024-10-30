@@ -22,12 +22,21 @@
                     </select>
                 </div>
             </div>
-            <div class="col-10 mt-2">
-                <div class="form-group">
-                    <h6>Catatan Penerusan</h6>
-                    <textarea class="form-control" name="catatan_penerusan" id="catatan_penerusan" rows="2"></textarea>
+
+            @if (auth()->user()->hasRole('Koordinator Pengukuran') ||
+                    auth()->user()->hasRole('Petugas Gambar') ||
+                    auth()->user()->hasRole('Koordinator Wilayah') ||
+                    auth()->user()->hasRole('Admin 2') ||
+                    auth()->user()->hasRole('Admin 3') ||
+                    auth()->user()->hasRole('Super Admin') ||
+                    auth()->user()->hasRole('Kasi SP'))
+                <div class="col-10 mt-2">
+                    <div class="form-group">
+                        <h6>Catatan Penerusan</h6>
+                        <textarea class="form-control" name="catatan_penerusan" id="catatan_penerusan" rows="2"></textarea>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </form>
 </div>

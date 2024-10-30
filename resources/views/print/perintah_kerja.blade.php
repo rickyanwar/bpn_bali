@@ -112,7 +112,7 @@
                 <tr>
                     <td width="30%">3) <span style="display: inline-block; width: 20px;"></span> No SK / NIP</td>
                     <td width="1%">:</td>
-                    <td></td>
+                    <td>{{ $firstPetugas->petugas->no_sk ?? '-' }}</td>
                 </tr>
                 <tr>
                     <td width="30%">4) <span style="display: inline-block; width: 20px;"></span> Untuk Melaksanakan </td>
@@ -151,7 +151,7 @@
             <p>Demikian untuk dilaksanakan sesuai ketentuan yang berlaku</p>
             <div style="margin-top: 2rem !important;">
                 <p class="text-center">Tabanan,
-                    {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->subDay()->translatedFormat('d F Y') }}
+                    {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
                 </p>
                 <p class="text-center">Atas Nama Kepala Kantor Pertanahan <br> Kantor Pertanahan Kabupaten Tabanan <br>
                     Kepala Seksi Survei dan Pemetaan</p>

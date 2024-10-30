@@ -41,7 +41,8 @@
                                     <td style="vertical-align: top;">Perihal</td>
                                     <td style="vertical-align: top;"> :</td>
                                     <td>
-                                        &nbsp;Pemberitahuan akan Dilaksanakan Pengukuran Bidang Tanah
+                                        &nbsp;Pemberitahuan akan Dilaksanakan <br>
+                                        &nbsp;Pengukuran Bidang Tanah
                                     </td>
                                 </tr>
                             </table>
@@ -51,7 +52,7 @@
                             <table>
                                 <tr>
                                     <td colspan="3"> Tabanan,
-                                        {{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y') }}</td>
+                                        {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</td>
                                 </tr>
                                 <tr>
                                     <td width="20%" style="vertical-align: top;">Kepada</td>
