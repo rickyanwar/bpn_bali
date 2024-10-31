@@ -78,7 +78,7 @@
                     Sehubungan dengan Permohonan Pendaftaran Hak Atas Tanah Sdr
                     {{ $data->nama_pemohon }}
                     Tanggal
-                    {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d/m/Y') }}
+                    {{ \Carbon\Carbon::now()->translatedFormat('d/m/Y') }}
                     dengan
                     Daftar Isian 302: {{ $data->di_302 }},
                     Desa {{ $data->desa }}, Kec {{ $data->kecamatan }}, Kab Tabanan,
