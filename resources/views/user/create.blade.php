@@ -15,8 +15,8 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {!! Html::label(__('NIK/NO SK'), 'NIK/NO SK')->class('form-label') !!}
-                {!! Html::text('nik')->class('form-control')->placeholder(__('Masukkan NIP/NO SK')) !!}
+                {!! Html::label(__('NIK'), 'NIK')->class('form-label') !!}
+                {!! Html::text('nik')->class('form-control')->placeholder(__('Masukkan NIK')) !!}
                 @error('nik')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
@@ -26,8 +26,8 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                {!! Html::label(__('NIP'), 'NIP')->class('form-label') !!}
-                {!! Html::text('nip')->class('form-control')->placeholder(__('NIP')) !!}
+                {!! Html::label(__('NIP/NO SK'), 'NIP/NO SK')->class('form-label') !!}
+                {!! Html::text('nip')->class('form-control')->placeholder(__('NIP/NO SK')) !!}
                 @error('nip')
                     <small class="invalid-name" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
