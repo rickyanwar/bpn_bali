@@ -112,7 +112,7 @@
                 <tr>
                     <td width="30%">3) <span style="display: inline-block; width: 20px;"></span> No SK / NIP</td>
                     <td width="1%">:</td>
-                    <td>{{ $firstPetugas->petugas->no_sk ?? '-' }}</td>
+                    <td>{{ $firstPetugas->petugas->nip ?? '-' }}</td>
                 </tr>
                 <tr>
                     <td width="30%">4) <span style="display: inline-block; width: 20px;"></span> Untuk Melaksanakan </td>
