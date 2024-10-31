@@ -146,7 +146,7 @@ class PermohonanController extends Controller
                                 ->where('created_by', $currentUserId);
                     });
                 })
-                ->where('status', '!=', 'selesai')
+                // ->where('status', '!=', 'selesai')
                 ->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
 
 

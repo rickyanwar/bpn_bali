@@ -101,6 +101,9 @@ class Permohonan extends Model
     {
         $latestRiwayat = $this->riwayat()->latest()->first();
 
+        if ($this->status == 'selesai') {
+            return false;
+        }
         if ($latestRiwayat) {
             $isPetugasUkur = $latestRiwayat->diteruskan_ke_role == "Petugas Ukur";
             $dateField = $isPetugasUkur ? Carbon::parse($this->tanggal_mulai_pengukuran) : Carbon::parse($latestRiwayat->created_at);
