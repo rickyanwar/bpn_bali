@@ -873,12 +873,16 @@ class PermohonanController extends Controller
 
         $data->nota_dinas = $request->status;
         $data->update();
-        $description = "$data->no_berkas di tandai sebagai nota dinas oleh ". auth()->user()->name;
-        Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+        $description;
+
 
         if ($request->status) {
+            $description = "$data->no_berkas di tandai sebagai nota dinas oleh ". auth()->user()->name;
+            Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
             return $this->respond($data, "Berhasil di tandai sebagai nota dinas.");
         } else {
+            $description = "$data->no_berkas tanda nota dinas dihapus oleh ". auth()->user()->name;
+            Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
             return $this->respond($data, "Berhasil menghapus tanda nota dinas.");
         }
 

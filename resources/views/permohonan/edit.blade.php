@@ -424,9 +424,8 @@
 
                 </div>
                 <div class="card-body">
-                    <ol class="activity-feed">
-
-                        @if ($data->riwayatPanggilanDinas)
+                    @if ($data->riwayatPanggilanDinas && count($data->riwayatPanggilanDinas) > 0)
+                        <ol class="activity-feed">
                             @foreach (array_reverse($data->riwayatPanggilanDinas->toArray()) as $panggilan)
                                 <li class="feed-item feed-item-info">
                                     <time class="date">Tanggal Panggil :
@@ -434,8 +433,10 @@
                                     <span class="text">Catatan : {{ $panggilan['catatan'] }}</span>
                                 </li>
                             @endforeach
-                        @endif
-                    </ol>
+                        </ol>
+                    @else
+                        <p>Tidak ada riwayat panggilan dinas</p>
+                    @endif
                 </div>
             </div>
         </div>
