@@ -93,7 +93,7 @@
                                     <th>Desa</th>
                                     <th>Kecamatan</th>
                                     <th>No Berkas</th>
-                                    <th>DI 302</th>
+                                    <th>Di Teruskan Ke</th>
                                     <th>Tahun</th>
                                     <th>Luas</th>
                                     <th>Jenis</th>
@@ -278,8 +278,13 @@
                             name: "no_berkas"
                         },
                         {
-                            data: "di_302",
-                            name: "di_302"
+                            data: 'diteruskan',
+                            name: 'diteruskan',
+                            render: function(data) {
+                                return data?.name ?? '-';
+                            },
+                            orderable: false,
+                            searchable: false,
                         },
                         {
                             data: "tahun",
@@ -299,7 +304,7 @@
                             data: "petugas_ukur_utama",
                             name: "petugas_ukur_utama",
                             orderable: false,
-                            searchable: false
+                            searchable: false,
                         },
                         {
                             data: "tanggal_mulai_pengukuran",
@@ -308,7 +313,7 @@
                         {
                             data: 'created_by',
                             name: 'created_by',
-                            render: data => data?.name ?? '-'
+                            render: data => '-'
                         }
                     ],
                 });

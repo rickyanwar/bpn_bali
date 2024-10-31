@@ -162,7 +162,7 @@
                     data: "petugas_ukur_utama",
                     name: "petugas_ukur_utama",
                     orderable: false,
-                    searchable: false
+                    searchable: false,
                 },
                 {
                     data: "tanggal_mulai_pengukuran",
