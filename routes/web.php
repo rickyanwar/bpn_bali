@@ -42,10 +42,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('audit-trails', [AuditTrailController::class, 'index'])->name('audit.index');
 
+    Route::get('dashboar/table', [DashboardController::class, 'dashboardTable'])->name('dashboard.table');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('permohonan/detail/{id}', [PermohonanController::class, 'detail'])->name('permohonan.detail');
     Route::get('permohonan/audit-trails/{id}', [PermohonanController::class, 'auditTrails'])->name('permohonan.audit-trails');
     Route::get('permohonan/riwayat-penerusan/{id}', [PermohonanController::class, 'riwayatDiteruskan'])->name('permohonan.riwayat-penerusan');
+    Route::post('permohonan/nota_dinas/{id}', [PermohonanController::class, 'NotaDinas'])->name('permohonan.nota_dinas');
     Route::post('permohonan/tolak/{id}', [PermohonanController::class, 'tolak'])->name('permohonan.tolak');
     Route::post('permohonan/selesai/{id}', [PermohonanController::class, 'selesai'])->name('permohonan.selesai');
     Route::post('permohonan/panggil_dinas/{id}', [PermohonanController::class, 'panggilDinas'])->name('permohonan.panggil_dinas');

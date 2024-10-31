@@ -209,17 +209,18 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-
         if (\Auth::user()->can('edit user')) {
-
             $user = User::findOrFail($id);
+
             $validator = \Validator::make(
                 $request->all(),
                 [
-                                   'name' => 'required|max:120',
-                                   'email' => 'required|email|unique:users,email,' . $id,
-                               ]
+                    'name' => 'required|max:120',
+                    'email' => 'required|email|unique:users,email,' . $id,
+                    'password' => 'nullable|min:8',
+                ]
             );
+
             if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
                 return redirect()->back()->with('error', $messages->first());
@@ -228,14 +229,21 @@ class UserController extends Controller
             $role = Role::find($request->role);
             $input = $request->all();
 
-
-            if ($role->name == "Petugas Ukur") {
-                $user['pembantu_ukur']       = $request->pembantu_ukur;
-                $user['pembantu_ukur_nik']       = $request->pembantu_ukur_nik;
-
+            // Update field spesifik jika role adalah "Petugas Ukur"
+            if ($role && $role->name == "Petugas Ukur") {
+                $user['pembantu_ukur'] = $request->pembantu_ukur;
+                $user['pembantu_ukur_nik'] = $request->pembantu_ukur_nik;
             }
-            $user->fill($input)->update();
 
+
+            if ($request->filled('password')) {
+                $user->password = bcrypt($request->password);
+            }
+
+            $input = $request->except(['password']);
+            $user->fill($input)->save();
+
+            // Sync roles
             $user->roles()->sync($request->role);
 
             return redirect()->route('users.index')->with(
@@ -247,6 +255,7 @@ class UserController extends Controller
             return redirect()->back();
         }
     }
+
 
 
     public function destroy($id)

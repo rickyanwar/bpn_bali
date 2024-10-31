@@ -31,7 +31,9 @@ class User extends Authenticatable
         'golongan',
         'jabatan',
         'no_hp',
-        'pembantu_ukur_nik'
+        'pembantu_ukur_nik',
+        'pembantu_ukur_no_sk',
+        'nip'
     ];
 
     /**

@@ -199,8 +199,16 @@ class PermohonanController extends Controller
                 }
                 return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
                     . __($data->status) . '</span>';
-            })
-            ->addColumn('actions', function ($data) {
+            })->addColumn('nota_dinas_badge', function ($data) {
+                $status = '';
+                if ($data->nota_dinas) {
+                    $status = 'bg-danger';
+                    return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                        . __('Nota Dinas') . '</span>';
+                } else {
+                    return '';
+                }
+            })->addColumn('actions', function ($data) {
                 $actions = '';
                 // Edit
                 if (($data->status == 'draft') || $data->diteruskan_ke == auth()->user()->id) {
@@ -287,7 +295,7 @@ class PermohonanController extends Controller
                 }
                 return $actions;
             })
-            ->rawColumns([ 'status_badge', 'actions'])
+            ->rawColumns([ 'status_badge', 'actions','nota_dinas_badge'])
             ->make(true);
         }
 
@@ -331,6 +339,16 @@ class PermohonanController extends Controller
 
         if ($request->ajax()) {
             return DataTables::of($query)
+            ->addColumn('nota_dinas_badge', function ($data) {
+                $status = '';
+                if ($data->nota_dinas) {
+                    $status = 'bg-danger';
+                    return '<span class="status_badge badge p-2 px-3 rounded ' . $status . '">'
+                        . __('Nota Dinas') . '</span>';
+                } else {
+                    return '';
+                }
+            })
             ->addColumn('status_badge', function ($data) {
                 $status = '';
                 switch ($data->status) {
@@ -392,7 +410,7 @@ class PermohonanController extends Controller
 
                 return $actions;
             })
-            ->rawColumns([ 'status_badge', 'actions'])
+            ->rawColumns([ 'status_badge', 'actions','nota_dinas_badge'])
             ->make(true);
 
 
@@ -544,8 +562,9 @@ class PermohonanController extends Controller
         $urlSelesai = route('permohonan.selesai', $id);
         $urlAmbilAlih = route('permohonan.ambil_tugas', $id);
         $urlPanggilDinas = route('permohonan.panggil_dinas', $id);
+        $urlNotaDinas = route('permohonan.nota_dinas', $id);
 
-        return view('permohonan.edit', compact('data', 'url', 'urlTeruskan', 'urlSelesai', 'urlTolak', 'urlAmbilAlih', 'urlPanggilDinas', 'allowedRoles'));
+        return view('permohonan.edit', compact('data', 'url', 'urlTeruskan', 'urlSelesai', 'urlTolak', 'urlAmbilAlih', 'urlPanggilDinas', 'allowedRoles', 'urlNotaDinas'));
     }
 
     /**
@@ -841,7 +860,27 @@ class PermohonanController extends Controller
             return DataTables::of($query)
             ->make(true);
         }
+    }
 
+
+    public function notaDinas($id, Request $request)
+    {
+        $data = Permohonan::find($id);
+
+        if (!$data || !auth()->user()->can('nota_dinas permohonan')) {
+            return $this->respondNotHaveAccessData();
+        }
+
+        $data->nota_dinas = $request->status;
+        $data->update();
+        $description = "$data->no_berkas di tandai sebagai nota dinas oleh ". auth()->user()->name;
+        Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+
+        if ($request->status) {
+            return $this->respond($data, "Berhasil di tandai sebagai nota dinas.");
+        } else {
+            return $this->respond($data, "Berhasil menghapus tanda nota dinas.");
+        }
 
     }
 }

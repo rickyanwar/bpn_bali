@@ -123,7 +123,7 @@
                                             <th>{{ __('Tanggal Pengukuran') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Di Teruskan Ke ') }}</th>
-                                            <th>{{ __('Di Buat') }}</th>
+                                            <th>{{ __('Nota Dinas') }}</th>
                                             <th>{{ __('Action') }}</th>
                                             {{-- <th>
                                         <td class="barcode">
@@ -197,11 +197,8 @@
                     searchable: false,
                 },
                 {
-                    data: 'createdby',
-                    name: 'createdby',
-                    render: function(data) {
-                        return data?.name
-                    },
+                    data: 'nota_dinas_badge',
+                    name: 'nota_dinas_badge',
                     orderable: false,
                     searchable: false,
                 },

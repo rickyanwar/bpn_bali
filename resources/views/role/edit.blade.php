@@ -136,12 +136,24 @@
                                                                     {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace([' ', '&'], '', $module))->id('permission' . $key) !!}
 
                                                                     {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Ambil Alih ' . $module)->class('custom-control-label') !!}
+                                                                    {!! Html::label('Ambil Alih ')->class('custom-control-label') !!}
                                                                     <br>
                                                                 </div>
                                                             @endif
                                                         @endif
 
+                                                        @if (in_array('nota_dinas ' . $module, (array) $permissions))
+                                                            @if (($key = array_search('nota_dinas ' . $module, $permissions)) !== false)
+                                                                <div class="col-md-3 custom-control custom-checkbox">
+                                                                    {{-- Checkbox input --}}
+                                                                    {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace([' ', '&'], '', $module))->id('permission' . $key) !!}
+
+                                                                    {{-- Label for the checkbox --}}
+                                                                    {!! Html::label('Nota Dinas ')->class('custom-control-label') !!}
+                                                                    <br>
+                                                                </div>
+                                                            @endif
+                                                        @endif
                                                         @if (in_array('selesaikan ' . $module, (array) $permissions))
                                                             @if (($key = array_search('selesaikan ' . $module, $permissions)) !== false)
                                                                 <div class="col-md-3 custom-control custom-checkbox">
@@ -163,7 +175,7 @@
                                                                     {!! Html::checkbox('permissions[]', $role->permissions->contains('id', $key), $key)->class('form-check-input isscheck staff_checkall isscheck_' . str_replace([' ', '&'], '', $module))->id('permission' . $key) !!}
 
                                                                     {{-- Label for the checkbox --}}
-                                                                    {!! Html::label('Panggil Dinas ' . $module)->class('custom-control-label') !!}
+                                                                    {!! Html::label('Panggil Dinas ')->class('custom-control-label') !!}
                                                                     <br>
                                                                 </div>
                                                             @endif

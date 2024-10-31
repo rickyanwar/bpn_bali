@@ -7,39 +7,63 @@ use Spatie\Permission\Models\Role;
 use Auth;
 use App\Models\Permohonan;
 use Carbon\Carbon;
+use DataTables;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        // Handle the date input to set start and end dates
+        $tanggal = $request->input('tanggal');
+        if (empty($tanggal)) {
+            $startDate = Carbon::today()->subMonth()->toDateString();  // Default: past month
+            $endDate = Carbon::today()->toDateString();
+        } elseif (strpos($tanggal, 'to') !== false) {
+            // If input contains 'to', split into start and end dates
+            list($startDate, $endDate) = explode('to', $tanggal);
+            $startDate = trim($startDate);
+            $endDate = trim($endDate);
+        } else {
+            // If single date, use it as both start and end
+            $startDate = $endDate = $tanggal;
+        }
 
-        $currentUserId = Auth::user()->id;
+        // Adjust queries to use the determined start and end dates
+        $totalPermohonan = Permohonan::whereBetween('created_at', [$startDate, $endDate])->count();
+        $totalDiproses = Permohonan::where('status', 'proses')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+        $totalrevisi = Permohonan::where('status', 'tolak')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+        $totalSelesai = Permohonan::where('status', 'selesai')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
 
-        // Fetch totals by status
+        // Totals by status within the date range
         $totalByStatus = Permohonan::with('createdby', 'diteruskan')
-            // ->where(function ($q) use ($currentUserId) {
-            //     $q->where('diteruskan_ke', 'like', "%{$currentUserId}%")
-            //       ->orWhere('created_by', $currentUserId);
-            // })
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->select('status', \DB::raw('count(*) as total'))
             ->groupBy('status')
             ->get();
 
-        // Calculate total count of all applications for the current user
         $totalAll = $totalByStatus->sum('total');
 
-        // Check if the request is an AJAX request
+        // Respond with JSON for AJAX or render the view
         if ($request->ajax()) {
             return response()->json([
                 'totalByStatus' => $totalByStatus,
-                'totalAll' => $totalAll
+                'totalAll' => $totalAll,
+                'totalPermohonan' => $totalPermohonan,
+                'totalDiproses' => $totalDiproses,
+                'totalrevisi' => $totalrevisi,
+                'totalSelesai' => $totalSelesai
             ]);
         }
 
-        // If it's not an AJAX request, return the view
-        return view('dashboard.index', compact('totalByStatus', 'totalAll'));
-
+        return view('dashboard.index', compact('totalPermohonan', 'totalDiproses', 'totalrevisi', 'totalSelesai'));
     }
+
 
     public function getListdisplay()
     {
@@ -97,6 +121,59 @@ class DashboardController extends Controller
             'berkas_selesai' => $berkasSelesaiCount,
             'berkas_masuk' => $berkasMasukCount,
         ]);
+    }
+
+    public function dashboardTable(Request $request)
+    {
+
+
+        $petugasId = $request->input('petugas_id');
+        $tanggal = $request->input('tanggal');
+
+        $query = Permohonan::with('createdby', 'diteruskan');
+
+        // Default range to one month if no date is selected
+        if (empty($tanggal)) {
+            $startDate = Carbon::today()->subMonth()->toDateString();
+            $endDate = Carbon::today()->toDateString();
+        } elseif (strpos($tanggal, 'to') !== false) {
+            list($startDate, $endDate) = explode('to', $tanggal);
+            $startDate = trim($startDate);
+            $endDate = trim($endDate);
+        } else {
+            $startDate = $endDate = $tanggal;
+        }
+
+        // Apply date filter
+        $query->whereBetween('tanggal_mulai_pengukuran', [$startDate, $endDate]);
+
+        // Filter by user if selected
+        if (!empty($petugasId)) {
+            $query->whereHas('petugasUkur', function ($q) use ($petugasId) {
+                $q->where('petugas_ukur', $petugasId);
+            });
+        }
+
+        // Return as DataTables response
+        if ($request->ajax()) {
+            return DataTables::of($query)
+                ->addColumn('status_badge', function ($data) {
+                    $statusClass = match ($data->status) {
+                        'draft' => 'bg-danger',
+                        'proses' => 'bg-warning',
+                        'selesai' => 'bg-success',
+                        default => 'bg-secondary',
+                    };
+                    return '<span class="status_badge badge p-2 px-3 rounded ' . $statusClass . '">'
+                        . __($data->status) . '</span>';
+                })
+                ->rawColumns(['status_badge'])
+                ->make(true);
+        }
+
+        return view('dashboard.index');
+
+
     }
 
     public function display()

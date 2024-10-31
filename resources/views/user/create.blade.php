@@ -24,7 +24,18 @@
                 @enderror
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Html::label(__('NIP'), 'NIP')->class('form-label') !!}
+                {!! Html::text('nip')->class('form-control')->placeholder(__('NIP')) !!}
+                @error('nip')
+                    <small class="invalid-name" role="alert">
+                        <strong class="text-danger">{{ $message }}</strong>
+                    </small>
+                @enderror
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="form-group">
                 {!! Html::label(__('Golongan'), 'Golongan')->class('form-label') !!}
                 {!! Html::text('golongan')->class('form-control')->placeholder(__('Masukkan golongan')) !!}
@@ -106,6 +117,17 @@
                 {!! Html::label(__('Pembantu Ukur NIK'))->class('form-label') !!}
                 {!! Html::text('pembantu_ukur_nik')->class('form-control')->id('pembantu_ukur_nik')->placeholder(__('Masukkan NIK Pembantu ukur')) !!}
                 @error('pendamping_id')
+                    <small class="invalid-user" role="alert">
+                        <strong class="text-danger">{{ $message }}</strong>
+                    </small>
+                @enderror
+            </div>
+        </div>
+        <div class="col-md-6 pendamping-container">
+            <div class="form-group">
+                {!! Html::label(__('Pembantu Ukur No SK'))->class('form-label') !!}
+                {!! Html::text('pembantu_ukur_no_sk', '')->class('form-control')->id('pembantu_ukur_no_sk')->placeholder(__('Masukkan Pembantu ukur NIP/No SK')) !!}
+                @error('pembantu_ukur_no_sk')
                     <small class="invalid-user" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
                     </small>

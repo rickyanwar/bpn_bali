@@ -59,6 +59,11 @@
                             @endphp
                             <span style="margin-left: 10px"
                                 class="status_badge  badge p-2 px-3 rounded {{ $statusClass }} text-capitalize">{{ $data->status }}</span>
+
+                            @if ($data->nota_dinas)
+                                <span style="margin-left: 10px"
+                                    class="status_badge  badge p-2 px-3 rounded bg-danger text-capitalize">Nota Dinas</span>
+                            @endif
                         </div>
                         <div>
 
@@ -304,6 +309,10 @@
                             @endif
                         </div>
                         <div class="card-footer d-flex justify-content-end">
+                            @if (auth()->user()->can('nota_dinas permohonan') && $data->status !== 'draft')
+                                <button type="button" style="margin-left: 5px" class="btn btn-danger"
+                                    data-url="{{ $urlNotaDinas }}" id="btn-nota-dinas">Nota Dinas</button>
+                            @endif
                             @if (auth()->user()->hasRole('Admin 2') ||
                                     auth()->user()->hasRole('Admin 3') ||
                                     auth()->user()->hasRole('Kasi SP') ||
@@ -778,6 +787,52 @@
                     }
                 });
             })
+
+            $(document).on('click', '#btn-nota-dinas', function(e) {
+                e.preventDefault();
+                $('.text-danger').remove();
+                $(".form-group").removeClass('has-error has-feedback');
+                let url = $(this).data('url');
+
+                swal({
+                    title: 'Tandai Nota Dinas',
+                    text: "Anda akan menandai permohonan sebagai nota dinas; proses ini tidak dapat dibatalkan.",
+                    buttons: {
+                        cancel: 'Cancel',
+                        hapus: {
+                            text: 'Hapus Tanda',
+                            value: 0,
+                        },
+                        tandai: {
+                            text: 'Ya Tandai',
+                            value: 1,
+                        }
+                    },
+                    focusConfirm: false,
+                }).then(function(result) {
+                    if (result === 1 || result === 0) {
+                        let formData = new FormData();
+                        formData.append('status', result);
+
+                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
+                            swal({
+                                icon: 'success',
+                                title: res.message,
+                                showConfirmButton: false,
+                            }).then(function() {
+                                window.location.reload();
+                            });
+                        }).fail(function(xhr) {
+                            swal({
+                                icon: 'warning',
+                                title: xhr.responseJSON?.message,
+                                showConfirmButton: false,
+                            });
+                        });
+                    }
+                });
+            });
+
 
             $(document).on('click', '#btn-ambil-alih', function(e) {
                 e.preventDefault();
