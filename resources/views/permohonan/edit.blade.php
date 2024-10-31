@@ -309,7 +309,10 @@
                             @endif
                         </div>
                         <div class="card-footer d-flex justify-content-end">
-                            @if (auth()->user()->can('nota_dinas permohonan') && $data->status !== 'draft')
+                            @if (auth()->user()->can('nota_dinas permohonan') &&
+                                    $data->status !== 'draft' &&
+                                    $data->diteruskan_ke == auth()->user()->id)
+                                )
                                 <button type="button" style="margin-left: 5px" class="btn btn-danger"
                                     data-url="{{ $urlNotaDinas }}" id="btn-nota-dinas">Nota Dinas</button>
                             @endif
