@@ -312,7 +312,6 @@
                             @if (auth()->user()->can('nota_dinas permohonan') &&
                                     $data->status !== 'draft' &&
                                     $data->diteruskan_ke == auth()->user()->id)
-                                )
                                 <button type="button" style="margin-left: 5px" class="btn btn-danger"
                                     data-url="{{ $urlNotaDinas }}" id="btn-nota-dinas">Nota Dinas</button>
                             @endif
@@ -320,7 +319,7 @@
                                     auth()->user()->hasRole('Admin 3') ||
                                     auth()->user()->hasRole('Kasi SP') ||
                                     auth()->user()->hasRole('Super Admin'))
-                                @if ($data->status !== 'draft' && $data->status !== 'revisi')
+                                @if ($data->status !== 'draft' && $data->status !== 'revisi' && $data->diteruskan_ke == auth()->user()->id)
                                     <button type="button" style="margin-left: 5px" class="btn btn-success"
                                         data-url="{{ $urlSelesai }}" id="btn-selesai">Selesaikan Permohonan</button>
                                 @endif
