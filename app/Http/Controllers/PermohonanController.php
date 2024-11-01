@@ -580,15 +580,21 @@ class PermohonanController extends Controller
         $data = Permohonan::find($id);
         $data->update($request->all());
 
-        PermohonanPetugasUkur::where('permohonan_id', $id)->delete();
 
-        foreach ($request->petugas_ukur as $petugas) {
-            PermohonanPetugasUkur::create([
+        if ($request->has('petugas_ukur') && !empty($request->petugas_ukur)) {
+            PermohonanPetugasUkur::where('permohonan_id', $id)->delete();
+            foreach ($request->petugas_ukur as $petugas) {
+                // Check if pembantu_ukur and petugas_ukur are not empty
+                if (!empty($petugas['pembantu_ukur']) && !empty($petugas['petugas_ukur'])) {
+                    PermohonanPetugasUkur::create([
                         'permohonan_id' => $data->id,
                         'pembantu_ukur' => $petugas['pembantu_ukur'],
                         'petugas_ukur' => $petugas['petugas_ukur']
-            ]);
+                    ]);
+                }
+            }
         }
+
 
         if (!empty($request->teruskan_ke_role)) {
 
