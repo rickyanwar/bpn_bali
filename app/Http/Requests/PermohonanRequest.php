@@ -50,19 +50,19 @@ class PermohonanRequest extends FormRequest
                         }
                     }],
                     'luas' => 'required|numeric',
-                    'petugas_ukur' => [
-                                'required',
-                                'array',
-                                'min:1'
-                        ],
-                    'petugas_ukur.*.petugas_ukur' => [
-                            'required',
-                            'exists:users,id'  // Validate that the petugas_ukur exists in users table
-                        ],
-                    'petugas_ukur.*.pembantu_ukur' => [
-                            'required',
+                    // 'petugas_ukur' => [
+                    //             'required',
+                    //             'array',
+                    //             'min:1'
+                    //     ],
+                    // 'petugas_ukur.*.petugas_ukur' => [
+                    //         'required',
+                    //         'exists:users,id'  // Validate that the petugas_ukur exists in users table
+                    //     ],
+                    // 'petugas_ukur.*.pembantu_ukur' => [
+                    //         'required',
 
-                     ],
+                    //  ],
                 ]
         ;
 
