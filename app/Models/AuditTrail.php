@@ -21,6 +21,11 @@ class AuditTrail extends Model
         'created_at' => 'date:d-m-Y h:i A',
         'updated_at' => 'date:d-m-Y h:i A',
     ];
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->timezone('Asia/Makassar')->format('d-m-Y h:i A');
+    }
     public function createdby()
     {
         return $this->belongsTo(\App\Models\User::class, 'created_by');
