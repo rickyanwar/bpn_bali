@@ -284,7 +284,8 @@
         fetchPemohonToday();
 
 
-        setInterval(fetchPendingJobsByRole, 180000);
+        //update every 10 minutes
+        setInterval(fetchPendingJobsByRole, 600000);
         // Initial fetch
         fetchPendingJobsByRole();
 
