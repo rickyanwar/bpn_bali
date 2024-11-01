@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class RiwayatPermohonanDiTeruskan extends Model
 {
@@ -21,6 +22,11 @@ class RiwayatPermohonanDiTeruskan extends Model
         'dokumen_terlampir' => 'json'
     ];
     protected $table = 'riwayat_permohonan_diteruskan';
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->timezone('Asia/Makassar')->format('d-m-Y h:i A');
+    }
 
     public function diteruskan()
     {
