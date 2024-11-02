@@ -117,17 +117,29 @@
                                     <label class="form-label">Jenis Permohonan</label>
                                     <select class="form-control form-control" name="jenis_kegiatan" id="jenis_kegiatan"
                                         style="width: 100%">
-
                                         <option value="">Pilih</option>
-                                        <option value="Penggabungan">Penggabungan</option>
-                                        <option value="Pemecahan">Pemecahan</option>
-                                        <option value="Pengukuran">Pengukuran dan Pemetaan Kadastral
+                                        <option value="Penggabungan Bidang">Penggabungan Bidang</option>
+                                        <option value="Pemecahan Bidang">Pemecahan Bidang</option>
+                                        <option value="Pengukuran Dan Pemetaan Kadastral">Pengukuran Dan Pemetaan Kadastral
                                         </option>
+                                        <option value="Pemisahan Bidang">Pemisahan Bidang</option>
                                         <option value="Penataan Batas">Penataan Batas</option>
-                                        <option value="Pengembalian Batas">Pengembalian Batas</option>
-                                        <option value="Permohonan SK">Permohonan SK</option>
-                                        <option value="Konversi">Konversi</option>
+                                        <option value="Pengukuran Ulang Dan Pemetaan Kadastral">Pengukuran Ulang Dan
+                                            Pemetaan Kadastral</option>
+                                        <option value="Permohonan SK Konfirmasi">Permohonan SK Konfirmasi</option>
+                                        <option value="Permohonan SK Pemberian Hak Guna Bangunan Badan Hukum">Permohonan SK
+                                            Pemberian Hak Guna Bangunan Badan Hukum</option>
+                                        <option value="Permohonan SK Pemberian Hak Milik Perorangan">Permohonan SK
+                                            Pemberian Hak Milik Perorangan</option>
+                                        <option value="Permohonan SK Pemberian Hak Pakai Badan Hukum">Permohonan SK
+                                            Pemberian Hak Pakai Badan Hukum</option>
+                                        <option value="Permohonan SK Pemberian Hak Pakai Instansi/Badan Usaha Pemerintah">
+                                            Permohonan SK Pemberian Hak Pakai Instansi/Badan Usaha Pemerintah</option>
+                                        <option value="Permohonan SK Pemberian HGB/HP di atas HPL">Permohonan SK Pemberian
+                                            HGB/HP di atas HPL</option>
+                                        <option value="Waris dan Pemecahan">Waris dan Pemecahan</option>
                                     </select>
+
                                 </div>
                             </div>
 
