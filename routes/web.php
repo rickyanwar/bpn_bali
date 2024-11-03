@@ -29,9 +29,9 @@ Route::get('display/berkas_count', [DashboardController::class, 'berkasCount'])-
 
 
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+// Route::get('/', function () {
+//     return redirect('/login');
+// });
 
 
 // Group routes that need authentication
