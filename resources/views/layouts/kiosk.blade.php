@@ -33,31 +33,42 @@
             text-transform: uppercase
         }
 
+
+
         .marquee-container {
-            overflow: hidden;
-            align-items: center;
             display: flex;
             flex-wrap: nowrap;
-            overflow-x: auto;
+            gap: 20px;
+            /* Add spacing between items */
             white-space: nowrap;
-        }
 
-        .marquee-content {
-            display: inline-block;
-            /* Keep content inline */
-            animation: marquee 50s linear infinite;
-            /* Continuous scrolling */
+            /* Prevents wrapping */
+            animation: marquee 20s linear infinite;
+            /* Adjust speed here */
         }
 
         @keyframes marquee {
-            from {
+            0% {
                 transform: translateX(100%);
+                /* Start from the far right */
             }
 
-            to {
+            100% {
                 transform: translateX(-100%);
+                /* Move to the far left */
             }
         }
+
+        .marquee-item {
+            flex: 0 0 auto;
+            /* Prevents items from shrinking */
+            min-width: 200px;
+            /* Adjust this as needed to fit items */
+            /* Additional item-specific styling */
+        }
+
+
+
 
         .user-card {
             margin: 20px;

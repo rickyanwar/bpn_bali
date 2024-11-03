@@ -151,20 +151,20 @@
                         <div class="row justify-content-center">
                             <div class="col-5">
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div class="col-12">
                                         <div class="form-group">
                                             <label class="form-label">Tanggal Mulai Pengukuran</label>
                                             <input class="form-control " type="date" name="tanggal_mulai_pengukuran"
                                                 id="tanggal_mulai_pengukuran">
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    {{--  <div class="col-6">
                                         <div class="form-group">
                                             <label class="form-label">Tanggal Selesai Pengukuran</label>
                                             <input class="form-control " type="date"
                                                 name="tanggal_berakhir_pengukuran" id="tanggal_berakhir_pengukuran">
                                         </div>
-                                    </div>
+                                    </div>  --}}
                                 </div>
                             </div>
                             <div class="col-5">
@@ -512,7 +512,7 @@
         $('#di_305').val(data?.di_305);
         $('#di_302').val(data?.di_302);
         $('#tanggal_mulai_pengukuran').val(data?.tanggal_mulai_pengukuran);
-        $('#tanggal_berakhir_pengukuran').val(data?.tanggal_berakhir_pengukuran);
+        //$('#tanggal_berakhir_pengukuran').val(data?.tanggal_berakhir_pengukuran);
         $('#luas').val(data?.luas);
         $('#no_surat').val(data?.no_surat);
         $('#no_surat_perintah_kerja').val(data?.no_surat_perintah_kerja);

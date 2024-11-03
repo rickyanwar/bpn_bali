@@ -29,10 +29,10 @@ class PermohonanRequest extends FormRequest
                     'di_305' => 'required',
                     'di_302' => 'required',
                     'tanggal_mulai_pengukuran' => 'date|required',
-                    'tanggal_berakhir_pengukuran' => 'date|required',
+                    // 'tanggal_berakhir_pengukuran' => 'date|required',
                     'no_surat_perintah_kerja' => 'nullable',
                     'no_berkas' => 'required',
-                    'jenis_kegiatan' => 'required|in:Penggabungan,Pemecahan,Pengukuran,Penataan Batas,Pengembalian Batas,Permohonan SK,Konversi',
+'jenis_kegiatan' => 'required|in:Penggabungan Bidang,Pemecahan Bidang,Pengukuran Dan Pemetaan Kadastral,Pemisahan Bidang,Penataan Batas,Pengukuran Ulang Dan Pemetaan Kadastral,Permohonan SK Konfirmasi,Permohonan SK Pemberian Hak Guna Bangunan Badan Hukum,Permohonan SK Pemberian Hak Milik Perorangan,Permohonan SK Pemberian Hak Pakai Badan Hukum,Permohonan SK Pemberian Hak Pakai Instansi/Badan Usaha Pemerintah,Permohonan SK Pemberian HGB/HP di atas HPL,Waris dan Pemecahan',
                     'nama_pemohon' => 'required',
                     'kecamatan' => [ 'required', function ($attr, $value, $fail) use ($request) {
                         $kecamatan = \App\Models\WilayahIndonesia::where(DB::raw('LENGTH(kode)'), '=', '8')

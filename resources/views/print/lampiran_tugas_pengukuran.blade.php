@@ -90,7 +90,7 @@
                     <tr>
                         <td width="21%">b. Tanggal Selesai</td>
                         <td width="1%">:</td>
-                        <td>{{ \Carbon\Carbon::parse($data->tanggal_berakhir_pengukuran)->translatedFormat('d F Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}</td>
                     </tr>
 
                 </table>

@@ -205,8 +205,10 @@
                     let container = $('#dynamic-rows-container');
                     container.empty(); // Clear the existing rows
 
+                    // Iterate over each role and generate a separate row for each role
                     roles.forEach(role => {
                         if (role.users.length > 0) { // Ensure the role has users
+                            // Create a row for this role
                             let roleRow = `
                         <div class="row mt-2">
                             <div class="col-md-12">
@@ -214,18 +216,20 @@
                                     <div class="btn-blue btn-block p-2">Tunggakan ${role.name}</div>
                                     <div class="card-body p-0">
                                         <div class="marquee-container" id="role-${role.id}">
-                                            <div class="marquee-content"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
+
+                            // Append the row to the container (this will be one row per role)
                             container.append(roleRow);
 
+                            // For each user in the role, append their card in the same row
                             role.users.forEach(user => {
                                 let userCard = `
-                            <div class="col-md-3 user-card">
+                            <div class="col-md-3 marquee-content p-1">
                                 <div class="card bg-blue-light mb-0" style="border-radius: 15px;">
                                     <div class="card-body">
                                         <div class="text-center">
@@ -236,7 +240,8 @@
                                 </div>
                             </div>
                         `;
-                                $(`#role-${role.id} .marquee-content`).append(userCard);
+                                // Append each user card to the current role's row
+                                $(`#role-${role.id}`).append(userCard);
                             });
                         }
                     });
@@ -246,7 +251,6 @@
                 }
             });
         }
-
 
 
 

@@ -106,8 +106,7 @@
                             <div class="col-5">
                                 <div class="form-group">
                                     <h6>Tanggal Pengukuran </h6>
-                                    <p class="text-secondary">{{ $data->tanggal_mulai_pengukuran }} -
-                                        {{ $data->tanggal_berakhir_pengukuran }}</p>
+                                    <p class="text-secondary">{{ $data->tanggal_mulai_pengukuran }}
                                 </div>
                             </div>
                             <div class="col-5">
