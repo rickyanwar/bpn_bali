@@ -135,7 +135,7 @@
                            <tr>
                                <td width="50%">b. Sampai Tanggal</td>
                                <td>:
-                                   {{ \Carbon\Carbon::parse($data->tanggal_berkahir_pengukuran)->translatedFormat('d F Y') }}
+                                   {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
                                </td>
                            </tr>
                        </table>
