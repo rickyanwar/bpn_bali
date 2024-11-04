@@ -60,7 +60,7 @@
                         </tr>
                     @endforeach
                 </table>
-                Dengan tugas ini untuk melaksanakan Pemecahan Bidang
+                Dengan tugas ini untuk melaksanakan {{ $data->jenis_kegiatan }}
                 <li class="mt-1">Lokasi dan Volume Kegiatan: </li>
                 <table class="table-no-padding" style="margin-top:0px">
                     <tr>

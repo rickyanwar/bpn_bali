@@ -20,6 +20,15 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row justify-content-center">
+                            @if (auth()->user()->hasRole('Petugas Jadwal') || auth()->user()->hasRole('Super Admin'))
+                                <div class="col-10">
+                                    <div class="form-group">
+                                        <label class="form-label">No Surat Pemberitahuan</label>
+                                        <input class="form-control" type="text" id="no_surat_pemberitahuan"
+                                            name="no_surat_pemberitahuan" placeholder="Masukkan no surat pemberithauan">
+                                    </div>
+                                </div>
+                            @endif
                             <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
@@ -115,13 +124,30 @@
                             <div class="col-5">
                                 <div class="form-group">
                                     <label class="form-label">Jenis Permohonan</label>
-                                    'jenis_kegiatan' => 'required|in:Penggabungan Bidang,Pemecahan Bidang,Pengukuran Dan
-                                    Pemetaan Kadastral,Pemisahan Bidang,Penataan Batas,Pengukuran Ulang Dan Pemetaan
-                                    Kadastral,Permohonan SK Konfirmasi,Permohonan SK Pemberian Hak Guna Bangunan Badan
-                                    Hukum,Permohonan SK Pemberian Hak Milik Perorangan,Permohonan SK Pemberian Hak Pakai
-                                    Badan Hukum,Permohonan SK Pemberian Hak Pakai Instansi/Badan Usaha Pemerintah,Permohonan
-                                    SK Pemberian HGB/HP di atas HPL,Waris dan Pemecahan',
-
+                                    <select class="form-control form-control" name="jenis_kegiatan" id="jenis_kegiatan"
+                                        style="width: 100%">
+                                        <option value="">Pilih</option>
+                                        <option value="Penggabungan Bidang">Penggabungan Bidang</option>
+                                        <option value="Pemecahan Bidang">Pemecahan Bidang</option>
+                                        <option value="Pengukuran Dan Pemetaan Kadastral">Pengukuran Dan Pemetaan Kadastral
+                                        </option>
+                                        <option value="Pemisahan Bidang">Pemisahan Bidang</option>
+                                        <option value="Penataan Batas">Penataan Batas</option>
+                                        <option value="Pengukuran Ulang Dan Pemetaan Kadastral">Pengukuran Ulang Dan
+                                            Pemetaan Kadastral</option>
+                                        <option value="Permohonan SK Konfirmasi">Permohonan SK Konfirmasi</option>
+                                        <option value="Permohonan SK Pemberian Hak Guna Bangunan Badan Hukum">Permohonan SK
+                                            Pemberian Hak Guna Bangunan Badan Hukum</option>
+                                        <option value="Permohonan SK Pemberian Hak Milik Perorangan">Permohonan SK
+                                            Pemberian Hak Milik Perorangan</option>
+                                        <option value="Permohonan SK Pemberian Hak Pakai Badan Hukum">Permohonan SK
+                                            Pemberian Hak Pakai Badan Hukum</option>
+                                        <option value="Permohonan SK Pemberian Hak Pakai Instansi/Badan Usaha Pemerintah">
+                                            Permohonan SK Pemberian Hak Pakai Instansi/Badan Usaha Pemerintah</option>
+                                        <option value="Permohonan SK Pemberian HGB/HP di atas HPL">Permohonan SK Pemberian
+                                            HGB/HP di atas HPL</option>
+                                        <option value="Waris dan Pemecahan">Waris dan Pemecahan</option>
+                                    </select>
 
                                 </div>
                             </div>

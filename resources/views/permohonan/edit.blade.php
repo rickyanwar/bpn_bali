@@ -89,6 +89,15 @@
                     </div>
                     <div class="card-body">
                         <div class="row justify-content-center">
+                            @if (auth()->user()->hasRole('Petugas Jadwal') || auth()->user()->hasRole('Super Admin'))
+                                <div class="col-10">
+                                    <div class="form-group">
+                                        <label class="form-label">No Surat Pemberitahuan</label>
+                                        <input class="form-control" type="text" id="no_surat_pemberitahuan"
+                                            name="no_surat_pemberitahuan" placeholder="Masukkan no surat pemberitahuan">
+                                    </div>
+                                </div>
+                            @endif
                             <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label">No Berkas</label>
@@ -518,7 +527,7 @@
         $('#no_surat_perintah_kerja').val(data?.no_surat_perintah_kerja);
         $('#nama_pemohon').val(data?.nama_pemohon);
         $('#jenis_kegiatan').val(data?.jenis_kegiatan).trigger('change')
-
+        $('#no_surat_pemberitahuan').val(data?.no_surat_pemberitahuan ?? '');
         @if (
             !(
                 ($diteruskanKe === null && $status === 'draft' && $createdBy === $currentUserId) ||

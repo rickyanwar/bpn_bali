@@ -30,7 +30,7 @@
                                 <tr>
                                     <td width="20%">Nomor</td>
                                     <td width="5%">:</td>
-                                    <td>&nbsp;{{ $data->no_surat }}</td>
+                                    <td>&nbsp;{{ $data->no_surat_pemberitahuan }}</td>
                                 </tr>
                                 <tr>
                                     <td>Lampiran</td>

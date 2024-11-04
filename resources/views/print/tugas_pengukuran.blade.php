@@ -81,15 +81,19 @@
                            </tr>
                        @endforeach
                    </table>
+                   <p class="no-margin">&nbsp;&nbsp;&nbsp; b. Dengan tugas ini untuk melaksanakan
+                       {{ $data->jenis_kegiatan }}
+                       <br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                       Lokasi dan
+                       Volume
+                       Kegiatan:
+                   </p>
                </div>
 
                <div class="row">
                    <div class="col-6">
-                       <p class="no-margin">&nbsp;&nbsp;&nbsp; b. Dengan tugas ini untuk melaksanakan Pemecahan
-                           &nbsp;&nbsp;&nbsp;&nbsp;Bidang
-                           Lokasi dan
-                           Volume
-                           Kegiatan:</p>
+
                        {{--  <ol class="no-margin" type="a">
                            <li><span class="label-space">Kelurahan</span> <span class="highlight">:
                                    {{ $data->desa }}</span>
@@ -108,7 +112,7 @@
                                m² =</li>
                        </ol>  --}}
 
-                       <table style="margin-left: 15px; margin-top:3px " class="no-margin table-no-padding ">
+                       <table style="margin-left: 25px; margin-top:3px " class="no-margin table-no-padding ">
                            <tr>
                                <td width="50%">a. Kelurahan</td>
                                <td>: {{ $data->desa }} </td>
@@ -129,7 +133,8 @@
                        <table style="margin-left: 15px; margin-top:3px  " class="no-margin table-no-padding ">
                            <tr>
                                <td width="50%">a. Mulai Tanggal</td>
-                               <td>: {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
+                               <td>:
+                                   {{ \Carbon\Carbon::parse($data->tanggal_mulai_pengukuran)->translatedFormat('d F Y') }}
                                </td>
                            </tr>
                            <tr>
@@ -164,7 +169,7 @@
                    <p class="no-margin" style="">KEMENTERIAN AGRARIA DAN TATA RUANG/BADAN PERTANAHAN
                        NASIONAL<br>KANTOR PERTANAHAN KABUPATEN
                        TABANAN</p>  --}}
-                   <div class="col-6">
+                   <div class="col-6" style="margin-top:40px">
                        <img src="{{ public_path('assets/images/qr-kepuasan.png') }}" alt="qr"
                            style="max-width: 300px;">
                    </div>
