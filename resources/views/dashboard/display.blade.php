@@ -213,7 +213,7 @@
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="card text-center">
-                                    <div class="btn-blue btn-block p-2">Tunggakan ${role.name}</div>
+                                    <div class="btn-blue btn-block p-2 text-capitalize">BERKAS DI ${role.name}</div>
                                     <div class="card-body p-0">
                                         <div class="marquee-container" id="role-${role.id}">
                                         </div>

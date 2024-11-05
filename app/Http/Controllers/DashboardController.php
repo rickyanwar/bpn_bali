@@ -64,29 +64,33 @@ class DashboardController extends Controller
         return view('dashboard.index', compact('totalPermohonan', 'totalDiproses', 'totalrevisi', 'totalSelesai'));
     }
 
-
     public function getListdisplay()
     {
         // Filter roles by 'Petugas Gambar' and 'Petugas Ukur'
         $roles = Role::with(['users' => function ($query) {
-            $query->get(); // Get all users; total_pekerjaan will be calculated in the model
-        }])
-        ->whereIn('name', ['Petugas Gambar', 'Petugas Ukur']) // Only get these roles
+            $query->with(['permohonansAssigned' => function ($q) {
+                $q->where('status', '!=', 'selesai'); // Get only non-completed permohonan
+            }]);
+        }])->whereIn('name', ['Petugas Gambar', 'Petugas Ukur'])
         ->get();
 
-        // Map roles and users to include their total_pekerjaan
+        // Map roles and users to include their total_pekerjaan and filter based on perlu_diteruskan
         $roles->map(function ($role) {
             $role->users = $role->users->map(function ($user) {
+
+                $filteredPermohonans = $user->permohonansAssigned->filter(function ($permohonan) {
+                    return $permohonan->perlu_diteruskan;
+                });
+
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'total_pekerjaan' => $user->total_pekerjaan, // Access the custom attribute
+                    'total_pekerjaan' => $filteredPermohonans->count(), // Count only permohonan with perlu_diteruskan = true
                 ];
             })->sortByDesc('total_pekerjaan'); // Sort users by total_pekerjaan in descending order
         });
 
         return response()->json($roles);
-
     }
 
 

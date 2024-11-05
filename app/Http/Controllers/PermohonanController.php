@@ -540,7 +540,7 @@ class PermohonanController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa', 'riwayat.diteruskan')->find($id);
         $user = auth()->user();
         $userRole = $user->roles()->first()->name;
 
@@ -563,6 +563,7 @@ class PermohonanController extends Controller
         $urlAmbilAlih = route('permohonan.ambil_tugas', $id);
         $urlPanggilDinas = route('permohonan.panggil_dinas', $id);
         $urlNotaDinas = route('permohonan.nota_dinas', $id);
+
 
         return view('permohonan.edit', compact('data', 'url', 'urlTeruskan', 'urlSelesai', 'urlTolak', 'urlAmbilAlih', 'urlPanggilDinas', 'allowedRoles', 'urlNotaDinas'));
     }
@@ -679,6 +680,9 @@ class PermohonanController extends Controller
             $userForward = $data->created_by;
         }
 
+        if ($request->filled('di_tolak_ke')) {
+            $userForward = $request->di_tolak_ke;
+        }
 
         $data->diteruskan_ke = $userForward;
         $data->status = 'tolak';

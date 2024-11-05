@@ -11,10 +11,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\ReportController;
 
-// Route::get('/', function () {
-//     return redirect('/login');
-// });
-
 Auth::routes();
 
 
@@ -38,6 +34,16 @@ Route::get('display/berkas_count', [DashboardController::class, 'berkasCount'])-
 Route::middleware(['auth'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
+
+
+    Route::get('/', function () {
+        if (auth()->check()) {
+            return redirect('/dashboard');
+        }
+        return redirect('/login');
+    });
+
+
 
 
     Route::get('audit-trails', [AuditTrailController::class, 'index'])->name('audit.index');

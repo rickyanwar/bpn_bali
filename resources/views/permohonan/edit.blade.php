@@ -971,11 +971,36 @@
 
             $(document).on('click', '#btn-reject', function(e) {
                 let url = $(this).data('url');
+                let diteruskanData = data?.riwayat ?? [];
                 const wrapper = document.createElement('div');
+
+                // Generate options for the select dropdown
+                let selectOptions = '<select id="di_tolak_ke" name="di_tolak_ke" class="form-control">';
+                selectOptions +=
+                '<option value="">-- Pilih Petugas (Opsional) --</option>'; // Nullable option
+
+                // Set to keep track of seen IDs
+                const seenIds = new Set();
+
+                diteruskanData.forEach(item => {
+                    if (!seenIds.has(item.diteruskan.id)) { // Check if the ID has been seen
+                        seenIds.add(item.diteruskan.id); // Add ID to the set
+                        selectOptions +=
+                            `<option value="${item.diteruskan.id}">${item.diteruskan.name} - ${item.diteruskan_ke_role}</option>`;
+                    }
+                });
+
+                selectOptions += '</select>';
                 let swalContent = `
                     <p>Jika permohonan revisi, maka permohonan tersebut akan dikembalikan kepada petugas yang sebelumnya mengirimkannya</p>
-                <div class="form-group">
-                    <textarea id="alasan_penolakan" class="form-control"></textarea>
+                            <div class="form-group">
+                     <div class="form-group">
+                        ${selectOptions}
+                     </div>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="alasan_penolakan" class="form-control" placeholder="Alasan Penolakan"></textarea>
+                    </div>
                 </div>`;
 
                 wrapper.innerHTML = swalContent;
@@ -992,6 +1017,8 @@
                     if (result) {
                         let formData = new FormData();
                         formData.append('alasan_penolakan', $('#alasan_penolakan').val());
+                        formData.append('di_tolak_ke', $('#di_tolak_ke')
+                            .val());
 
                         let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
                             swal({

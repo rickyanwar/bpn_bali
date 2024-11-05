@@ -102,10 +102,20 @@ class Permohonan extends Model
     {
         $latestRiwayat = $this->riwayat()->latest()->first();
 
+
+        // Retrieve the user ID for "Indah Corry"
+        $indahCorry = \App\Models\User::where('name', 'Indah Corry')->first();
+
         if ($this->status == 'selesai') {
             return false;
         }
+
         if ($latestRiwayat) {
+
+            if ($indahCorry && $latestRiwayat->diteruskan_ke == $indahCorry->id) {
+                return false;
+            }
+
             $isPetugasUkur = $latestRiwayat->diteruskan_ke_role == "Petugas Ukur";
             $dateField = $isPetugasUkur ? Carbon::parse($this->tanggal_mulai_pengukuran) : Carbon::parse($latestRiwayat->created_at);
 
