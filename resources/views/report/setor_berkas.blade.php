@@ -104,17 +104,45 @@
             buttons: [{
                     extend: 'copy',
                     title: function() {
-                        return 'Setor Berkas Pengukuran ' + formatDateRange($('#pc-daterangepicker-1')
+                        return 'Setor BerkasPengukuran :' + formatDateRange($('#pc-daterangepicker-1')
                             .val());
                     }
                 },
                 {
                     extend: 'excel',
                     title: function() {
-                        return 'Setor Berkas Pengukuran ' + formatDateRange($('#pc-daterangepicker-1')
+                        return 'Setor BerkasPengukuran :' + formatDateRange($('#pc-daterangepicker-1')
                             .val());
+                    },
+                    customize: function(xlsx) {
+                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        $('row c', sheet).attr('s', '25'); // Apply border to all cells
                     }
                 },
+                {
+                    extend: 'pdfHtml5',
+                    title: function() {
+                        return 'Setor BerkasPengukuran :' + formatDateRange($('#pc-daterangepicker-1')
+                            .val());
+                    },
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    customize: function(doc) {
+                        doc.styles.tableHeader = {
+                            fillColor: '#D3D3D3',
+                            color: 'black',
+                            alignment: 'center'
+                        };
+                        doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join(
+                            '*').split('');
+                        var tableBody = doc.content[1].table.body;
+                        tableBody.forEach(function(row) {
+                            row.forEach(function(cell) {
+                                cell.border = [true, true, true, true]; // Apply borders
+                            });
+                        });
+                    }
+                }
             ],
             processing: true,
             serverSide: true,

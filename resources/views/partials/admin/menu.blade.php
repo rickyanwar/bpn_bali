@@ -94,7 +94,7 @@
                             data-feather="chevron-right"></i></span></a>
             </li>
             <li class="dash-item  {{ Request::segment(1) == 'report' ? ' active dash-trigger' : '' }}">
-                <a href="#" class="dash-link "><span class="dash-micon"><i class="ti ti-print"></i></span><span
+                <a href="#" class="dash-link "><span class="dash-micon"><i class="ti ti-report"></i></span><span
                         class="dash-mtext">{{ __('Report') }}</span><span class="dash-arrow"><i
                             data-feather="chevron-right"></i></span></a>
                 <ul class="dash-submenu">

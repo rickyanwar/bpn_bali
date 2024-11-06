@@ -146,9 +146,9 @@ class PermohonanController extends Controller
                         $subQuery->whereNull('diteruskan_ke')
                                 ->where('created_by', $currentUserId);
                     });
-                })
-                // ->where('status', '!=', 'selesai')
-                ->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
+                });
+        // ->where('status', '!=', 'selesai')
+
 
 
         // Filter by status if provided
@@ -178,6 +178,10 @@ class PermohonanController extends Controller
             }
 
         }
+
+        //$query->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
+
+        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
 
         if ($request->ajax()) {
@@ -314,7 +318,6 @@ class PermohonanController extends Controller
 
         // Filter by status if provided
         if (!empty($request->status)) {
-            dd($request->status);
             $query->where('status', '=', $request->status);
         }
 
@@ -336,6 +339,8 @@ class PermohonanController extends Controller
 
         }
 
+        // $query->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')")
+        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
 
         if ($request->ajax()) {
