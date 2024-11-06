@@ -306,8 +306,7 @@
                                                         <td>{{ $loop->iteration }}.
 
                                                             <input type="hidden"
-                                                                name="
-                                                                [{{ $loop->index }}][petugas_ukur]"
+                                                                name="petugas_ukur[{{ $loop->index }}][petugas_ukur]"
                                                                 value="{{ $petugas->petugas?->id ?? '' }}">
                                                             <input type="hidden"
                                                                 name="petugas_ukur[{{ $loop->index }}][pembantu_ukur]"
@@ -493,7 +492,7 @@
     @include('permohonan.script')
     <script>
         let urlPrint = "{{ route('permohonan.print', $data->id) }}";
-
+        initializeSelect2($('.petugas_ukur'));
         @if (!auth()->user()->hasRole('Petugas Cetak Surat Tugas') && !empty($data->diteruskan_ke))
             $('.pendamping').prop('disabled', true);
             $('.petugas_ukur').prop('disabled', true);

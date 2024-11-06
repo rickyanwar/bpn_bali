@@ -78,23 +78,23 @@ class PermohonanRequest extends FormRequest
         ];
 
 
-        if (in_array("PUT", $this->route()->methods())) {
+        // if (in_array("PUT", $this->route()->methods())) {
 
-            $rules['petugas_ukur'] = [
-                                      'nullable',
-                                  'array',
-            ];
+        //     $rules['petugas_ukur'] = [
+        //                               'nullable',
+        //                           'array',
+        //     ];
 
-            $rules['petugas_ukur.*.petugas_ukur'] = [
-                            'sometimes',
-                            'required',
-                            'exists:users,id'
-                        ];
-            $rules['petugas_ukur.*.pembantu_ukur'] = [
-                'nullable',
-                'required_if:petugas_ukur.*.petugas_ukur,!=,null',
-            ];
-        }
+        //     $rules['petugas_ukur.*.petugas_ukur'] = [
+        //                     'sometimes',
+        //                     'required',
+        //                     'exists:users,id'
+        //                 ];
+        //     $rules['petugas_ukur.*.pembantu_ukur'] = [
+        //         'nullable',
+        //         'required_if:petugas_ukur.*.petugas_ukur,!=,null',
+        //     ];
+        // }
 
         return $rules;
     }

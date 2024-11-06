@@ -49,10 +49,16 @@
             border-radius: 10px;
         }
 
+        .marquee-content .btn-block {
+            border-radius: 0px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+
+        }
+
         .font-number {
             font-family: 'Exo', sans-serif;
-            font-weight: bold;
-            font-size: 40px;
+            font-size: 0px;
         }
 
         .card-body .font-number {
@@ -161,6 +167,10 @@
         <div class="col-md-4">
             <div class="row">
                 <div class="col-12">
+                    <img src="{{ asset('assets/images/smart-logo-with-tag.png') }}" alt="{{ env('APP_NAME') }}"
+                        class="logo logo-lg" style="max-width: 55%; max-height:100%" />
+                </div>
+                <div class="col-12">
                     <div class="card text-center bg-yellow-light" style="border-radius: 15px;">
                         <div class="card-body ">
                             <div class="btn-yellow-dark btn-block p-2">BERKAS MASUK</div>
@@ -181,7 +191,13 @@
         <div class="col-md-8 ">
             <div class="card bg-yellow full-height" style="height: 100%; border-radius:15px">
                 <div class="card-body">
-                    <div class="btn-yellow-dark btn-block p-2">PANGGILAN DINAS HARI INI {{ date('d-m-Y') }}</div>
+                    @php
+                        use Carbon\Carbon;
+                        Carbon::setLocale('id');
+                        $formattedDate = Carbon::now()->translatedFormat('l, d F Y');
+                    @endphp
+
+                    <div class="btn-yellow-dark btn-block p-2">PANGGILAN DINAS HARI INI | {{ $formattedDate }}</div>
                     <div class="row panggilan-dinas-container ml-2"></div>
                 </div>
             </div>
@@ -213,7 +229,7 @@
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="card text-center">
-                                    <div class="btn-blue btn-block p-2 text-capitalize">BERKAS DI ${role.name}</div>
+                                    <div class="btn-blue btn-block p-2 text-uppercase">BERKAS DI ${role.name}</div>
                                     <div class="card-body p-0">
                                         <div class="marquee-container" id="role-${role.id}">
                                         </div>
@@ -229,9 +245,9 @@
                             // For each user in the role, append their card in the same row
                             role.users.forEach(user => {
                                 let userCard = `
-                            <div class="col-md-3 marquee-content p-1">
+                            <div class="col-md-2 marquee-content p-1">
                                 <div class="card bg-blue-light mb-0" style="border-radius: 15px;">
-                                    <div class="card-body">
+                                    <div class="card-body p-0">
                                         <div class="text-center">
                                             <h4 class="font-number mb-2">${user.total_pekerjaan}</h4>
                                             <div class="btn-blue btn-block p-2">${user.name}</div>
