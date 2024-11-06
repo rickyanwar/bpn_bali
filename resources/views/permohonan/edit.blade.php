@@ -224,7 +224,9 @@
                             <div class="col-10">
                                 <!-- outer repeater -->
                                 <div class="mt-2 repeater" data-value='{!! json_encode($data->petugasUkur) !!}'>
-                                    @if (auth()->user()->hasRole('Petugas Jadwal') && ($status == 'draft' && $createdBy === $currentUserId))
+                                    @if (
+                                        (auth()->user()->hasRole('Petugas Jadwal') && ($status == 'draft' && $createdBy === $currentUserId)) ||
+                                            (auth()->user()->hasRole('Petugas Jadwal') && $data->diteruskan_ke == $currentUserId))
                                         <div data-repeater-list="petugas_ukur">
                                             <div class="ui-sortable" data-repeater-item>
                                                 <div class="row">
@@ -313,8 +315,6 @@
                                                         </td>
                                                         <td>{{ $petugas->petugas?->name ?? '' }}</td>
                                                         <td>{{ $petugas->pembantu_ukur ?? '' }}</td>
-
-
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -497,6 +497,14 @@
         @if (!auth()->user()->hasRole('Petugas Cetak Surat Tugas') && !empty($data->diteruskan_ke))
             $('.pendamping').prop('disabled', true);
             $('.petugas_ukur').prop('disabled', true);
+        @endif
+
+        @if (
+            (auth()->user()->hasRole('Petugas Jadwal') && ($status == 'draft' && $createdBy === $currentUserId)) ||
+                (auth()->user()->hasRole('Petugas Jadwal') && $data->diteruskan_ke == $currentUserId))
+
+            $('.pendamping').prop('disabled', false);
+            $('.petugas_ukur').prop('disabled', false);
         @endif
 
         $('#print-option').on('change', function() {
@@ -716,7 +724,7 @@
 
                 swal({
                     title: "Anda Yakin?",
-                    text: "Proses tidak dapat dibatalkan",
+                    text: "Simpan Perubahan",
                     icon: "warning",
                     buttons: [
                         'Tidak, Batalkan!',
@@ -732,11 +740,9 @@
                                 title: res.message,
                                 showConfirmButton: false,
                             }).then(function() {
-                                {{--  window.location.replace(
-                                    "{{ route('permohonan.index') }}");  --}}
+                                window.location.replace(
+                                    "{{ route('permohonan.index') }}");
                             });
-
-                            show_toastr('error', xhr.responseJSON?.message);
 
                         })
                         ajaxPost.fail(function(e) {

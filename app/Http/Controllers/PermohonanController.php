@@ -23,6 +23,7 @@ use App\ApiCode;
 use Spatie\Permission\Models\Role;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf;
+use DB;
 
 class PermohonanController extends Controller
 {
@@ -440,31 +441,41 @@ class PermohonanController extends Controller
     public function store(PermohonanRequest $request)
     {
 
-        $currentMonth = date('n');
-        $currentYear = date('Y');
-        $romanMonth = Utility::convertMonthToRoman($currentMonth);
+        DB::beginTransaction();
+        try {
+            $currentMonth = date('n');
+            $currentYear = date('Y');
+            $romanMonth = Utility::convertMonthToRoman($currentMonth);
 
-        $request->merge([
-             'no_berkas' =>  $request->no_berkas  . '/' . $currentYear,
-            'no_surat' => $request->no_surat . '/St-22.02/' . $romanMonth . '/' . $currentYear,
-            'no_surat_perintah_kerja' => $request->no_surat_perintah_kerja . '/St-22.02/' . $romanMonth . '/' . $currentYear,
-            'di_305' =>  $request->di_305  . '/' . $currentYear,
-            'di_302' =>  $request->di_302  . '/' . $currentYear,
-            'updated_by' => auth()->user()->getId()
-        ]);
-
-        $data = Permohonan::create($request->all());
-
-        foreach ($request->petugas_ukur as $petugas) {
-            PermohonanPetugasUkur::create([
-                'permohonan_id' => $data->id,
-                'pembantu_ukur' => $petugas['pembantu_ukur'],
-                'petugas_ukur' => $petugas['petugas_ukur']
+            $request->merge([
+                'no_berkas' =>  $request->no_berkas  . '/' . $currentYear,
+                'no_surat' => $request->no_surat . '/St-22.02/' . $romanMonth . '/' . $currentYear,
+                'no_surat_perintah_kerja' => $request->no_surat_perintah_kerja . '/St-22.02/' . $romanMonth . '/' . $currentYear,
+                'di_305' =>  $request->di_305  . '/' . $currentYear,
+                'di_302' =>  $request->di_302  . '/' . $currentYear,
+                'updated_by' => auth()->user()->getId()
             ]);
-        }
 
-        Utility::auditTrail('create', $this->modulName, $data->id, $data->no_surat, auth()->user());
-        return $this->respond($data, ApiMessage::SUCCESFULL_CREATE);
+            $data = Permohonan::create($request->all());
+
+            foreach ($request->petugas_ukur as $petugas) {
+                PermohonanPetugasUkur::create([
+                    'permohonan_id' => $data->id,
+                    'pembantu_ukur' => $petugas['pembantu_ukur'],
+                    'petugas_ukur' => $petugas['petugas_ukur']
+                ]);
+            }
+
+            Utility::auditTrail('create', $this->modulName, $data->id, $data->no_surat, auth()->user());
+
+            DB::commit();
+
+            return $this->respond($data, ApiMessage::SUCCESFULL_CREATE);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->respondError(ApiMessage::FAILED_CREATE, $e->getMessage());
+        }
 
 
     }
@@ -573,51 +584,62 @@ class PermohonanController extends Controller
      */
     public function update(PermohonanRequest $request, $id)
     {
+        DB::beginTransaction();
 
-        $actions = 'update';
-        $request->merge([
-            'updated_by' => auth()->user()->getId()
-        ]);
-        $data = Permohonan::find($id);
-        $data->update($request->all());
+        try {
+
+            $actions = 'update';
+            $request->merge([
+                'updated_by' => auth()->user()->getId()
+            ]);
+            $data = Permohonan::find($id);
+            $data->update($request->all());
 
 
-        if ($request->has('petugas_ukur') && !empty($request->petugas_ukur)) {
-            PermohonanPetugasUkur::where('permohonan_id', $id)->delete();
-            foreach ($request->petugas_ukur as $petugas) {
-                // Check if pembantu_ukur and petugas_ukur are not empty
-                if (!empty($petugas['pembantu_ukur']) && !empty($petugas['petugas_ukur'])) {
-                    PermohonanPetugasUkur::create([
-                        'permohonan_id' => $data->id,
-                        'pembantu_ukur' => $petugas['pembantu_ukur'],
-                        'petugas_ukur' => $petugas['petugas_ukur']
-                    ]);
+            if ($request->has('petugas_ukur') && !empty($request->petugas_ukur)) {
+                PermohonanPetugasUkur::where('permohonan_id', $id)->delete();
+                foreach ($request->petugas_ukur as $petugas) {
+                    // Check if pembantu_ukur and petugas_ukur are not empty
+                    if (!empty($petugas['pembantu_ukur']) && !empty($petugas['petugas_ukur'])) {
+                        PermohonanPetugasUkur::create([
+                            'permohonan_id' => $data->id,
+                            'pembantu_ukur' => $petugas['pembantu_ukur'],
+                            'petugas_ukur' => $petugas['petugas_ukur']
+                        ]);
+                    }
                 }
             }
+
+
+            if (!empty($request->teruskan_ke_role)) {
+
+                $actions = 'update dan teruskan';
+                $data = Permohonan::find($id);
+                $data->diteruskan_ke = $request->user;
+                $data->diteruskan_ke_role = $request->teruskan_ke_role;
+                $data->status = 'proses';
+                $data->update();
+
+                RiwayatPermohonanDiTeruskan::create([
+                    'permohonan_id' => $data->id,
+                    'diteruskan_ke' => $request->user,
+                    'status' => $data->status,
+                    'diteruskan_ke_role' => $request->teruskan_ke_role,
+                ]);
+
+            }
+
+
+            Utility::auditTrail($actions, $this->modulName, $data->id, $data->no_surat, auth()->user());
+            DB::commit();
+
+            return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->respondError(ApiMessage::FAILED_UPDATE, $e->getMessage());
         }
 
-
-        if (!empty($request->teruskan_ke_role)) {
-
-            $actions = 'update dan teruskan';
-            $data = Permohonan::find($id);
-            $data->diteruskan_ke = $request->user;
-            $data->diteruskan_ke_role = $request->teruskan_ke_role;
-            $data->status = 'proses';
-            $data->update();
-
-            RiwayatPermohonanDiTeruskan::create([
-                'permohonan_id' => $data->id,
-                'diteruskan_ke' => $request->user,
-                'status' => $data->status,
-                'diteruskan_ke_role' => $request->teruskan_ke_role,
-            ]);
-
-        }
-
-
-        Utility::auditTrail($actions, $this->modulName, $data->id, $data->no_surat, auth()->user());
-        return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
 
     /**

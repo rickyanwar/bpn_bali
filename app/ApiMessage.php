@@ -9,6 +9,8 @@ class ApiMessage
     public const VALIDATION_ERROR     = 'VALIDATION_ERROR';
     public const NOT_FOUND            = 'NOT_FOUND';
     public const FAILED_DEPENDENCY    = 'FAILED_DEPENDENCY';
+    public const FAILED_CREATE        = 'Maaf data gagal di tambahkan';
+    public const FAILED_UPDATE        = "Maaf data gagal di update";
     public const BAD_REQUEST          = 'BAD_REQUEST';
     public const SUCCESFULL_CREATE    = 'Data berhasil dibuat dengan sukses';
     public const SUCCESFULL_UPDATE    = 'Data berhasil diperbarui dengan sukses';
