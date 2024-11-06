@@ -101,12 +101,12 @@
                                 <td>09.00 Wita</td>
                             </tr>
                             @php
-                                $firstPetugas = $data->petugasUkur[0];
+                                $firstPetugas = $data->petugasUkur[0] ?? null;
                             @endphp
                             <tr>
                                 <td>Petugas Ukur</td>
                                 <td>:</td>
-                                <td>{{ $firstPetugas->petugas->name }} /
+                                <td>{{ $firstPetugas->petugas->name ?? '' }} /
                                     {{ $firstPetugas->petugas->no_hp ?? '-' }}
                                 </td>
                             </tr>

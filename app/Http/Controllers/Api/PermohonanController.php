@@ -56,7 +56,40 @@ class PermohonanController extends Controller
             }
         });
 
-        $data = $data->latest()->paginate(50);
+
+        $paginatedData = $data->latest()->paginate(50);
+
+        $totalPermohonan = Permohonan::where('diteruskan_ke', $currentUserId)
+            ->count();
+        $totalPermohonan += Permohonan::where('created_by', $currentUserId)
+            ->whereNull('diteruskan_ke')
+            ->count();
+
+        $totalDiproses = Permohonan::where('diteruskan_ke', $currentUserId)
+            ->where('status', 'proses')
+            ->count();
+
+        $totalrevisi = Permohonan::where('diteruskan_ke', $currentUserId)
+            ->where('status', 'tolak')
+            ->count();
+
+        $totalSelesai = Permohonan::where('diteruskan_ke', $currentUserId)
+            ->where('status', 'selesai')
+            ->count();
+
+        // Append the additional data to the response
+        $response = [
+            'data' => $paginatedData->items(),
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
+            'last_page' => $paginatedData->lastPage(),
+            'totalPermohonan' => $totalPermohonan,
+            'totalDiproses' => $totalDiproses,
+            'totalrevisi' => $totalrevisi,
+            'totalSelesai' => $totalSelesai,
+        ];
+
         return $this->respond($data);
 
     }
@@ -131,7 +164,7 @@ class PermohonanController extends Controller
      */
     public function show(string $id)
     {
-        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa')->find($id);
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa', 'riwayat.diteruskan')->find($id);
         return $this->respond($data);
     }
 
@@ -240,6 +273,7 @@ class PermohonanController extends Controller
         Utility::auditTrail('diteruskan', $this->modulName, $data->id, $data->no_surat, auth()->user());
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
+
     public function selesai($id)
     {
 

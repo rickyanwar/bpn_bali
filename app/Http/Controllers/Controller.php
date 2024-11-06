@@ -20,7 +20,7 @@ class Controller extends BaseController
     {
         return ResponseBuilder::asSuccess(200)
             ->withData($data)
-            ->withMessage($message)
+            ->withMessage($message ?? "Berhasil")
             ->withHttpCode($http_code)
             ->build();
     }
