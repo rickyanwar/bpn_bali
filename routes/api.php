@@ -36,6 +36,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api,web']], function () {
         // Explicitly named routes for permohonan
 
+        Route::post('permohonan/nota_dinas/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'notaDinas']);
         Route::post('permohonan/ambil_tugas/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'ambilTugas']);
         Route::post('permohonan/selesai/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'selesai']);
         Route::post('permohonan/pindah_tugas/{id}', [App\Http\Controllers\Api\PermohonanController::class, 'pindahTugas']);

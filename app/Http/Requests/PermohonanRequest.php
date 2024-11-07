@@ -34,7 +34,7 @@ class PermohonanRequest extends FormRequest
             'tanggal_mulai_pengukuran' => 'date|required',
             // 'tanggal_berakhir_pengukuran' => 'date|required',
             'no_surat_perintah_kerja' => 'nullable',
-            'no_berkas' => 'required',
+            'no_berkas' => 'required|unique:permohonan,no_berkas,except,id',
             'jenis_kegiatan' => 'required|in:Penggabungan Bidang,Pemecahan Bidang,Pengukuran Dan Pemetaan Kadastral,Pemisahan Bidang,Penataan Batas,Pengukuran Ulang Dan Pemetaan Kadastral,Permohonan SK Konfirmasi,Permohonan SK Pemberian Hak Guna Bangunan Badan Hukum,Permohonan SK Pemberian Hak Milik Perorangan,Permohonan SK Pemberian Hak Pakai Badan Hukum,Permohonan SK Pemberian Hak Pakai Instansi/Badan Usaha Pemerintah,Permohonan SK Pemberian HGB/HP di atas HPL,Waris dan Pemecahan',
             'nama_pemohon' => 'required',
             'kecamatan' => [
@@ -76,6 +76,11 @@ class PermohonanRequest extends FormRequest
                     'required',
             ],
         ];
+
+
+        if (in_array("PUT", $this->route()->methods())) {
+            $rules['no_berkas'] = ['required'];
+        }
 
 
         // if (in_array("PUT", $this->route()->methods())) {

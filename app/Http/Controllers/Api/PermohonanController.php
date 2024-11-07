@@ -25,6 +25,7 @@ class PermohonanController extends Controller
     public function index(Request $request)
     {
 
+        $currentUserId = auth()->user()->getId();
         $filterable = ['keyword'];
         $filterableValues = array_filter($request->only($filterable));
 
@@ -42,14 +43,14 @@ class PermohonanController extends Controller
                                 $subQuery->whereNull('diteruskan_ke')
                                          ->where('created_by', $currentUserId);
                             });
-                        })->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
+                        })->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
         $data = $data->when(count($filterableValues), function ($query) use ($filterableValues) {
             foreach ($filterableValues as $column => $value) {
                 if ($column == 'keyword') {
                     $query->where('no_surat', 'like', '%' . $value . '%')
                     ->orWhere('no_berkas', 'like', '%' . $value . '%')
-                     ->orWhere('surat_perintah_kerja', 'like', '%' . $value . '%')
+                     ->orWhere('no_surat_perintah_kerja', 'like', '%' . $value . '%')
                           ->orWhere('nama_pemohon', 'like', '%' . $value . '%');
                 }
                 // $query->where($column, 'like', '%' . $value . '%');
@@ -77,7 +78,7 @@ class PermohonanController extends Controller
             ->where('status', 'selesai')
             ->count();
 
-        // Append the additional data to the response
+
         $response = [
             'data' => $paginatedData->items(),
             'current_page' => $paginatedData->currentPage(),
@@ -90,12 +91,13 @@ class PermohonanController extends Controller
             'totalSelesai' => $totalSelesai,
         ];
 
-        return $this->respond($data);
+        return $this->respond($response);
 
     }
 
     public function getAll(Request $request)
     {
+        $currentUserId = auth()->user()->getId();
         $filterable = ['keyword'];
         $filterableValues = array_filter($request->only($filterable));
         $data = Permohonan::with('createdby', 'diteruskan');
@@ -104,15 +106,47 @@ class PermohonanController extends Controller
                 if ($column == 'keyword') {
                     $query->where('no_surat', 'like', '%' . $value . '%')
                     ->orWhere('no_berkas', 'like', '%' . $value . '%')
-                     ->orWhere('surat_perintah_kerja', 'like', '%' . $value . '%')
+                     ->orWhere('no_surat_perintah_kerja', 'like', '%' . $value . '%')
                        ->orWhere('nama_pemohon', 'like', '%' . $value . '%');
                 }
                 // $query->where($column, 'like', '%' . $value . '%');
             }
-        });
+        })->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
-        $data = $data->latest()->paginate(50);
-        return $this->respond($data);
+        $paginatedData = $data->latest()->paginate(50);
+        $totalPermohonan = Permohonan::where('diteruskan_ke', $currentUserId)
+                ->count();
+        $totalPermohonan += Permohonan::where('created_by', $currentUserId)
+            ->whereNull('diteruskan_ke')
+            ->count();
+
+        $totalDiproses = Permohonan::where('diteruskan_ke', $currentUserId)
+            ->where('status', 'proses')
+            ->count();
+
+        $totalrevisi = Permohonan::where('diteruskan_ke', $currentUserId)
+            ->where('status', 'tolak')
+            ->count();
+
+        $totalSelesai = Permohonan::where('diteruskan_ke', $currentUserId)
+            ->where('status', 'selesai')
+            ->count();
+
+
+        $response = [
+            'data' => $paginatedData->items(),
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
+            'last_page' => $paginatedData->lastPage(),
+            'totalPermohonan' => $totalPermohonan,
+            'totalDiproses' => $totalDiproses,
+            'totalrevisi' => $totalrevisi,
+            'totalSelesai' => $totalSelesai,
+        ];
+
+        return $this->respond($response);
+
     }
 
     /**
@@ -120,12 +154,13 @@ class PermohonanController extends Controller
      */
     public function store(PermohonanRequest $request)
     {
-        DB::beginTransaction();
 
+        DB::beginTransaction();
         try {
             $currentMonth = date('n');
             $currentYear = date('Y');
             $romanMonth = Utility::convertMonthToRoman($currentMonth);
+
             $request->merge([
                 'no_berkas' =>  $request->no_berkas  . '/' . $currentYear,
                 'no_surat' => $request->no_surat . '/St-22.02/' . $romanMonth . '/' . $currentYear,
@@ -145,26 +180,30 @@ class PermohonanController extends Controller
                 ]);
             }
 
-            Utility::auditTrail('create', $this->modulName, $data->id, $data->no_surat, auth()->user());
-            return $this->respond($data);
+            Utility::auditTrail('create', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api');
             DB::commit();
 
-            return $this->respond($data);
-        } catch (\Exception $e) {
-            // Rollback the transaction if anything fails
-            DB::rollBack();
+            return $this->respond($data, ApiMessage::SUCCESFULL_CREATE);
 
-            // Optionally, log the error and rethrow it or return an error response
-            return $this->respondWithError('An error occurred: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->respondError(ApiMessage::FAILED_CREATE, $e->getMessage());
         }
+
+
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa', 'riwayat.diteruskan')->find($id);
+        $data = Permohonan::with('petugasUkur.petugas', 'petugasUkur.petugas_pendamping', 'createdby', 'kecamatan', 'desa', 'riwayat.diteruskan', 'riwayatPanggilanDinas')->find($id);
+
+        if (!$data) {
+            return $this->respondNotHaveAccessData();
+        }
         return $this->respond($data);
     }
 
@@ -173,28 +212,70 @@ class PermohonanController extends Controller
      */
     public function update(PermohonanRequest $request, $id)
     {
-        $request->merge([
-                  'updated_by' => auth()->user()->getId()
-        ]);
+
 
         $data = Permohonan::find($id);
-        $data->update($request->all());
-        PermohonanPetugasUkur::where('permohonan_id', $id)->delete();
-
-        foreach ($request->petugas_ukur as $petugas) {
-            PermohonanPetugasUkur::create([
-                    'permohonan_id' => $data->id,
-                    'pembantu_ukur' => $petugas['pembantu_ukur'],
-                    'petugas_ukur' => $petugas['petugas_ukur']
-            ]);
+        if (!$data) {
+            return $this->respondNotHaveAccessData();
         }
 
+        DB::beginTransaction();
 
-        Utility::auditTrail('update', $this->modulName, $data->id, $data->no_surat, auth()->user());
-        return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+        try {
+
+            $actions = 'update';
+            $request->merge([
+                'updated_by' => auth()->user()->getId()
+            ]);
+
+            $data->update($request->all());
+
+
+            if ($request->has('petugas_ukur') && !empty($request->petugas_ukur)) {
+                PermohonanPetugasUkur::where('permohonan_id', $id)->delete();
+                foreach ($request->petugas_ukur as $petugas) {
+                    // Check if pembantu_ukur and petugas_ukur are not empty
+                    if (!empty($petugas['pembantu_ukur']) && !empty($petugas['petugas_ukur'])) {
+                        PermohonanPetugasUkur::create([
+                            'permohonan_id' => $data->id,
+                            'pembantu_ukur' => $petugas['pembantu_ukur'],
+                            'petugas_ukur' => $petugas['petugas_ukur']
+                        ]);
+                    }
+                }
+            }
+
+
+            if (!empty($request->teruskan_ke_role)) {
+
+                $actions = 'update dan teruskan';
+                $data = Permohonan::find($id);
+                $data->diteruskan_ke = $request->user;
+                $data->diteruskan_ke_role = $request->teruskan_ke_role;
+                $data->status = 'proses';
+                $data->update();
+
+                RiwayatPermohonanDiTeruskan::create([
+                    'permohonan_id' => $data->id,
+                    'diteruskan_ke' => $request->user,
+                    'status' => $data->status,
+                    'diteruskan_ke_role' => $request->teruskan_ke_role,
+                ]);
+
+            }
+
+
+            Utility::auditTrail($actions, $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api');
+            DB::commit();
+
+            return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->respondError(ApiMessage::FAILED_UPDATE, $e->getMessage());
+        }
 
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -202,15 +283,23 @@ class PermohonanController extends Controller
     {
 
         $data = Permohonan::find($id);
+        if (!$data) {
+            return $this->respondNotHaveAccessData();
+        }
+
         $data->delete();
         //SAVE TO AUDIT TRAIL
-        Utility::auditTrail('delete', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        Utility::auditTrail('delete', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api');
         return $this->respond(null, ApiMessage::SUCCESFULL_DELETE);
 
     }
 
     public function tolak(Request $request, $id)
     {
+        $data = Permohonan::find($id);
+        if (!$data) {
+            return $this->respondNotHaveAccessData();
+        }
 
 
         $data = Permohonan::find($id);
@@ -219,18 +308,23 @@ class PermohonanController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->get();
 
+        $userForward;
         if ($records->count() > 1) {
             // If there are multiple records, use the second latest
             $secondLatest = $records->skip(1)->first();
             $userForward = $secondLatest->diteruskan_ke;
+
         } else {
             // If there is only one record, use the created_by
             $userForward = $data->created_by;
         }
 
+        if ($request->filled('di_tolak_ke')) {
+            $userForward = $request->di_tolak_ke;
+        }
 
         $data->diteruskan_ke = $userForward;
-        $data->status = 'revisi';
+        $data->status = 'tolak';
         $data->alasan_penolakan = $request->alasan_penolakan;
         $data->update();
 
@@ -245,21 +339,33 @@ class PermohonanController extends Controller
             'permohonan_id' => $data->id,
             'diteruskan_ke' => $userForward,
             'diteruskan_ke_role' => $roleName,
-            'status' => 'revisi',
+            'status' => 'tolak',
             'alasan_penolakan' => !empty($request->alasan_penolakan) ? $request->alasan_penolakan : null
         ]);
 
 
-        Utility::auditTrail('revisi', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        $userDiKembalikan = User::find($userForward);
+
+        $description = "Permohonan dengan nomor berkas {$data->no_berkas} telah kembalikan kepada ".$userDiKembalikan->name .
+                            " alasan pengembalian/ penolakan: {$request->alasan_penolakan}. di kembalikan oleh " .auth()->user()->name  ;
+
+        Utility::auditTrail('tolak', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api', null, $description);
+
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+
     }
 
     public function teruskan(PermohonanDiteruskanRequest $request, $id)
     {
 
         $data = Permohonan::find($id);
+        if (!$data) {
+            return $this->respondNotHaveAccessData();
+        }
+
         $data->diteruskan_ke = $request->user;
         $data->status = 'proses';
+        $data->catatan_penerusan = $request->catatan_penerusan;
         $data->update();
 
         RiwayatPermohonanDiTeruskan::create([
@@ -269,22 +375,34 @@ class PermohonanController extends Controller
             'status' => 'peroses'
         ]);
 
+        $userDiTeruskan = User::find($request->user);
 
-        Utility::auditTrail('diteruskan', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        $description = "Permohonan dengan nomor berkas {$data->no_berkas} telah diteruskan kepada {$userDiTeruskan->name} dengan status: Diproses. Catatan: {$data->catatan_penerusan}. di teruskan oleh " .auth()->user()->name ?? '-' ;
+
+        Utility::auditTrail('diteruskan', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api', null, $description);
+
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+
     }
 
     public function selesai($id)
     {
 
+        $firstUserWithRole = User::role('PHP')->first();
         $data = Permohonan::find($id);
         if (!$data) {
-            return $this->respond(null, ApiMessage::NOT_FOUND, 404); // Handle if no Permohonan found
+            return $this->respondNotHaveAccessData();
         }
+
         $data->status = 'selesai';
+        $data->catatan_selesai = $request->catatan_selesai;
+        $data->diteruskan_ke = $firstUserWithRole->id ?? 0;
         $data->update();
 
-        Utility::auditTrail('selesai', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        $user = auth()->user();
+        $description = "Permohonan dengan nomor berkas {$data->no_berkas} telah diselesian oleh  {$user->name} . catatan penyelesian : {$data->catatan_selesai}" ;
+        Utility::auditTrail('selesai', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api', null, $description);
+
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
 
     }
@@ -329,8 +447,34 @@ class PermohonanController extends Controller
 
         $data->diteruskan_ke = auth()->id();
         $data->update();
-        Utility::auditTrail('ambil alih', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        Utility::auditTrail('ambil alih', $this->modulName, $data->id, $data->no_berkas, auth()->user());
         return $this->respond($data, "Berhasil! Anda telah berhasil mengambil alih penugasan ini");
+    }
+
+
+    public function notaDinas($id, Request $request)
+    {
+        $data = Permohonan::find($id);
+
+        if (!$data || !auth()->user()->can('nota_dinas permohonan')) {
+            return $this->respondNotHaveAccessData();
+        }
+
+        $data->nota_dinas = $request->status;
+        $data->update();
+        $description;
+
+
+        if ($request->status) {
+            $description = "$data->no_berkas di tandai sebagai nota dinas oleh ". auth()->user()->name;
+            Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+            return $this->respond($data, "Berhasil di tandai sebagai nota dinas.");
+        } else {
+            $description = "$data->no_berkas tanda nota dinas dihapus oleh ". auth()->user()->name;
+            Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+            return $this->respond($data, "Berhasil menghapus tanda nota dinas.");
+        }
+
     }
 
 }

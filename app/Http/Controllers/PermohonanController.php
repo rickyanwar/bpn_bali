@@ -471,7 +471,7 @@ class PermohonanController extends Controller
                 ]);
             }
 
-            Utility::auditTrail('create', $this->modulName, $data->id, $data->no_surat, auth()->user());
+            Utility::auditTrail('create', $this->modulName, $data->id, $data->no_berkas, auth()->user());
 
             DB::commit();
 
@@ -635,7 +635,7 @@ class PermohonanController extends Controller
             }
 
 
-            Utility::auditTrail($actions, $this->modulName, $data->id, $data->no_surat, auth()->user());
+            Utility::auditTrail($actions, $this->modulName, $data->id, $data->no_berkas, auth()->user());
             DB::commit();
 
             return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
@@ -653,9 +653,12 @@ class PermohonanController extends Controller
     public function destroy(string $id)
     {
         $data = permohonan::find($id);
+        if (!$data) {
+            return $this->respondNotHaveAccessData();
+        }
         $data->delete();
         //SAVE TO AUDIT TRAIL
-        Utility::auditTrail('delete', $this->modulName, $data->id, $data->no_surat, auth()->user());
+        Utility::auditTrail('delete', $this->modulName, $data->id, $data->no_berkas, auth()->user());
         return $this->respond(null, ApiMessage::SUCCESFULL_DELETE);
     }
 
@@ -664,6 +667,10 @@ class PermohonanController extends Controller
     {
 
         $data = Permohonan::find($id);
+        if (!$data) {
+            return $this->respondNotHaveAccessData();
+        }
+
         $data->diteruskan_ke = $request->user;
         $data->status = 'proses';
         $data->catatan_penerusan = $request->catatan_penerusan;
@@ -691,6 +698,10 @@ class PermohonanController extends Controller
 
 
         $data = Permohonan::find($id);
+        if (!$data) {
+            return $this->respond(null, ApiMessage::NOT_FOUND, 404);
+        }
+
         // Retrieve all records related to the given permohonan_id, ordered by created_at in descending order
         $records = RiwayatPermohonanDiTeruskan::where('permohonan_id', $id)
                         ->orderBy('created_at', 'desc')
@@ -823,12 +834,14 @@ class PermohonanController extends Controller
     {
         $data = Permohonan::find($id);
 
-        if (!$data || !auth()->user()->can('ambil permohonan')) {
+        $user = auth()->user();
+        // dd(\Auth::user()->can('delete role'));
+        //dd($user->getAllPermissions()->pluck('name'));
+        if (!$data || !auth()->user()->can("ambil permohonan")) {
             return $this->respondNotHaveAccessData();
         }
 
         $data->diteruskan_ke = auth()->id();
-        $data->status = "proses";
         $data->update();
         Utility::auditTrail('ambil alih', $this->modulName, $data->id, $data->no_berkas, auth()->user());
         return $this->respond($data, "Berhasil! Anda telah berhasil mengambil alih penugasan ini");
