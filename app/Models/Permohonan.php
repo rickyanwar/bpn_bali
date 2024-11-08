@@ -105,6 +105,7 @@ class Permohonan extends Model
 
         // Retrieve the user ID for "Indah Corry"
         $indahCorry = \App\Models\User::where('name', 'Indah Corry')->first();
+        $priskha = \App\Models\User::where('name', 'Priskha Primamayanti')->first();
 
         if ($this->status == 'selesai') {
             return false;
@@ -112,7 +113,8 @@ class Permohonan extends Model
 
         if ($latestRiwayat) {
 
-            if ($indahCorry && $latestRiwayat->diteruskan_ke == $indahCorry->id) {
+            if ($indahCorry && $latestRiwayat->diteruskan_ke == $indahCorry->id ||
+                $priskha && $latestRiwayat->diteruskan_ke == $priskha->id) {
                 return false;
             }
 
