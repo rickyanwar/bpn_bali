@@ -739,8 +739,7 @@
                                 title: res.message,
                                 showConfirmButton: false,
                             }).then(function() {
-                                window.location.replace(
-                                    "{{ route('permohonan.index') }}");
+                                window.location.reload();
                             });
 
                         })
