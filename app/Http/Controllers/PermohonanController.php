@@ -313,7 +313,7 @@ class PermohonanController extends Controller
     {
 
         $currentUserId = Auth::id();
-        $query = Permohonan::with('createdby', 'diteruskan')->latest();
+        $query = Permohonan::with('createdby', 'diteruskan');
 
 
         // Filter by status if provided
