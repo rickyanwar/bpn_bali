@@ -114,22 +114,16 @@ class PermohonanController extends Controller
         })->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
         $paginatedData = $data->latest()->paginate(50);
-        $totalPermohonan = Permohonan::where('diteruskan_ke', $currentUserId)
-                ->count();
-        $totalPermohonan += Permohonan::where('created_by', $currentUserId)
-            ->whereNull('diteruskan_ke')
+        $totalPermohonan = Permohonan::whereNull('diteruskan_ke')
             ->count();
 
-        $totalDiproses = Permohonan::where('diteruskan_ke', $currentUserId)
-            ->where('status', 'proses')
+        $totalDiproses = Permohonan::where('status', 'proses')
             ->count();
 
-        $totalrevisi = Permohonan::where('diteruskan_ke', $currentUserId)
-            ->where('status', 'tolak')
+        $totalrevisi = Permohonan::where('status', 'tolak')
             ->count();
 
-        $totalSelesai = Permohonan::where('diteruskan_ke', $currentUserId)
-            ->where('status', 'selesai')
+        $totalSelesai = Permohonan::where('status', 'selesai')
             ->count();
 
 
