@@ -102,10 +102,9 @@ class PermohonanController extends Controller
     public function index(Request $request)
     {
 
-
-
         // Get the logged-in user
         $user = Auth::user();
+        $roles = Role::all();
         $totalPermohonan = Permohonan::where('diteruskan_ke', $user->id)
         // ->where('status', '!=', 'draft')
         ->count();
@@ -149,20 +148,13 @@ class PermohonanController extends Controller
                 });
         // ->where('status', '!=', 'selesai')
 
-
-
         // Filter by status if provided
-
-
         if (!empty($request->status)) {
-            $query->where('status', $request->status);
+            $query =   $query->where('status', '=', $request->status);
         }
-
-
 
         // Filter by tanggal if provided
         if (!empty($request->tanggal)) {
-
             $tanggal = $request->tanggal;
             if (strpos($tanggal, 'to') !== false) {
                 // Split the range into two dates
@@ -171,17 +163,23 @@ class PermohonanController extends Controller
                 $endDate = trim($endDate);
 
                 // Apply the date range filter
-                $query->whereBetween('tanggal_mulai_pengukuran', [$startDate, $endDate]);
+                $query =  $query->whereBetween('tanggal_mulai_pengukuran', [$startDate, $endDate]);
             } else {
-
-                $query->whereDate('tanggal_mulai_pengukuran', $tanggal);
+                $query =  $query->whereDate('tanggal_mulai_pengukuran', $tanggal);
             }
 
         }
 
-        //$query->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')");
 
         $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
+
+
+        if (!empty($request->perlu_diteruskan) &&  intval($request->perlu_diteruskan) > 0) {
+            $query =  $query->get()->filter(function ($item) {
+                return $item->perlu_diteruskan;
+            });
+
+        }
 
 
         if ($request->ajax()) {
@@ -304,7 +302,7 @@ class PermohonanController extends Controller
             ->make(true);
         }
 
-        return view('permohonan.index', compact('totalPermohonan', 'totalDiproses', 'totalrevisi', 'totalSelesai'));
+        return view('permohonan.index', compact('totalPermohonan', 'totalDiproses', 'totalrevisi', 'totalSelesai', 'roles'));
 
     }
 
@@ -314,16 +312,15 @@ class PermohonanController extends Controller
 
         $currentUserId = Auth::id();
         $query = Permohonan::with('createdby', 'diteruskan');
-
+        $roles = Role::all();
 
         // Filter by status if provided
         if (!empty($request->status)) {
-            $query->where('status', '=', $request->status);
+            $query =  $query->where('status', '=', $request->status);
         }
 
         // Filter by tanggal if provided
         if (!empty($request->tanggal)) {
-
             $tanggal = $request->tanggal;
             if (strpos($tanggal, 'to') !== false) {
                 // Split the range into two dates
@@ -332,15 +329,42 @@ class PermohonanController extends Controller
                 $endDate = trim($endDate);
 
                 // Apply the date range filter
-                $query->whereBetween('created_at', [$startDate, $endDate]);
+                $query =  $query->whereBetween('tanggal_mulai_pengukuran', [$startDate, $endDate]);
             } else {
-                $query->whereDate('created_at', $tanggal);
+                $query =  $query->whereDate('tanggal_mulai_pengukuran', $tanggal);
             }
 
         }
 
-        // $query->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')")
+
+
+        if (!empty($request->diteruskan_role)) {
+            $query->whereHas('riwayat', function ($q) use ($request) {
+                $q->where('diteruskan_ke_role', $request->diteruskan_role);
+            });
+        }
+
+
+        if (!empty($request->diteruskan_user_name)) {
+            $query->whereHas('diteruskan', function ($q) use ($request) {
+                $q->where('name', 'like', "%" . $request->diteruskan_user_name . "%");
+            });
+        }
+
+
+
         $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
+
+
+        if (!empty($request->perlu_diteruskan) &&  intval($request->perlu_diteruskan) > 0) {
+            $query =  $query->get()->filter(function ($item) {
+                return $item->perlu_diteruskan;
+            });
+
+        }
+
+
+        // $query->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')")
 
 
         if ($request->ajax()) {
@@ -423,7 +447,7 @@ class PermohonanController extends Controller
 
         }
 
-        return view('permohonan.all');
+        return view('permohonan.all', compact('roles'));
 
     }
     /**

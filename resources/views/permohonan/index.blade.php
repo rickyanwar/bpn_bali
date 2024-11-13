@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                             @endif
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
+                            <div class="col-xl-3 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     {{--  {{ Form::label('issue_date', __('Issue Date'), ['class' => 'form-label']) }}
                                     {{ Form::date('issue_date', isset($_GET['issue_date']) ? $_GET['issue_date'] : '', ['class' => 'form-control month-btn', 'id' => 'pc-daterangepicker-1']) }}  --}}
@@ -75,7 +75,7 @@
 
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
+                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     <label class="form-label">Status </label>
                                     <select class="custom-select" id="status">
@@ -86,6 +86,17 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
+                                <div class="btn-box">
+                                    <label class="form-label">Di Tangguhkan </label>
+                                    <select class="custom-select" id="perlu_diteruskan">
+                                        <option value="">Pilih...</option>
+                                        <option value="1">Ya</option>
+                                        <option value="0">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
+
 
 
                             <div class="col-auto float-end ms-2 mt-4">
@@ -162,11 +173,11 @@
                     issue_date: function() {
                         return $('#pc-daterangepicker-1').val();
                     },
-                    customer: function() {
-                        return $('#customer').val();
-                    },
                     status: function() {
                         return $('#status').val();
+                    },
+                    perlu_diteruskan: function() {
+                        return $('#perlu_diteruskan').val();
                     },
                 }
             },
@@ -206,9 +217,6 @@
                     data: 'actions',
                     name: 'actions',
                 },
-
-
-
             ],
             rowCallback: function(row, data, index) {
                 // Check if `perlu_diteruskan` is true apply red color
@@ -307,10 +315,14 @@
 
         $(document).on('click', '#submit-filter', function(e) {
             e.preventDefault();
-
             var selectedDate = $('#pc-daterangepicker-1').val();
             var status = $('#status').val();
-            table.ajax.url("{{ route('permohonan.index') }}?tanggal=" + selectedDate + "&status=" + status).load();
+            var perluDiteruskan = $('#perlu_diteruskan').val();
+            var diteruskanRole = $('#diteruskan_role').val();
+            var diteruskanUserName = $('#diteruskan_user_name').val();
+            table.ajax.url("{{ route('permohonan.index') }}?tanggal=" + selectedDate + "&status=" +
+                status + "&perlu_diteruskan=" + perluDiteruskan + "&diteruskan_role=" + diteruskanRole +
+                "&diteruskan_user_name=" + diteruskanUserName).load();
         });
 
 

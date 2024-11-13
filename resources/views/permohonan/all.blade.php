@@ -21,7 +21,7 @@
 
                         <div class="row d-flex align-items-center ">
                             @if (auth()->user()->hasRole('Petugas Jadwal') || auth()->user()->can('manage all permohonan'))
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
                                     <div class="btn-box mt-3">
                                         <a href="{{ route('permohonan.create') }}"
                                             data-url="{{ route('permohonan.create') }}"
@@ -31,7 +31,7 @@
                                     </div>
                                 </div>
                             @endif
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
+                            <div class="col-xl-3 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     {{--  {{ Form::label('issue_date', __('Issue Date'), ['class' => 'form-label']) }}
                                     {{ Form::date('issue_date', isset($_GET['issue_date']) ? $_GET['issue_date'] : '', ['class' => 'form-control month-btn', 'id' => 'pc-daterangepicker-1']) }}  --}}
@@ -41,7 +41,7 @@
 
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mr-2">
+                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
                                 <div class="btn-box">
                                     <label class="form-label">Status </label>
                                     <select class="custom-select" id="status">
@@ -50,6 +50,34 @@
                                         <option value="tolak">Tolak</option>
                                         <option value="selesai">Selesai</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
+                                <div class="btn-box">
+                                    <label class="form-label">Di Tangguhkan </label>
+                                    <select class="custom-select" id="perlu_diteruskan">
+                                        <option value="">Pilih...</option>
+                                        <option value="1">Ya</option>
+                                        <option value="0">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
+                                <div class="btn-box">
+                                    <label class="form-label">Petugas </label>
+                                    <select class="custom-select" id="diteruskan_role">
+                                        <option value="">Pilih...</option>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-12 mr-2">
+                                <div class="btn-box">
+                                    <label class="form-label">Nama Petugas </label>
+                                    <input class="form-control " type="text" name="diteruskan_user_name"
+                                        id="diteruskan_user_name">
                                 </div>
                             </div>
 
@@ -88,6 +116,7 @@
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Di Teruskan Ke ') }}</th>
                                             <th>{{ __('Nota Dinas') }}</th>
+                                            <th>Di Tangguhkan</th>
                                             <th>{{ __('Action') }}</th>
                                             {{-- <th>
                                         <td class="barcode">
@@ -124,13 +153,13 @@
                 url: "{{ route('permohonan.all') }}",
                 data: {
                     issue_date: function() {
-                        return $('#pc-daterangepicker-1').val();
-                    },
-                    customer: function() {
-                        return $('#customer').val();
+                        return $('#pc-daterangepicker-1').val() ?? '';
                     },
                     status: function() {
-                        return $('#status').val();
+                        return $('#status').val() ?? '';
+                    },
+                    perlu_diteruskan: function() {
+                        return $('#perlu_diteruskan').val() ?? '';
                     },
                 }
             },
@@ -166,7 +195,15 @@
                     orderable: false,
                     searchable: false,
                 },
-
+                {
+                    data: 'perlu_diteruskan',
+                    name: 'perlu_diteruskan',
+                    render: function(data) {
+                        return data ? 'Ya' : 'Tidak';
+                    },
+                    orderable: false, // Disable ordering for actions column
+                    searchable: false,
+                },
                 {
                     data: 'actions',
                     name: 'actions',
@@ -233,7 +270,12 @@
             e.preventDefault();
             var selectedDate = $('#pc-daterangepicker-1').val();
             var status = $('#status').val();
-            table.ajax.url("{{ route('permohonan.index') }}?tanggal=" + selectedDate + "&status=" + status).load();
+            var perluDiteruskan = $('#perlu_diteruskan').val();
+            var diteruskanRole = $('#diteruskan_role').val();
+            var diteruskanUserName = $('#diteruskan_user_name').val();
+            table.ajax.url("{{ route('permohonan.all') }}?tanggal=" + selectedDate + "&status=" +
+                status + "&perlu_diteruskan=" + perluDiteruskan + "&diteruskan_role=" + diteruskanRole +
+                "&diteruskan_user_name=" + diteruskanUserName).load();
         });
 
 

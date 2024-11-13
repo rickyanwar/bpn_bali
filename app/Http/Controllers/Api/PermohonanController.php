@@ -457,6 +457,7 @@ class PermohonanController extends Controller
 
         $data->nota_dinas = $request->status;
         $data->update();
+
         $description;
 
 
