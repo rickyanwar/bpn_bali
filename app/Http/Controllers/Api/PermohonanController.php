@@ -11,6 +11,7 @@ use App\Models\PermohonanPetugasUkur;
 use App\Models\Permohonan;
 use App\Models\User;
 use App\Models\RiwayatPermohonanDiTeruskan;
+use App\Models\RiwayatPanggilanDinas;
 use DataTables;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
@@ -461,11 +462,11 @@ class PermohonanController extends Controller
 
         if ($request->status) {
             $description = "$data->no_berkas di tandai sebagai nota dinas oleh ". auth()->user()->name;
-            Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+            Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api', null, $description);
             return $this->respond($data, "Berhasil di tandai sebagai nota dinas.");
         } else {
             $description = "$data->no_berkas tanda nota dinas dihapus oleh ". auth()->user()->name;
-            Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+            Utility::auditTrail('nota dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api', null, $description);
             return $this->respond($data, "Berhasil menghapus tanda nota dinas.");
         }
 
@@ -490,7 +491,7 @@ class PermohonanController extends Controller
 
         $user = auth()->user();
         $description = "{$user->name} . memangil permohonan dengan no berkas $data->no_berkas, catatan : {$request->catatan}" ;
-        Utility::auditTrail('panggil dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+        Utility::auditTrail('panggil dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'api', null, $description);
 
         return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
     }
