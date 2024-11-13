@@ -114,7 +114,7 @@ class PermohonanController extends Controller
         })->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
         $paginatedData = $data->latest()->paginate(50);
-        $totalPermohonan = Permohonan::whereNull('diteruskan_ke')
+        $totalPermohonan = Permohonan::whereNotNull('diteruskan_ke')
             ->count();
 
         $totalDiproses = Permohonan::where('status', 'proses')
@@ -379,7 +379,7 @@ class PermohonanController extends Controller
 
     }
 
-    public function selesai($id)
+    public function selesai($id, Request $request)
     {
 
         $firstUserWithRole = User::role('PHP')->first();
@@ -471,4 +471,27 @@ class PermohonanController extends Controller
 
     }
 
+    public function panggilDinas($id, Request $request)
+    {
+
+        $data = Permohonan::find($id);
+
+        if (!$data || !auth()->user()->can('panggil_dinas permohonan')) {
+            return $this->respondNotHaveAccessData();
+        }
+
+        $panggilanDinas = RiwayatPanggilanDinas::create([
+            'status' => 'selesai',
+            'catatan' => $request->catatan,
+            'permohonan_id' => $data->id,
+            'tanggal_panggil' => $request->tanggal_panggil,
+            'created_by' => auth()->user()->id,
+        ]);
+
+        $user = auth()->user();
+        $description = "{$user->name} . memangil permohonan dengan no berkas $data->no_berkas, catatan : {$request->catatan}" ;
+        Utility::auditTrail('panggil dinas', $this->modulName, $data->id, $data->no_berkas, auth()->user(), 'web', null, $description);
+
+        return $this->respond($data, ApiMessage::SUCCESFULL_UPDATE);
+    }
 }

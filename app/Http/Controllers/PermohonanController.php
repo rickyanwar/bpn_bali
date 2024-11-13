@@ -778,6 +778,11 @@ class PermohonanController extends Controller
     {
 
         $data = Permohonan::find($id);
+
+        if (!$data || !auth()->user()->can('panggil_dinas permohonan')) {
+            return $this->respondNotHaveAccessData();
+        }
+
         $panggilanDinas = RiwayatPanggilanDinas::create([
             'status' => 'selesai',
             'catatan' => $request->catatan,
