@@ -69,7 +69,8 @@ class DashboardController extends Controller
         // Filter roles by 'Petugas Gambar' and 'Petugas Ukur'
         $roles = Role::with(['users' => function ($query) {
             $query->with(['permohonansAssigned' => function ($q) {
-                $q->where('status', '!=', 'selesai'); // Get only non-completed permohonan
+                $q->where('status', '!=', 'selesai')
+                  ->where('tanggal_mulai_pengukuran', '>=', Carbon::today());
             }]);
         }])->whereIn('name', ['Petugas Gambar', 'Petugas Ukur'])
         ->get();

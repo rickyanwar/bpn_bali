@@ -181,7 +181,7 @@
             white-space: nowrap;
 
             /* Prevents wrapping */
-            animation: marquee 50s linear infinite;
+            {{--  animation: marquee 50s linear infinite;  --}}
             /* Adjust speed here */
         }
 
@@ -284,8 +284,10 @@
                                 <div class="card text-center">
                                     <div class="btn-blue btn-block p-2 text-uppercase">BERKAS DI ${role.name}</div>
                                     <div class="card-body p-0">
-                                        <div class="marquee-container" id="role-${role.id}">
+                                        <marquee>
+                                             <div class="marquee-container" id="role-${role.id}">
                                         </div>
+                                        </marquee>
                                     </div>
                                 </div>
                             </div>
