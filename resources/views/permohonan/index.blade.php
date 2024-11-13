@@ -434,39 +434,38 @@
 
         $(document).on('click', '.btn_teruskan', function(e) {
             let id = $(this).data('id');
+
             // Ensure the modal is shown first
             $('#commonModal').modal('show');
 
-            // Only initialize Select2 once when the modal is fully shown
+            // Wait until the modal is fully shown before initializing Select2
             $('#commonModal').on('shown.bs.modal', function() {
                 // Destroy any existing Select2 instances before initializing a new one
                 if ($('#user').data('select2')) {
                     $('#user').select2('destroy');
                 }
-                // Initialize Select2
-                $('#teruskan_ke_role').on('change', function() {
-                    const selectedRole = $(this).val();
 
+
+                // Now initialize Select2 only once the modal is shown
+                $('#teruskan_ke_role').off('change').on('change', function() {
+                    const selectedRole = $(this).val();
                     if (selectedRole) {
                         // Show the user-selection section
                         $('#user-selection').show();
 
-                        // Initialize Select2 with role based on selected option
+                        // Initialize Select2 with role-based filtering
                         $('#user').select2({
                             ajax: {
                                 url: "{{ route('user.search') }}",
                                 dataType: 'json',
                                 delay: 250,
                                 data: function(params) {
-                                    console.log('Params:',
-                                        params); // Debug: Log the search term
                                     return {
                                         term: params.term,
-                                        role: selectedRole // Pass the selected option as role
+                                        role: selectedRole // Pass the selected role as a parameter
                                     };
                                 },
                                 processResults: function(response) {
-                                    // Map the results from the API response to the format expected by Select2
                                     let results = response.data.data.map(function(
                                         user) {
                                         return {
@@ -478,8 +477,7 @@
                                     return {
                                         results: results,
                                         pagination: {
-                                            more: response.data.next_page_url !==
-                                                null // Check if there's a next page
+                                            more: response.data.next_page_url !== null
                                         }
                                     };
                                 },
@@ -490,143 +488,14 @@
                             dropdownParent: $('#commonModal')
                         });
 
-                        // Submit Request for teruskan permohonan
-                        $(document).on('click', '#btn-submit-teruskan', function(e) {
-                            e.preventDefault();
-                            $('.text-danger').remove();
-                            $(".form-group").removeClass('has-error has-feedback');
-
-                            var url = "{{ route('permohonan.teruskan', ':id') }}";
-                            url = url.replace(':id', id);
-                            var form = $('#form-teruskan')[0];
-                            var formData = new FormData(form);
-                            var findForm = $("#form-teruskan");
-
-                            swal({
-                                title: "Anda Yakin?",
-                                text: "Proses tidak dapat dibatalkan",
-                                icon: "warning",
-                                buttons: [
-                                    'Tidak, Batalkan!',
-                                    'Ya, Saya yakin!'
-                                ],
-                                dangerMode: true,
-                            }).then(function(isConfirm) {
-                                if (isConfirm) {
-                                    let ajaxPost = ajaxRequest(url, 'POST',
-                                        formData).done(function(res) {
-                                        console.log('res', res);
-                                        swal({
-                                            icon: 'success',
-                                            title: res.message,
-                                            showConfirmButton: false,
-                                        }).then(function() {
-                                            window.location.replace(
-                                                "{{ route('permohonan.index') }}"
-                                            );
-                                        });
-                                    }).fail(function(xhr) {
-                                        console.log('xhr', xhr);
-                                        swal({
-                                            icon: 'warning',
-                                            title: xhr.responseJSON
-                                                ?.message,
-                                            showConfirmButton: false,
-                                        });
-                                        if (xhr.status === 422) {
-                                            $.each(xhr.responseJSON.errors,
-                                                function(elem,
-                                                    messages) {
-                                                    findForm.find('#' +
-                                                        elem).after(
-                                                        '<p class="text-danger text-sm">' +
-                                                        messages
-                                                        .join('') +
-                                                        '</p>');
-                                                    findForm.find('#' +
-                                                            elem)
-                                                        .closest(
-                                                            '.form-group'
-                                                        )
-                                                        .addClass(
-                                                            "has-error has-feedback"
-                                                        );
-                                                });
-                                        }
-                                    });
-                                }
-                            });
-                        });
-
-
                     } else {
-                        // Hide the user-selection section if no option is selected
+                        // Hide the user-selection section if no role is selected
                         $('#user-selection').hide();
                     }
                 });
             });
-
-
-
-            $(document).on('click', '#btn-alihkan-tugas', function(e) {
-                e.preventDefault();
-
-                var url = "{{ route('permohonan.pindah_tugas', ':id') }}";
-                url = url.replace(':id', id);
-                console.log('url', url);
-                var form = $('#form-pindah-tugas')[0];
-                var formData = new FormData(form);
-                var findForm = $("#form-pindah-tugas");
-                swal({
-                    title: "Anda Yakin?",
-                    text: "Proses tidak dapat dibatalkan",
-                    icon: "warning",
-                    buttons: [
-                        'Tidak, Batalkan!',
-                        'Ya, Saya yakin!'
-                    ],
-                    dangerMode: true,
-                }).then(function(isConfirm) {
-                    if (isConfirm) {
-                        let ajaxPost = ajaxRequest(url, 'POST', formData).done(function(res) {
-                            console.log('res')
-                            swal({
-                                icon: 'success',
-                                title: res.message,
-                                showConfirmButton: false,
-                            }).then(function() {
-                                window.location.replace(
-                                    "{{ route('permohonan.index') }}");
-                            });
-
-                            show_toastr('error', xhr.responseJSON?.message);
-
-                        })
-                        ajaxPost.fail(function(e) {
-                            console.log('e', e);
-                            swal({
-                                icon: 'warning',
-                                title: e.responseJSON.message,
-                                showConfirmButton: false,
-                            });
-                            if (parseInt(e.status) == 422) {
-                                $.each(e.responseJSON.errors, function(elem, messages) {
-                                    findForm.find('#' + elem).after(
-                                        '<p class="text-danger text-sm">' +
-                                        messages.join('') + '</p>');
-                                    //ADD HAS FEEDBACK CLASS
-                                    findForm.find('#' + elem).closest(
-                                        '.form-group').addClass(
-                                        "has-error has-feedback");
-
-                                });
-                            }
-                        })
-                    }
-                })
-
-            })
         });
+
 
         $(document).on('click', '.btn_print', function(e) {
             let id = $(this).data('id');
