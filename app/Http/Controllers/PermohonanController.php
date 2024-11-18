@@ -176,7 +176,7 @@ class PermohonanController extends Controller
         if (!empty($request->perlu_diteruskan) &&  intval($request->perlu_diteruskan) > 0) {
             $query =  $query->get()->filter(function ($item) {
                 return $item->perlu_diteruskan;
-            })->sortBy('tanggal_mulai_pengukuran', 'DESC');
+            });
         }
 
 
@@ -356,9 +356,9 @@ class PermohonanController extends Controller
 
         if (!empty($request->perlu_diteruskan) &&  intval($request->perlu_diteruskan) > 0) {
 
-            $query = $query->get()->filter(function ($item) {
+            $query =  $query->get()->filter(function ($item) {
                 return $item->perlu_diteruskan;
-            })->sortBy('tanggal_mulai_pengukuran', 'DESC');
+            });
 
         }
 
