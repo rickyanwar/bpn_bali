@@ -171,8 +171,6 @@ class PermohonanController extends Controller
         }
 
 
-        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
-
 
         if (!empty($request->perlu_diteruskan) &&  intval($request->perlu_diteruskan) > 0) {
             $query =  $query->get()->filter(function ($item) {
@@ -180,6 +178,9 @@ class PermohonanController extends Controller
             });
 
         }
+
+
+        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
 
         if ($request->ajax()) {
@@ -353,8 +354,6 @@ class PermohonanController extends Controller
 
 
 
-        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
-
 
         if (!empty($request->perlu_diteruskan) &&  intval($request->perlu_diteruskan) > 0) {
             $query =  $query->get()->filter(function ($item) {
@@ -363,6 +362,7 @@ class PermohonanController extends Controller
 
         }
 
+        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
         // $query->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')")
 
