@@ -181,13 +181,8 @@
                     name: "status_badge",
                 },
                 {
-                    data: 'diteruskan',
-                    name: 'diteruskan',
-                    render: function(data) {
-                        return data?.name ?? '-';
-                    },
-                    orderable: false,
-                    searchable: false,
+                    data: 'riwayat_diteruskan_ke_latest',
+                    name: 'riwayat_diteruskan_ke_latest',
                 },
                 {
                     data: 'nota_dinas_badge',

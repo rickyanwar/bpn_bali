@@ -440,8 +440,10 @@ class PermohonanController extends Controller
             return $this->respondNotHaveAccessData();
         }
 
-        $data->diteruskan_ke = auth()->id();
+        $data->diteruskan_ke = $user->id;
         $data->update();
+
+        $data = Permohonan::find($id);
         Utility::auditTrail('ambil alih', $this->modulName, $data->id, $data->no_berkas, auth()->user());
         return $this->respond($data, "Berhasil! Anda telah berhasil mengambil alih penugasan ini");
     }

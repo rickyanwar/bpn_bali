@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Permohonan;
+use App\Models\ViewPermohonan;
 use App\Http\Requests\PermohonanRequest;
 use App\Http\Requests\PermohonanDiteruskanRequest;
 use App\Models\Utility;
@@ -132,20 +133,19 @@ class PermohonanController extends Controller
         // }
 
 
-        $query = Permohonan::with('createdby', 'diteruskan')
-                ->where(function ($q) {
-                    $currentUserId = auth()->id();
-                    $q->where(function ($subQuery) use ($currentUserId) {
-                        // If diteruskan_ke is not null, it must match the current user
-                        $subQuery->whereNotNull('diteruskan_ke')
-                                ->where('diteruskan_ke', $currentUserId);
-                    })
-                    ->orWhere(function ($subQuery) use ($currentUserId) {
-                        // If diteruskan_ke is null, show records where created_by is the current user
-                        $subQuery->whereNull('diteruskan_ke')
-                                ->where('created_by', $currentUserId);
-                    });
-                });
+        $query = ViewPermohonan::where(function ($q) {
+            $currentUserId = auth()->id();
+            $q->where(function ($subQuery) use ($currentUserId) {
+                // If diteruskan_ke is not null, it must match the current user
+                $subQuery->whereNotNull('diteruskan_ke')
+                        ->where('diteruskan_ke', $currentUserId);
+            })
+            ->orWhere(function ($subQuery) use ($currentUserId) {
+                // If diteruskan_ke is null, show records where created_by is the current user
+                $subQuery->whereNull('diteruskan_ke')
+                        ->where('created_by', $currentUserId);
+            });
+        });
         // ->where('status', '!=', 'selesai')
 
         // Filter by status if provided
@@ -171,13 +171,13 @@ class PermohonanController extends Controller
         }
 
 
-        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
         if (!empty($request->perlu_diteruskan) &&  intval($request->perlu_diteruskan) > 0) {
-            $query =  $query->get()->filter(function ($item) {
-                return $item->perlu_diteruskan;
-            });
+            $query =  $query->where('perlu_diteruskan', 1);
         }
+
+
+        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
 
         if ($request->ajax()) {
@@ -309,7 +309,7 @@ class PermohonanController extends Controller
     {
 
         $currentUserId = Auth::id();
-        $query = Permohonan::with('createdby', 'diteruskan');
+        $query = ViewPermohonan::query();
         $roles = Role::all();
 
         // Filter by status if provided
@@ -337,31 +337,23 @@ class PermohonanController extends Controller
 
 
         if (!empty($request->diteruskan_role)) {
-            $query->whereHas('riwayat', function ($q) use ($request) {
-                $q->where('diteruskan_ke_role', $request->diteruskan_role);
-            });
+            $query->where('latest_diteruskan_ke_role', $request->diteruskan_role);
         }
 
 
         if (!empty($request->diteruskan_user_name)) {
-            $query->whereHas('diteruskan', function ($q) use ($request) {
-                $q->where('name', 'like', "%" . $request->diteruskan_user_name . "%");
-            });
+            $query =  $query->where('riwayat_diteruskan_ke_latest', 'like', "%" . $request->diteruskan_user_name . "%");
+
         }
 
 
-
-        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
 
         if (!empty($request->perlu_diteruskan) &&  intval($request->perlu_diteruskan) > 0) {
-
-            $query =  $query->get()->filter(function ($item) {
-                return $item->perlu_diteruskan;
-            });
-
+            $query =  $query->where('perlu_diteruskan', 1);
         }
 
+        $query = $query->orderBy('tanggal_mulai_pengukuran', 'DESC');
 
         // $query->orderByRaw("FIELD(status, 'draft', 'revisi','proses', 'selesai')")
 

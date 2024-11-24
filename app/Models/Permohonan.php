@@ -33,6 +33,7 @@ class Permohonan extends Model
 
     protected $casts = [
         'created_at' => 'date:d-m-Y h:i A',
+        'nota_dinas' => 'integer',
         'updated_at' => 'date:d-m-Y h:i A',
         // 'tanggal_mulai_pengukuran' => 'date:d-m-Y',
         'dokumen_terlampir' => 'json'
