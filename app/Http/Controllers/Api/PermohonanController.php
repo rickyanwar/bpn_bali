@@ -432,18 +432,29 @@ class PermohonanController extends Controller
     {
 
         $data = Permohonan::find($id);
-
         $user = auth()->user();
+        $roleNames = $user->getRoleNames();
+        // the first role name or concatenated names:
+        $roleName = $roleNames->implode(', ');
+
         // dd(\Auth::user()->can('delete role'));
         //dd($user->getAllPermissions()->pluck('name'));
         if (!$data || !auth()->user()->can("ambil permohonan")) {
             return $this->respondNotHaveAccessData();
         }
 
+
+        RiwayatPermohonanDiTeruskan::create([
+            'permohonan_id' => $data->id,
+            'diteruskan_ke' => $user->id,
+            'status' => 'peroses',
+            'diteruskan_ke_role' => $roleName,
+        ]);
+
         $data->diteruskan_ke = $user->id;
         $data->update();
 
-        $data = Permohonan::find($id);
+        $data = Permohonan::with('riwayat')->find($id);
         Utility::auditTrail('ambil alih', $this->modulName, $data->id, $data->no_berkas, auth()->user());
         return $this->respond($data, "Berhasil! Anda telah berhasil mengambil alih penugasan ini");
     }
