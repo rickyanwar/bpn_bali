@@ -285,7 +285,7 @@ class PermohonanController extends Controller
                 }
 
                 // Delete
-                if (Auth::user()->can('delete permohonan') && $data->status == 'draft') {
+                if (Auth::user()->can('delete permohonan') && $data->status == 'draft' ||  Auth::user()->hasRole('Super Admin')) {
                     $actions .= '<div class="action-btn bg-danger ms-2 btn-delete" data-url="'.route('permohonan.destroy', $data->id) .'">
                                             <a  href="#"
                                                 data-original-title="' . __('Hapus') . '"

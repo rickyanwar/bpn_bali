@@ -215,6 +215,48 @@
             }
         });
 
+        $(document).on('click', '.btn-delete', function(e) {
+            e.preventDefault();
+            let url = $(this).data('url');
+            swal({
+                title: "Anda Yakin ?",
+                text: "Proses tidak dapat dibatalkan",
+                icon: "warning",
+                buttons: [
+                    'Tidak, Batalkan!',
+                    'Ya, Saya yakin!'
+                ],
+                dangerMode: true,
+            }).then(function(isConfirm) {
+
+                if (isConfirm) {
+                    let ajaxPost = ajaxRequest(url, 'DELETE', []).done(function(res) {
+                        console.log('res')
+                        swal({
+                            icon: 'success',
+                            title: res.message,
+                            showConfirmButton: false,
+                        }).then(function() {
+                            table.draw();
+                        });
+
+                        show_toastr('error', xhr.responseJSON?.message);
+
+                    })
+                    ajaxPost.fail(function(e) {
+                        console.log('e', e);
+                        swal({
+                            icon: 'warning',
+                            title: e.responseJSON.message,
+                            showConfirmButton: false,
+                        });
+
+                    })
+                }
+            })
+
+        })
+
 
         $(document).on('click', '.btn-reject', function(e) {
             let url = $(this).data('url');
