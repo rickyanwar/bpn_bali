@@ -429,6 +429,15 @@ class PermohonanController extends Controller
                 }
 
 
+                if (Auth::user()->can('delete permohonan') && $data->status == 'draft' ||  Auth::user()->hasRole('Super Admin')) {
+                    $actions .= '<div class="action-btn bg-danger ms-2 btn-delete" data-url="'.route('permohonan.destroy', $data->id) .'">
+                                            <a  href="#"
+                                                data-original-title="' . __('Hapus') . '"
+                                                class="mx-3 btn btn-sm align-items-center">
+                                                    <i class="ti ti-trash text-white"></i>
+                                            </a>
+                                        </div>';
+                }
                 return $actions;
             })
             ->rawColumns([ 'status_badge', 'actions','nota_dinas_badge'])
