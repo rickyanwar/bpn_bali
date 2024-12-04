@@ -37,7 +37,8 @@ class PermohonanController extends Controller
         "Petugas Ukur"
     ],
     "Petugas Ukur" => [
-        "Admin Pengukuran"
+        "Admin Pengukuran",
+        "Petugas Ukur"
     ],
     "Admin Pengukuran" => [
         "Koordinator Pengukuran"
@@ -150,7 +151,13 @@ class PermohonanController extends Controller
 
         // Filter by status if provided
         if (!empty($request->status)) {
-            $query =   $query->where('status', '=', $request->status);
+            if ($request->status == "nota dinas") {
+                $query->where('nota_dinas', 1);
+            } elseif ($request->status == "panggil dinas") {
+                $query->whereHas('riwayatPanggilanDinas');
+            } else {
+                $query->where('status', '=', $request->status);
+            }
         }
 
         // Filter by tanggal if provided
@@ -314,8 +321,15 @@ class PermohonanController extends Controller
 
         // Filter by status if provided
         if (!empty($request->status)) {
-            $query =  $query->where('status', '=', $request->status);
+            if ($request->status == "nota dinas") {
+                $query->where('nota_dinas', 1);
+            } elseif ($request->status == "panggil dinas") {
+                $query->whereHas('riwayatPanggilanDinas');
+            } else {
+                $query->where('status', '=', $request->status);
+            }
         }
+
 
         // Filter by tanggal if provided
         if (!empty($request->tanggal)) {

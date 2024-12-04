@@ -13,7 +13,51 @@ class PermohonanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check();
+
+
+        if (!Auth::check()) {
+            return false;
+        }
+
+        $user = Auth::user();
+
+        if ($user->hasRole('Petugas Jadwal')) {
+
+            $currentTime = now()->setTimezone('Asia/Makassar');
+            $allowedRanges = [
+                ['start' => '09:00', 'end' => '10:00'],
+                ['start' => '11:00', 'end' => '12:00'],
+                ['start' => '13:00', 'end' => '14:00'],
+            ];
+            $isAllowed = false;
+
+            foreach ($allowedRanges as $range) {
+                $startHour = (int) substr($range['start'], 0, 2); // Konversi ke integer
+                $startMinute = (int) substr($range['start'], 3, 2); // Konversi ke integer
+                $endHour = (int) substr($range['end'], 0, 2); // Konversi ke integer
+                $endMinute = (int) substr($range['end'], 3, 2); // Konversi ke integer
+
+                $start = now()->setTimezone('Asia/Makassar')->startOfDay()->addHours($startHour)->addMinutes($startMinute);
+                $end = now()->setTimezone('Asia/Makassar')->startOfDay()->addHours($endHour)->addMinutes($endMinute);
+
+                if ($currentTime->between($start, $end)) {
+                    $isAllowed = true;
+                    break;
+                }
+            }
+
+            if (!$isAllowed) {
+                throw new \Exception('Akses hanya diizinkan pada rentang waktu  09:00-10:00, 11:00-12:00, atau 13:00-14:00 WITA.');
+            }
+
+
+        }
+
+
+
+
+        return true;
+
     }
 
     /**
@@ -104,4 +148,11 @@ class PermohonanRequest extends FormRequest
         return $rules;
     }
 
+
+    public function messages(): array
+    {
+        return [
+            'authorized' => 'Akses hanya diizinkan pada rentang waktu 09:00-10:00, 11:00-12:00, atau 13:00-14:00 WITA.',
+        ];
+    }
 }

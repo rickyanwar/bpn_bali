@@ -83,6 +83,8 @@
                                         <option value="proses">Proses</option>
                                         <option value="tolak">Tolak</option>
                                         <option value="selesai">Selesai</option>
+                                        <option value="nota dinas">Nota Dinas</option>
+                                        <option value="panggil dinas">panggil dinas</option>
                                     </select>
                                 </div>
                             </div>
