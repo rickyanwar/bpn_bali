@@ -141,6 +141,7 @@ class PermohonanController extends Controller
                 $subQuery->whereNotNull('diteruskan_ke')
                         ->where('diteruskan_ke', $currentUserId);
             })
+
             ->orWhere(function ($subQuery) use ($currentUserId) {
                 // If diteruskan_ke is null, show records where created_by is the current user
                 $subQuery->whereNull('diteruskan_ke')
