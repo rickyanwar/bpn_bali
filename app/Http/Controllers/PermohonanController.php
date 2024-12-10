@@ -38,10 +38,10 @@ class PermohonanController extends Controller
     ],
     "Petugas Ukur" => [
         "Admin Pengukuran",
-        "Petugas Ukur"
     ],
     "Admin Pengukuran" => [
-        "Koordinator Pengukuran"
+        "Koordinator Pengukuran",
+        "Petugas Ukur"
     ],
     "Koordinator Pengukuran" => [
         "Admin 1",
