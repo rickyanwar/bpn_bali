@@ -21,37 +21,37 @@ class PermohonanRequest extends FormRequest
 
         $user = Auth::user();
 
-        if ($user->hasRole('Petugas Jadwal')) {
+        // if ($user->hasRole('Petugas Jadwal')) {
 
-            $currentTime = now()->setTimezone('Asia/Makassar');
-            $allowedRanges = [
-                ['start' => '09:00', 'end' => '10:00'],
-                ['start' => '11:00', 'end' => '12:00'],
-                ['start' => '13:00', 'end' => '14:00'],
-            ];
-            $isAllowed = false;
+        //     $currentTime = now()->setTimezone('Asia/Makassar');
+        //     $allowedRanges = [
+        //         ['start' => '09:00', 'end' => '10:00'],
+        //         ['start' => '11:00', 'end' => '12:00'],
+        //         ['start' => '13:00', 'end' => '14:00'],
+        //     ];
+        //     $isAllowed = false;
 
-            foreach ($allowedRanges as $range) {
-                $startHour = (int) substr($range['start'], 0, 2); // Konversi ke integer
-                $startMinute = (int) substr($range['start'], 3, 2); // Konversi ke integer
-                $endHour = (int) substr($range['end'], 0, 2); // Konversi ke integer
-                $endMinute = (int) substr($range['end'], 3, 2); // Konversi ke integer
+        //     foreach ($allowedRanges as $range) {
+        //         $startHour = (int) substr($range['start'], 0, 2); // Konversi ke integer
+        //         $startMinute = (int) substr($range['start'], 3, 2); // Konversi ke integer
+        //         $endHour = (int) substr($range['end'], 0, 2); // Konversi ke integer
+        //         $endMinute = (int) substr($range['end'], 3, 2); // Konversi ke integer
 
-                $start = now()->setTimezone('Asia/Makassar')->startOfDay()->addHours($startHour)->addMinutes($startMinute);
-                $end = now()->setTimezone('Asia/Makassar')->startOfDay()->addHours($endHour)->addMinutes($endMinute);
+        //         $start = now()->setTimezone('Asia/Makassar')->startOfDay()->addHours($startHour)->addMinutes($startMinute);
+        //         $end = now()->setTimezone('Asia/Makassar')->startOfDay()->addHours($endHour)->addMinutes($endMinute);
 
-                if ($currentTime->between($start, $end)) {
-                    $isAllowed = true;
-                    break;
-                }
-            }
+        //         if ($currentTime->between($start, $end)) {
+        //             $isAllowed = true;
+        //             break;
+        //         }
+        //     }
 
-            if (!$isAllowed) {
-                throw new \Exception('Akses hanya diizinkan pada rentang waktu  09:00-10:00, 11:00-12:00, atau 13:00-14:00 WITA.');
-            }
+        //     if (!$isAllowed) {
+        //         throw new \Exception('Akses hanya diizinkan pada rentang waktu  09:00-10:00, 11:00-12:00, atau 13:00-14:00 WITA.');
+        //     }
 
 
-        }
+        // }
 
 
 
