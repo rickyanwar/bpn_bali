@@ -146,6 +146,8 @@
                                             Permohonan SK Pemberian Hak Pakai Instansi/Badan Usaha Pemerintah</option>
                                         <option value="Permohonan SK Pemberian HGB/HP di atas HPL">Permohonan SK Pemberian
                                             HGB/HP di atas HPL</option>
+                                        <option value="Permohonan SK Pemberian Hak Dengan Konstatasi">Permohonan SK
+                                            Pemberian Hak Dengan Konstatasi</option>
                                         <option value="Waris dan Pemecahan">Waris dan Pemecahan</option>
                                     </select>
 
