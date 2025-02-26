@@ -518,9 +518,8 @@ class PermohonanController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->respondError(ApiMessage::FAILED_CREATE, $e->getMessage());
+            return $this->respondWithError(500, $e->getMessage());
         }
-
 
     }
 
@@ -681,7 +680,7 @@ class PermohonanController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->respondError(ApiMessage::FAILED_UPDATE, $e->getMessage());
+            return $this->respondWithError(500, $e->getMessage());
         }
 
     }

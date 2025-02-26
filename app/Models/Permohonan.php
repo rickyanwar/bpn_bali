@@ -28,7 +28,8 @@ class Permohonan extends Model
         'diteruskan_ke',
         'alasan_penolakan',
         'dokumen_terlampir',
-        'nota_dinas'
+        'nota_dinas',
+        'jadwal_pengukuran'
     ];
 
     protected $casts = [

@@ -98,7 +98,7 @@
                             <tr>
                                 <td>Pukul</td>
                                 <td>:</td>
-                                <td>09.00 Wita</td>
+                                <td>{{ $data->jadwal_pengukuran ?? '09:00' }} Wita</td>
                             </tr>
                             @php
                                 $firstPetugas = $data->petugasUkur[0] ?? null;

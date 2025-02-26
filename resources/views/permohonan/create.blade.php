@@ -21,11 +21,22 @@
                     <div class="card-body">
                         <div class="row justify-content-center">
                             @if (auth()->user()->hasRole('Petugas Jadwal') || auth()->user()->hasRole('Super Admin'))
-                                <div class="col-10">
+                                <div class="col-5">
                                     <div class="form-group">
                                         <label class="form-label">No Surat Pemberitahuan</label>
                                         <input class="form-control" type="text" id="no_surat_pemberitahuan"
                                             name="no_surat_pemberitahuan" placeholder="Masukkan no surat pemberithauan">
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="form-group">
+                                        <label class="form-label">Jadwal Pengukuran</label>
+                                        <select class="form-control form-control " id="jadwal_pengukuran"
+                                            name="jadwal_pengukuran" style="width: 100%">
+                                            <option value="09:00" selected>09:00</option>
+                                            <option value="11:00">11:00</option>
+                                            <option value="13:00">13:00</option>
+                                        </select>
                                     </div>
                                 </div>
                             @endif
