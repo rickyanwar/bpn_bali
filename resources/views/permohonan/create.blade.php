@@ -142,6 +142,9 @@
                                         <option value="Pemecahan Bidang">Pemecahan Bidang</option>
                                         <option value="Pengukuran Dan Pemetaan Kadastral">Pengukuran Dan Pemetaan Kadastral
                                         </option>
+                                        <option value="Pendaftaran Tanah Pertama Kali Pemberian Hak">Pendaftaran Tanah
+                                            Pertama Kali Pemberian Hak
+                                        </option>
                                         <option value="Pemisahan Bidang">Pemisahan Bidang</option>
                                         <option value="Penataan Batas">Penataan Batas</option>
                                         <option value="Pengukuran Ulang Dan Pemetaan Kadastral">Pengukuran Ulang Dan
