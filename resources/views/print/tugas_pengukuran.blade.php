@@ -216,7 +216,7 @@
                        <p class="text-center" style="opacity: 0.5;margin:0">Ditandatangani Secara
                            Elektronik
                        </p>
-                       <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 182736263738272839</p>
+                       <p class="text-center"><u>DARMANSYAH, S.ST.,M.H</u> <br> NIP. 197704241999031002</p>
                    </div>
                </div>
            </div>
