@@ -53,7 +53,8 @@ class PermohonanController extends Controller
     "Admin 1" => [
         "Petugas Gambar",
         "Koordinator Wilayah",
-        "Kasi SP"
+        "Kasi SP",
+        "PHP"
     ],
     "Petugas Gambar" => [
         "Koordinator Wilayah",
