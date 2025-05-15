@@ -145,7 +145,7 @@
             </div>
             <div class="row mt-5">
                 <div class="col-6">
-                    <p>Mengetahui <br> Pemohon :</p>
+                    <p>Mengetahui <br> Pemohon : $data->nama_pemohon </p>
                 </div>
                 <div class="col-6">
                     <p class="text-center" style="opacity: 0.5;margin:0">Ditandatangani Secara
