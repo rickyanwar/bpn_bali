@@ -163,6 +163,8 @@
                                         <option value="Permohonan SK Pemberian Hak Dengan Konstatasi">Permohonan SK
                                             Pemberian Hak Dengan Konstatasi</option>
                                         <option value="Waris dan Pemecahan">Waris dan Pemecahan</option>
+                                        <option value="Pendaftaran Tanah Pertama Kali Konversi">Pendaftaran Tanah Pertama
+                                            Kali Konversi</option>
                                     </select>
 
                                 </div>
