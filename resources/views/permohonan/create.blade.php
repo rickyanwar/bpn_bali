@@ -165,6 +165,10 @@
                                         <option value="Waris dan Pemecahan">Waris dan Pemecahan</option>
                                         <option value="Pendaftaran Tanah Pertama Kali Konversi">Pendaftaran Tanah Pertama
                                             Kali Konversi</option>
+                                        <option
+                                            value="Pengukuran Pendaftaran Tanah Pertama Kali /Konversi/Pemberian dan Penegasan Hak">
+                                            Pengukuran Pendaftaran Tanah Pertama Kali /Konversi/Pemberian dan Penegasan Hak
+                                        </option>
                                     </select>
 
                                 </div>

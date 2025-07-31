@@ -80,6 +80,8 @@
                                     <th>Tanggal Jadwal</th>
                                     <th>Tanggal Setor</th>
                                     <th>Koordinator</th>
+                                    <th>Petugas Telat</th>
+
                                 </tr>
                             </thead>
                         </table>
@@ -212,6 +214,12 @@
                         return data?.name ?? ''
                     }
                 },
+                {
+                    data: "users_keterlambatan",
+                    name: "users_keterlambatan",
+                    orderable: false,
+                    searchable: false,
+                }
 
             ],
 

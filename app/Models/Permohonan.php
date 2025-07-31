@@ -29,7 +29,7 @@ class Permohonan extends Model
         'alasan_penolakan',
         'dokumen_terlampir',
         'nota_dinas',
-        'jadwal_pengukuran'
+        'jadwal_pengukuran',
     ];
 
     protected $casts = [
@@ -40,7 +40,7 @@ class Permohonan extends Model
         'dokumen_terlampir' => 'json'
     ];
 
-    protected $appends = ['perlu_diteruskan','petugas_ukur_utama', 'tahun'];
+    protected $appends = ['perlu_diteruskan','petugas_ukur_utama', 'tahun','users_keterlambatan'];
 
     public function createdby()
     {
@@ -153,5 +153,21 @@ class Permohonan extends Model
     public function getTahunAttribute()
     {
         return $this->created_at ? $this->created_at->format('Y') : '-';
+    }
+
+    public function riwayatKeterlambatan()
+    {
+        return $this->hasMany(\App\Models\RiwayatKeterlambatan::class, 'permohonan_id')
+                    ->with('user');
+    }
+
+    public function getUsersKeterlambatanAttribute()
+    {
+        return \DB::table('riwayat_keterlambatan as rk')
+            ->join('users as u', 'rk.user_id', '=', 'u.id')
+            ->where('rk.permohonan_id', $this->id)
+            ->orderBy('rk.created_at')
+            ->pluck('u.name')
+            ->implode(', ');
     }
 }

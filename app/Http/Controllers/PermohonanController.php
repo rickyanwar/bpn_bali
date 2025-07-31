@@ -38,6 +38,9 @@ class PermohonanController extends Controller
     ],
     "Petugas Ukur" => [
         "Admin Pengukuran",
+        "Koordinator Pengukuran",
+        "Koordinator Wilayah",
+        "Petugas Gambar",
     ],
     "Admin Pengukuran" => [
         "Koordinator Pengukuran",
@@ -45,10 +48,12 @@ class PermohonanController extends Controller
     ],
     "Koordinator Pengukuran" => [
         "Admin 1",
+        "Admin 2",
         "Admin 3",
         "Koordinator Wilayah",
         "Petugas Jadwal",
-        "Petugas Ukur"
+        "Petugas Ukur",
+        "Petugas Gambar"
     ],
     "Admin 1" => [
         "Petugas Gambar",
@@ -59,7 +64,10 @@ class PermohonanController extends Controller
     "Petugas Gambar" => [
         "Koordinator Wilayah",
         "Petugas Ukur",
-        "Admin Pengukuran"
+        "Admin Pengukuran",
+        "Admin 3",
+        "Koordinator Pengukuran",
+        "PHP"
     ],
     "Koordinator Wilayah" => [
         "Petugas Gambar",
@@ -75,6 +83,8 @@ class PermohonanController extends Controller
         "Kasi SP",
         "Admin 1",
         "Admin 3",
+        "PHP",
+        "Petugas Gambar"
     ],
     "Admin 3" => [
         "Koordinator Wilayah",
@@ -319,6 +329,7 @@ class PermohonanController extends Controller
 
         $currentUserId = Auth::id();
         $query = ViewPermohonan::query();
+
         $roles = Role::all();
 
         // Filter by status if provided
@@ -376,6 +387,27 @@ class PermohonanController extends Controller
 
         if ($request->ajax()) {
             return DataTables::of($query)
+            ->addColumn('riwayat_keterlambatan', function ($row) {
+                $riwayat = \App\Models\RiwayatKeterlambatan::with('user')
+                    ->where('permohonan_id', $row->id)
+                    ->get()
+                    ->map(function ($r) {
+                        return [
+                         'tanggal_dialihkan' => $r->tanggal_dialihkan
+                            ? \Carbon\Carbon::parse($r->tanggal_dialihkan)->format('d-m-Y')
+                            : null,
+
+                        'tanggal_keterlambatan' => $r->tanggal_keterlambatan
+                            ? \Carbon\Carbon::parse($r->tanggal_keterlambatan)->format('d-m-Y')
+                            : null,
+                            'user' => [
+                                'id' => $r->user->id ?? null,
+                                'name' => $r->user->name ?? '-'
+                            ]
+                        ];
+                    });
+                return $riwayat;
+            })
             ->addColumn('nota_dinas_badge', function ($data) {
                 $status = '';
                 if ($data->nota_dinas) {
@@ -410,6 +442,16 @@ class PermohonanController extends Controller
             })
             ->addColumn('actions', function ($data) {
                 $actions = '';
+
+                $actions .= '<div class="action-btn bg-primary details-control ms-2">
+                    <a href="#"
+                        class="mx-3 btn btn-sm align-items-center"
+                        data-bs-toggle="tooltip" title="' . __('Edit') . '"
+                        data-original-title="' . __('Edit') . '">
+                        <i class="ti ti-info-circle text-white"></i>
+                    </a>
+                </div>';
+
                 if (Auth::user()->id == $data->diteruskan_ke || (Auth::user()->id == $data->created_by && $data->status == 'draft')) {
                     $actions .= '<div class="action-btn bg-primary ms-2 btn_teruskan" data-id="'. $data->id .'" >
                                             <a  href="#" data-url="' . route('permohonan.teruskan_view', $data->id) . '"
@@ -423,6 +465,7 @@ class PermohonanController extends Controller
                                         </div>';
                 }
 
+
                 $actions .= '<div class="action-btn bg-primary ms-2">
                                             <a href="' . route('permohonan.edit', $data->id) . '"
                                                 class="mx-3 btn btn-sm align-items-center"
@@ -431,6 +474,8 @@ class PermohonanController extends Controller
                                                 <i class="ti ti-pencil text-white"></i>
                                             </a>
                                         </div>';
+
+
 
 
 

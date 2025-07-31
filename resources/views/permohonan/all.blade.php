@@ -217,6 +217,63 @@
             }
         });
 
+        // Format child row for riwayat_keterlambatan
+        function formatRiwayatKeterlambatan(rowData) {
+            console.log('rowData', rowData);
+
+            // Parse JSON string to array if needed
+            let keterlambatan = rowData.riwayat_keterlambatan;
+
+            if (typeof keterlambatan === 'string') {
+                try {
+                    keterlambatan = JSON.parse(keterlambatan);
+                } catch (e) {
+                    console.error('Invalid JSON for riwayat_keterlambatan', e);
+                    keterlambatan = [];
+                }
+            }
+
+            if (!keterlambatan || keterlambatan.length === 0) {
+                return '<div class="p-2">Tidak ada riwayat keterlambatan.</div>';
+            }
+
+            let html = '<table class="table table-sm table-bordered m-2" style="width: 90%;">';
+            html += '<thead><tr>' +
+                '<th>Tanggal Keterlambatan</th>' +
+                '<th>Tanggal Dialihkan</th>' +
+                '<th>User</th>' +
+                '</tr></thead><tbody>';
+
+            keterlambatan.forEach(function(item) {
+                html += '<tr>' +
+                    '<td>' + (item.tanggal_keterlambatan ?? '-') + '</td>' +
+                    '<td>' + (item.tanggal_dialihkan ?? '-') + '</td>' +
+                    '<td>' + (item.user?.name ?? '-') + '</td>' +
+                    '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+
+        // Handle click on details-control
+        $('#data-table tbody').on('click', '.details-control', function() {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            console.log('row', row)
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+                $(this).html('<i class="fa fa-plus-circle text-white"></i>');
+            } else {
+                row.child(formatRiwayatKeterlambatan(row.data())).show();
+                tr.addClass('shown');
+                $(this).html('<i class="fa fa-minus-circle text-danger"></i>');
+            }
+        });
+
         $(document).on('click', '.btn-delete', function(e) {
             e.preventDefault();
             let url = $(this).data('url');
