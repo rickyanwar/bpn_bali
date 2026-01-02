@@ -119,8 +119,10 @@ class DashboardController extends Controller
 
     public function berkasCount()
     {
-        $berkasSelesaiCount = Permohonan::where('status', 'selesai')->count();
-        $berkasMasukCount = Permohonan::where('status', '!=', 'selesai')->count();
+
+        $year = Carbon::now()->year;
+        $berkasSelesaiCount = Permohonan::whereYear('created_at', $year)->where('status', 'selesai')->count();
+        $berkasMasukCount = Permohonan::whereYear('created_at', $year)->where('status', '!=', 'selesai')->count();
 
         return response()->json([
             'berkas_selesai' => $berkasSelesaiCount,
