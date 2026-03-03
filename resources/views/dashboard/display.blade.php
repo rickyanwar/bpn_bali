@@ -238,7 +238,7 @@
                         <div class="col-6">
                             <div class="card text-center bg-blue-light" style="border-radius: 15px;">
                                 <div class="card-body">
-                                    <div class="btn-block btn-blue p-2">BERKAS PROSES</div>
+                                    <div class="btn-block btn-blue p-2">PROSES</div>
                                     <h1 class="font-number p-3 m-0" id="berkas-proses"></h1>
                                 </div>
                             </div>
@@ -248,7 +248,7 @@
                         <div class="col-6">
                             <div class="card text-center bg-green-light" style="border-radius: 15px;">
                                 <div class="card-body">
-                                    <div class="btn-block btn-success-dark p-2">BERKAS SELESAI</div>
+                                    <div class="btn-block btn-success-dark p-2">SELESAI</div>
                                     <h1 class="font-number p-3 m-0" id="berkas-selesai"></h1>
                                 </div>
                             </div>
