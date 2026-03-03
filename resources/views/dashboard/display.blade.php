@@ -226,17 +226,34 @@
                 <div class="col-12">
                     <div class="card text-center bg-yellow-light" style="border-radius: 15px;">
                         <div class="card-body ">
-                            <div class="btn-yellow-dark btn-block p-2">BERKAS MASUK</div>
+                            <div class="btn-yellow-dark btn-block p-2">BERKAS MASUK {{ \Carbon\Carbon::now()->year }}</div>
                             <h1 class="font-number p-3 m-0" id="berkas-masuk"></h1>
                         </div>
                     </div>
                 </div>
                 <div class="col-12 mt-3">
-                    <div class="card text-center bg-green-light " style="border-radius: 15px;">
-                        <div class="card-body">
-                            <div class="btn-block btn-success-dark p-2">BERKAS SELESAI</div>
-                            <h1 class="font-number p-3 m-0 " id="berkas-selesai"></h1>
+                    <div class="row">
+
+                        <!-- BERKAS PROSES -->
+                        <div class="col-6">
+                            <div class="card text-center bg-blue-light" style="border-radius: 15px;">
+                                <div class="card-body">
+                                    <div class="btn-block btn-blue p-2">BERKAS PROSES</div>
+                                    <h1 class="font-number p-3 m-0" id="berkas-proses"></h1>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- BERKAS SELESAI -->
+                        <div class="col-6">
+                            <div class="card text-center bg-green-light" style="border-radius: 15px;">
+                                <div class="card-body">
+                                    <div class="btn-block btn-success-dark p-2">BERKAS SELESAI</div>
+                                    <h1 class="font-number p-3 m-0" id="berkas-selesai"></h1>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -447,6 +464,7 @@
                     success: function(response) {
                         // Assuming the response has berkas_masuk and berkas_selesai properties
                         $('#berkas-masuk').text(response.berkas_masuk);
+                        $('#berkas-proses').text(response.berkas_proses);
                         $('#berkas-selesai').text(response.berkas_selesai);
                     },
                     error: function() {
