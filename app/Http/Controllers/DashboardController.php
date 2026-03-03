@@ -123,7 +123,7 @@ class DashboardController extends Controller
         $year = Carbon::now()->year;
         $berkasSelesaiCount = Permohonan::whereYear('created_at', $year)->where('status', 'selesai')->count();
         $berkasProsesCount = Permohonan::whereYear('created_at', $year)->where('status', 'proses')->count();
-        $berkasMasukCount = Permohonan::whereYear('created_at', $year)->where('status', '!=', 'selesai')->count();
+        $berkasMasukCount = Permohonan::whereYear('created_at', $year)->count();
 
         return response()->json([
             'berkas_selesai' => $berkasSelesaiCount,
