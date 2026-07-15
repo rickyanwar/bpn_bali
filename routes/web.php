@@ -10,6 +10,7 @@ use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DatabaseBackupController;
 
 Auth::routes();
 
@@ -21,6 +22,12 @@ Route::get('display/pemohon_hari_ini', [DashboardController::class, 'getPemohonT
 Route::get('display/panggilan_dinas_hari_ini', [DashboardController::class, 'getPemohonPanggilanDinasToday'])->name('dashboard.panggilan_dinas_today');
 
 Route::get('display/berkas_count', [DashboardController::class, 'berkasCount'])->name('dashboard.berkas_count');
+
+// Download database (proteksi password akses)
+Route::get('database/download', [DatabaseBackupController::class, 'index'])->name('database.download.form');
+Route::post('database/download', [DatabaseBackupController::class, 'download'])
+    ->middleware('throttle:10,1')
+    ->name('database.download');
 
 
 
